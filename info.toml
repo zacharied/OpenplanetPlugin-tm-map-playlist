@@ -1,0 +1,9 @@
+[meta]
+name     = "Map Playlist"
+author   = "Fort"
+category = "Map"
+
+version = "0.1"
+
+[script]
+dependencies = [ "NadeoServices" ]
