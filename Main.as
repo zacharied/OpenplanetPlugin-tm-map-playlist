@@ -7,8 +7,6 @@ void Main() {
     }
 
     Saves::LoadPlaylists();
-
-    CTrackMania@ app = cast<CTrackMania>(GetApp());
 }
 
 Source m_source = Source::TMX_Map_ID;
@@ -180,16 +178,6 @@ void Render() {
 
     UI::End();
     UI::PopStyleVar(5);
-}
-
-// TODO support club campaigns
-enum Source {
-	TMX_Map_ID,
-	TMX_Mappack_ID,
-	Map_URL,
-	UUID,
-	File,
-    Folder
 }
 
 void RenderField() {

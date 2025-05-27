@@ -344,7 +344,7 @@ class MapPlaylist {
         }
     }
 
-    void AddFolder(const string &in path)  {
+    void AddFolder(const string &in path) {
         try {
             if (!IO::FolderExists(path)) {
                 _Logging::Warn("Failed to find folder in provided path. Make sure to use an absolute path!", true);

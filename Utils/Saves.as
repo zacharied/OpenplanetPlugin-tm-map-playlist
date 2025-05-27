@@ -1,7 +1,7 @@
 namespace Saves {
 	const string SAVE_LOCATION = IO::FromStorageFolder("playlists.json");
 
-    void SavePlaylist(const string &in name, const Json::Value &in save) {
+    void SavePlaylist(const string &in name, Json::Value@ save) {
         if (save.GetType() != Json::Type::Object) {
             _Logging::Error("Invalid JSON type for playlist. Expected object, received " + tostring(save.GetType()));
             return;

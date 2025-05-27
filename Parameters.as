@@ -28,8 +28,18 @@ enum GameMode {
 }
 
 enum Medals {
-	Bronze,
-	Silver,
-	Gold,
-	Author
+    Bronze,
+    Silver,
+    Gold,
+    Author
+}
+
+// TODO support club campaigns
+enum Source {
+    TMX_Map_ID,
+    TMX_Mappack_ID,
+    Map_URL,
+    UUID,
+    File,
+    Folder
 }
