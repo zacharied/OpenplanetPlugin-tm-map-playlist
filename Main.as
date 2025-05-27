@@ -162,38 +162,8 @@ void Render() {
                 while (clipper.Step()) {
                     for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, keys.Length); i++) {
                         UI::PushID("Playlist"+i);
-
                         Json::Value@ list = savedPlaylists[keys[i]];
-
-                        UI::TableNextRow();
-                        UI::TableNextColumn();
-
-                        UI::AlignTextToFramePadding();
-                        UI::Text(tostring(i + 1));
-
-                        UI::TableNextColumn();
-                        UI::Text(keys[i]);
-
-                        UI::TableNextColumn();
-                        UI::Text(tostring(list["Maps"].Length));
-
-                        UI::TableNextColumn();
-                        UI::Text(Time::FormatString("%F %T", int(list["Timestamp"])));
-
-                        UI::TableNextColumn();
-
-                        if (UI::GreenButton(Icons::Upload)) {
-                            playlist.Load(list);
-                        }
-                        UI::SetItemTooltip("Load");
-
-                        UI::SameLine();
-
-                        if (UI::RedButton(Icons::TrashO)) {
-                            Saves::DeletePlaylist(keys[i]);
-                        }
-                        UI::SetItemTooltip("Delete");
-
+                        UI::RenderPlaylist(list, i);
                         UI::PopID();
                     }
                 }
