@@ -324,7 +324,13 @@ class MapPlaylist {
             if (id.Length > 0) {
                 AddMappack(id[1]);
             }
-        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.io\\/#\\/(totd|campaigns)\\/?leaderboard\\/([\\w-]+?\\/)?\\w{25,27}\\/?", regexFlags)) {
+        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.io\\/#\\/(totd|campaigns)\\/?leaderboard\\/([\\w-]+?\\/)?\\w{25,27}", regexFlags)) {
+            array<string> uid = Regex::Search(str, "(\\w{25,27})");
+
+            if (uid.Length > 0) {
+                AddFromUuid(uid[1]);
+            }
+        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.com\\/tracks\\/\\w{25,27}\\/?", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
             if (uid.Length > 0) {
