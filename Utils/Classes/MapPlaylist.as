@@ -136,11 +136,7 @@ class MapPlaylist {
 
         Name = json["Name"];
 
-        if (json["Current"].GetType() != Json::Type::Null) {
-            @currentMap = Map(json["Current"]);
-        } else {
-            @currentMap = null;
-        }
+        @currentMap = null;
 
         for (uint i = 0; i < json["Maps"].Length; i++) {
             Json::Value@ map = json["Maps"][i];
@@ -161,17 +157,12 @@ class MapPlaylist {
 
         Json::Value json = Json::Object();
         json["Maps"] = Json::Array();
-        json["Current"] = Json::Parse("null"); // creates null value
         json["Timestamp"] = Time::Stamp;
 
         try {
             for (uint i = 0; i < Maps.Length; i++) {
                 Map@ map = Maps[i];
                 json["Maps"].Add(map.ToJson());
-            }
-
-            if (currentMap !is null) {
-                json["Current"] = currentMap.ToJson();
             }
 
             return json;
