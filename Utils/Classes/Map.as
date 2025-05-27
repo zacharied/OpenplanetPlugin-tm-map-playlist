@@ -84,7 +84,7 @@ class Map {
             URL = json["URL"];
             Name = json["Name"];
             GbxName = json["GbxName"];
-            UID = json["MapUid"];
+            UID = json["UID"];
             MapType = json["MapType"];
             Author = json["Author"];
             AuthorTime = json["AuthorTime"];
