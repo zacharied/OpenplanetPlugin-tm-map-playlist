@@ -91,7 +91,7 @@ void Render() {
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("URL", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120);
+                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                 UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed);
                 UI::TableHeadersRow();
 
