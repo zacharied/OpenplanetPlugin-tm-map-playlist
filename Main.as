@@ -81,9 +81,7 @@ void Render() {
 
             S_Editor = UI::Checkbox("Load in Editor", S_Editor);
 
-            UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(0.1f, 0.1f, 0.1f, .7));
-            UI::PushStyleColor(UI::Col::TableRowBg, vec4(0.13f, 0.13f, 0.13f, .7));
-            UI::PushStyleColor(UI::Col::TableBorderLight, vec4(.25, .25, .25, 1));
+            UI::PushTableVars();
             if (UI::BeginTable("Maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
@@ -107,7 +105,7 @@ void Render() {
                 UI::EndTable();
             }
 
-            UI::PopStyleColor(3);
+            UI::PopTableVars();
 
             UI::EndTabItem();
         }
@@ -143,9 +141,7 @@ void Render() {
 
             if (nameExists) UI::Text("\\$f90" + Icons::ExclamationTriangle + "\\$z A playlist with that name already exists!");
 
-            UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(0.1f, 0.1f, 0.1f, .7));
-            UI::PushStyleColor(UI::Col::TableRowBg, vec4(0.13f, 0.13f, 0.13f, .7));
-            UI::PushStyleColor(UI::Col::TableBorderLight, vec4(.25, .25, .25, 1));
+            UI::PushTableVars();
             if (UI::BeginTable("Playlists", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
@@ -167,7 +163,7 @@ void Render() {
                 }
                 UI::EndTable();
             }
-            UI::PopStyleColor(3);
+            UI::PopTableVars();
             UI::EndTabItem();
         }
 

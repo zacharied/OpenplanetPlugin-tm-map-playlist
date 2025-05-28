@@ -99,4 +99,14 @@ namespace UI {
         }
         UI::SetItemTooltip("Delete");
     }
+
+    void PushTableVars() {
+        UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(0.1f, 0.1f, 0.1f, .7));
+        UI::PushStyleColor(UI::Col::TableRowBg, vec4(0.13f, 0.13f, 0.13f, .7));
+        UI::PushStyleColor(UI::Col::TableBorderLight, vec4(.25, .25, .25, 1));
+    }
+
+    void PopTableVars() {
+        UI::PopStyleColor(3);
+    }
 }
