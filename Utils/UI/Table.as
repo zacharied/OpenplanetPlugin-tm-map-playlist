@@ -32,9 +32,13 @@ namespace UI {
 
         UI::TableNextColumn();
 
+        UI::BeginDisabled(TM::IsLoadingMap());
+
         if (UI::GreenButton(Icons::Play)) {
             playlist.PlayMap(map);
         }
+
+        UI::EndDisabled();
 
         UI::SameLine();
 

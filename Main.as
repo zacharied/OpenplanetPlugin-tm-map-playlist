@@ -212,7 +212,7 @@ void RenderField() {
 bool held = false;
 
 void OnKeyPress(bool down, VirtualKey key) {
-    if (!HAS_PERMISSIONS || playlist.IsEmpty()) return;
+    if (!HAS_PERMISSIONS || playlist.IsEmpty() || TM::IsLoadingMap()) return;
 
     if (!held && key == S_SwitchKey) {
         playlist.NextMap();

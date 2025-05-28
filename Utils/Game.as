@@ -1,6 +1,13 @@
 namespace TM {
+    bool loadingMap;
+
     void LoadMap(ref@ mapData) {
         Map@ map = cast<Map>(mapData);
+
+        if (loadingMap) {
+            // A map is already loading, ignore
+            return;
+        }
 
         _Logging::Debug("Loading map \"" + map.Name + "\" with map type \"" + map.MapType + "\"");
 
@@ -9,12 +16,14 @@ namespace TM {
             return;
         }
 
+        loadingMap = true;
+
         ClosePauseMenu();
 
         CTrackMania@ app = cast<CTrackMania>(GetApp());
         app.BackToMainMenu();
 
-        while(!app.ManiaTitleControlScriptAPI.IsReady) {
+        while (!app.ManiaTitleControlScriptAPI.IsReady) {
             yield();
         }
 
@@ -27,6 +36,11 @@ namespace TM {
             app.ManiaTitleControlScriptAPI.PlayMap(map.URL, gameMode, "");
         }
 
+        while (IsLoadingScreen()) {
+            yield();
+        }
+
+        loadingMap = false;
         @playlist.currentMap = map;
     }
 
@@ -102,5 +116,28 @@ namespace TM {
         print(map.AuthorAccountId);
 
         return map;
+    }
+
+    bool IsLoadingScreen() {
+        CTrackMania@ app = cast<CTrackMania>(GetApp());
+        auto pgCSApi = app.Network.PlaygroundClientScriptAPI;
+
+        if (pgCSApi !is null && pgCSApi.IsLoadingScreen) {
+            return true;
+        }
+
+        auto pg = app.PlaygroundScript;
+        if (pg is null) return false;
+
+        auto uiManager = pg.UIManager;
+        if (uiManager !is null && uiManager.HoldLoadingScreen) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool IsLoadingMap() {
+        return loadingMap;
     }
 }
