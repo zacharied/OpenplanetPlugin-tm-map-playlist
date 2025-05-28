@@ -1,7 +1,7 @@
 namespace Saves {
 	const string SAVE_LOCATION = IO::FromStorageFolder("playlists.json");
 
-    void SavePlaylist(const string &in name, Json::Value@ save) {
+    void SavePlaylist(const string &in name, Json::Value@ save, bool edit = false) {
         if (save.GetType() != Json::Type::Object) {
             _Logging::Error("Invalid JSON type for playlist. Expected object, received " + tostring(save.GetType()));
             return;
@@ -13,7 +13,7 @@ namespace Saves {
         if (savedPlaylists.GetType() == Json::Type::Null) {
             _Logging::Debug("Failed to find playlist file when saving playlist. Creating...");
             CreateFile();
-        } else if (savedPlaylists.HasKey(name)) {
+        } else if (!edit && savedPlaylists.HasKey(name)) {
             _Logging::Warn("Trying to add playlist \"" + name + "\" when one with that name already exists!");
             return;
 		}

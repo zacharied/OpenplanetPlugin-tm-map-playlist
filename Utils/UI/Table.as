@@ -95,7 +95,7 @@ namespace UI {
         UI::SameLine();
 
         if (UI::RedButton(Icons::TrashO)) {
-            Saves::DeletePlaylist(list["Name"]);
+            Renderables::Add(DeletePlaylist(list["Name"]));
         }
         UI::SetItemTooltip("Delete");
     }

@@ -115,33 +115,15 @@ void Render() {
         if(UI::BeginTabItem("Playlists")) {
             array<string> keys = savedPlaylists.GetKeys();
 
-            bool nameEnter;
+            UI::BeginDisabled(playlist.Length == 0);
 
-            UI::AlignTextToFramePadding();
-
-            UI::Text("Name ");
-
-            UI::SameLine();
-
-            UI::SetNextItemWidth(225);
-            playlistName = UI::InputText("##PlaylistName", playlistName, nameEnter, UI::InputTextFlags::EnterReturnsTrue);
-
-            bool nameExists = keys.Find(playlistName) != -1;
-
-            UI::SameLine();
-
-            UI::BeginDisabled(playlistName.Length == 0 || nameExists);
-
-            if ((UI::GreenButton(Icons::FloppyO) || nameEnter) && playlistName.Length > 0) {
-                Saves::SavePlaylist(playlistName, playlist.ToJson());
-                playlistName = "";
+            if (UI::GreenButton(Icons::Plus + " New")) {
+                Renderables::Add(AddPlaylist());
             }
 
             UI::SetItemTooltip("Save current playlist");
 
             UI::EndDisabled();
-
-            if (nameExists) UI::Text("\\$f90" + Icons::ExclamationTriangle + "\\$z A playlist with that name already exists!");
 
             UI::PushTableVars();
             if (UI::BeginTable("Playlists", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
@@ -176,6 +158,8 @@ void Render() {
 
     UI::End();
     UI::PopStyleVar(5);
+
+    Renderables::Render();
 }
 
 void RenderField() {
