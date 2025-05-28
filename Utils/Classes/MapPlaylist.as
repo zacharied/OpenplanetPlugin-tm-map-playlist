@@ -131,12 +131,12 @@ class MapPlaylist {
             return;
         }
 
+        Clear();
+
         _Logging::Debug("Loading playlist \"" + string(json["Name"]) + "\" from JSON");
         _Logging::Debug(Json::Write(json, true));
 
         Name = json["Name"];
-
-        @currentMap = null;
 
         for (uint i = 0; i < json["Maps"].Length; i++) {
             Json::Value@ map = json["Maps"][i];
