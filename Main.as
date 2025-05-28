@@ -34,7 +34,9 @@ void Render() {
     UI::PushStyleVar(UI::StyleVar::FramePadding, vec2(10, 6));
     UI::PushStyleVar(UI::StyleVar::WindowTitleAlign, vec2(.5, .5));
     UI::PushStyleVar(UI::StyleVar::CellPadding, UI::GetStyleVarVec2(UI::StyleVar::CellPadding) + vec2(4, 1));
+
     UI::SetNextWindowSize(600, 400, UI::Cond::FirstUseEver);
+
     if (UI::Begin(FULL_NAME, showWindow, UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking)) {
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
