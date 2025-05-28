@@ -79,6 +79,7 @@ class Map {
     // JSON
     Map(Json::Value@ json) {
         _Logging::Trace("Loading map info from JSON");
+        _Logging::Trace(Json::Write(json, true));
 
         try {
             URL = json["URL"];

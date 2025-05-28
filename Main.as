@@ -40,7 +40,7 @@ void Render() {
     if (UI::Begin(FULL_NAME, showWindow, UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking)) {
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
-        if(UI::BeginTabItem("Maps")) {
+        if (UI::BeginTabItem("Maps")) {
             UI::SetNextItemWidth(160);
             if (UI::BeginCombo("##AddSource", tostring(m_source).Replace("_", " "))) {
                 for (uint i = 0; i <= Source::Folder; i++) {
@@ -112,7 +112,7 @@ void Render() {
             UI::EndTabItem();
         }
 
-        if(UI::BeginTabItem("Playlists")) {
+        if (UI::BeginTabItem("Playlists")) {
             array<string> keys = savedPlaylists.GetKeys();
 
             UI::BeginDisabled(playlist.Length == 0);

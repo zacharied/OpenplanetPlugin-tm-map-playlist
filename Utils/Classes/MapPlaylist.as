@@ -150,6 +150,7 @@ class MapPlaylist {
         }
 
         _Logging::Info("Succesfully loaded playlist \"" + string(json["Name"]) + "\" from JSON");
+        UI::ShowNotification(FULL_NAME, "Loaded playlist \"" + string(json["Name"]) + "\"!");
     }
 
     Json::Value@ ToJson() {

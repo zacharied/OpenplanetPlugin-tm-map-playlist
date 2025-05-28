@@ -92,7 +92,8 @@ namespace UI {
         UI::TableNextColumn();
 
         if (UI::GreenButton(Icons::Upload)) {
-            playlist.Load(list); // TODO probably want to set the current tab
+            // TODO probably want to set the current tab
+            playlist.Load(list);
         }
         UI::SetItemTooltip("Load");
 
