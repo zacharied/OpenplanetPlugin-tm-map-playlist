@@ -21,9 +21,7 @@ void RenderMenu() {
     }
 }
 
-MapPlaylist@ playlist = MapPlaylist();
-string playlistName;
-
+// TODO set column widths
 void Render() {
     if (!HAS_PERMISSIONS || !showWindow || (S_HideWithOP && !UI::IsOverlayShown()) || (S_HideWithGameUI && !UI::IsGameUIVisible())) {
         return;

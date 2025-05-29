@@ -1,11 +1,13 @@
-const bool HAS_PERMISSIONS = OpenplanetHasPaidPermissions();
+const bool HAS_PERMISSIONS   = OpenplanetHasPaidPermissions();
 const string TEMP_MAP_FOLDER = IO::FromUserGameFolder("Maps\\Temp\\");
-const string USER_FOLDER = IO::FromUserGameFolder("");
-const string PLUGIN_NAME = Meta::ExecutingPlugin().Name;
-const string PLUGIN_ICON = Icons::List;
-const string FULL_NAME = PLUGIN_ICON + " " + PLUGIN_NAME;
-const float UI_SCALE = UI::GetScale();
-Json::Value savedPlaylists = Json::Object();
+const string USER_FOLDER     = IO::FromUserGameFolder("");
+const string PLUGIN_NAME     = Meta::ExecutingPlugin().Name;
+const string PLUGIN_ICON     = Icons::List;
+const string FULL_NAME       = PLUGIN_ICON + " " + PLUGIN_NAME;
+const float UI_SCALE         = UI::GetScale();
+
+Json::Value savedPlaylists   = Json::Object();
+MapPlaylist@ playlist        = MapPlaylist();
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
