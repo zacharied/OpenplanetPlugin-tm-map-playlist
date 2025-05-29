@@ -21,7 +21,6 @@ void RenderMenu() {
     }
 }
 
-// TODO set column widths
 void Render() {
     if (!HAS_PERMISSIONS || !showWindow || (S_HideWithOP && !UI::IsOverlayShown()) || (S_HideWithGameUI && !UI::IsGameUIVisible())) {
         return;
@@ -82,12 +81,12 @@ void Render() {
             S_Editor = UI::Checkbox("Load in Editor", S_Editor);
 
             UI::PushTableVars();
-            if (UI::BeginTable("Maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
+            if (UI::BeginTable("Maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch);
+                UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch, 0.6);
                 UI::TableSetupColumn("URL", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                 UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed);
