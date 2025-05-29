@@ -1,8 +1,7 @@
 [meta]
 name     = "Map Playlist"
-author   = "Fort"
-category = "Map"
-
+author   = "Fort-TM"
+category = "Utilities"
 version = "0.1"
 
 [script]
