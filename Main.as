@@ -177,29 +177,8 @@ void RenderField() {
 
     UI::BeginDisabled(m_field.Length == 0);
 
-    if ((UI::Button("Add map##AddMap") || pressedEnter) && m_field.Length > 0) {
-        switch (m_source) {
-            case Source::TMX_Map_ID:
-                startnew(CoroutineFuncUserdataString(playlist.AddFromTMXId), m_field);
-                break;
-            case Source::TMX_Mappack_ID:
-                startnew(CoroutineFuncUserdataString(playlist.AddMappack), m_field);
-                break;
-            case Source::UUID:
-                startnew(CoroutineFuncUserdataString(playlist.AddFromUuid), m_field);
-                break;
-            case Source::File:
-                startnew(CoroutineFuncUserdataString(playlist.AddFromFile), m_field.Replace("/", "\\"));
-                break;
-            case Source::Folder:
-                startnew(CoroutineFuncUserdataString(playlist.AddFolder), m_field.Replace("/", "\\"));
-                break;
-            case Source::Map_URL:
-            default:
-                startnew(CoroutineFuncUserdataString(playlist.AddFromUrl), m_field);
-                break;
-        }
-
+    if ((UI::Button("Add##AddButton") || pressedEnter) && m_field.Length > 0) {
+        playlist.Add(m_source, m_field);
         m_field = "";
     }
 

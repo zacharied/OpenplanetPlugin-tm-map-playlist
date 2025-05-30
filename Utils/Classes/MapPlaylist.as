@@ -175,6 +175,30 @@ class MapPlaylist {
 
     // Addition methods
 
+    void Add(Source source, const string &in field) {
+        switch (source) {
+            case Source::TMX_Map_ID:
+                startnew(CoroutineFuncUserdataString(AddFromTMXId), field);
+                break;
+            case Source::TMX_Mappack_ID:
+                startnew(CoroutineFuncUserdataString(AddMappack), field);
+                break;
+            case Source::UUID:
+                startnew(CoroutineFuncUserdataString(AddFromUuid), field);
+                break;
+            case Source::File:
+                startnew(CoroutineFuncUserdataString(AddFromFile), field.Replace("/", "\\"));
+                break;
+            case Source::Folder:
+                startnew(CoroutineFuncUserdataString(AddFolder), field.Replace("/", "\\"));
+                break;
+            case Source::Map_URL:
+            default:
+                startnew(CoroutineFuncUserdataString(AddFromUrl), field);
+                break;
+        }
+    }
+
     void AddFromUuid(const string &in uuid) {
         if (uuid.Length < 25 || uuid.Length > 27) {
             _Logging::Error("Invalid UUID " + uuid + " received. Ignoring...", true);
