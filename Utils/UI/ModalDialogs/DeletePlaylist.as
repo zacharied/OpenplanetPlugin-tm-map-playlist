@@ -1,7 +1,7 @@
 class DeletePlaylist: ModalDialog {
     string m_playlistName;
 
-    DeletePlaylist(string name) {
+    DeletePlaylist(const string &in name) {
         m_playlistName = name;
         super("Delete Playlist###DeletePlaylist");
         m_size = vec2(400, 150);

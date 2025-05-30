@@ -91,7 +91,7 @@ namespace UI {
 
         UI::TableNextColumn();
 
-        if (UI::GreenButton(Icons::Upload)) {
+        if (UI::Button(Icons::Upload)) {
             // TODO probably want to set the current tab
             playlist.Load(list);
         }
