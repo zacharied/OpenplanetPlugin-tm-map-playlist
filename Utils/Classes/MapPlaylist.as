@@ -260,7 +260,7 @@ class MapPlaylist {
                 return;
             }
 
-            auto items = json["Results"];
+            Json::Value@ items = json["Results"];
 
             for (uint i = 0; i < items.Length; i++) {
                 MXMapInfo@ info = MXMapInfo(items[i]);
@@ -340,25 +340,25 @@ class MapPlaylist {
         } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.exchange\\/(mapgbx|maps\\/download|tracks|tracks\\/view|maps|maps\\/view|s\\/tr|mapshow)\\/\\d{1,6}", regexFlags)) {
             array<string> id = Regex::Search(str, "\\/(\\d{1,6})");
 
-            if (id.Length > 0) {
+            if (!id.IsEmpty()) {
                 AddFromTMXId(id[1]);
             }
         } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.exchange\\/(mappack|mappack\\/view|s\\/m|mappackshow)\\/\\d{1,6}", regexFlags)) {
             array<string> id = Regex::Search(str, "\\/(\\d{1,6})");
 
-            if (id.Length > 0) {
+            if (!id.IsEmpty()) {
                 AddMappack(id[1]);
             }
         } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.io\\/#\\/(totd|campaigns)\\/?leaderboard\\/([\\w-]+?\\/)?\\w{25,27}", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
-            if (uid.Length > 0) {
+            if (!uid.IsEmpty()) {
                 AddFromUuid(uid[1]);
             }
         } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.com\\/tracks\\/\\w{25,27}\\/?", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
-            if (uid.Length > 0) {
+            if (!uid.IsEmpty()) {
                 AddFromUuid(uid[1]);
             }
         } else if (Regex::IsMatch(str, "\\w{25,27}", regexFlags)) {

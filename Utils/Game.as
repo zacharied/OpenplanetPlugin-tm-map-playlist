@@ -4,7 +4,7 @@ namespace TM {
     void LoadMap(ref@ mapData) {
         Map@ map = cast<Map>(mapData);
 
-        if (loadingMap) {
+        if (IsLoadingMap()) {
             // A map is already loading, ignore
             return;
         }
@@ -63,7 +63,7 @@ namespace TM {
         _Logging::Debug("Getting map \"" + fileName + "\" from \"" + folder + "\" folder.");
 
         string mainFolder = folder.Split("\\")[0];
-        auto mapsFolder = Fids::GetUserFolder(mainFolder);
+        CSystemFidsFolder@ mapsFolder = Fids::GetUserFolder(mainFolder);
         if (mapsFolder is null) {
             _Logging::Error("Failed to find " + mainFolder + " folder in Documents\\Trackmania.", true);
             return null;
@@ -71,19 +71,19 @@ namespace TM {
 
         Fids::UpdateTree(mapsFolder);
 
-        auto mapFile = Fids::GetUser(folder + "\\" + fileName);
+        CSystemFidFile@ mapFile = Fids::GetUser(folder + "\\" + fileName);
         if (mapFile is null) {
             _Logging::Error("Failed to find requested map file.", true);
             return null;
         }
         
-        auto test = Fids::Preload(mapFile);
-        if (test is null) {
+        CMwNod@ nod = Fids::Preload(mapFile);
+        if (nod is null) {
             _Logging::Error("Failed to preload " + fileName, true);
             return null;
         }
         
-        auto map = cast<CGameCtnChallenge>(test);
+        CGameCtnChallenge@ map = cast<CGameCtnChallenge>(nod);
         if (map is null) {
             _Logging::Error("Failed to cast " + fileName + " to its class.", true);
             _Logging::Warn("Casting map to CGameCtnChallenge failed. File might not be a valid GBX map file");
@@ -111,9 +111,6 @@ namespace TM {
 
         CNadeoServicesMap@ map = res.Map;
         _Logging::Info("Found URL " + map.FileUrl + " from UUID " + mapUid);
-        print(map.AuthorDisplayName);
-        print(map.AuthorWebServicesUserId);
-        print(map.AuthorAccountId);
 
         return map;
     }
