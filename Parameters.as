@@ -1,10 +1,10 @@
-const bool HAS_PERMISSIONS   = OpenplanetHasPaidPermissions();
-const string TEMP_MAP_FOLDER = IO::FromUserGameFolder("Maps\\Temp\\");
-const string USER_FOLDER     = IO::FromUserGameFolder("");
-const string PLUGIN_NAME     = Meta::ExecutingPlugin().Name;
-const string PLUGIN_ICON     = Icons::List;
-const string FULL_NAME       = PLUGIN_ICON + " " + PLUGIN_NAME;
-const float UI_SCALE         = UI::GetScale();
+const bool HAS_PERMISSIONS      = OpenplanetHasPaidPermissions();
+const string TEMP_MAP_FOLDER    = IO::FromUserGameFolder("Maps\\Temp\\");
+const string USER_FOLDER        = IO::FromUserGameFolder("");
+const string PLUGIN_NAME        = Meta::ExecutingPlugin().Name;
+const string PLUGIN_ICON        = Icons::List;
+const string FULL_NAME          = PLUGIN_ICON + " " + PLUGIN_NAME;
+const float UI_SCALE            = UI::GetScale();
 
 Json::Value savedPlaylists      = Json::Object();
 MapPlaylist@ playlist           = MapPlaylist();
@@ -40,7 +40,7 @@ enum Medals {
     Author
 }
 
-// TODO support club campaigns
+// TODO support club campaigns (tm.com)
 enum Source {
     TMX_Map_ID,
     TMX_Mappack_ID,

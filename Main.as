@@ -47,7 +47,9 @@ void Render() {
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
         if (UI::BeginTabItem("Maps")) {
-            UI::SetNextItemWidth(160);
+            vec2 region = UI::GetContentRegionAvail();
+
+            UI::SetNextItemWidth(180);
             if (UI::BeginCombo("##AddSource", tostring(m_source).Replace("_", " "))) {
                 for (uint i = 0; i < Source::Last; i++) {
                     UI::PushID("SourceBtn" + i);
@@ -80,6 +82,9 @@ void Render() {
             S_Editor = UI::Checkbox("Load in Editor", S_Editor);
 
             UI::SameLine();
+
+            vec2 pos = UI::GetCursorPos();
+            UI::SetCursorPos(vec2(region.x - 120 * UI_SCALE, pos.y));
 
             UI::BeginDisabled(playlist.IsEmpty());
 

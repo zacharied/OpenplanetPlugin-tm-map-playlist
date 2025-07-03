@@ -9,7 +9,6 @@ class AddPlaylist: ModalDialog {
     void RenderDialog() override {
         array<string> keys = savedPlaylists.GetKeys();
 
-
         UI::AlignTextToFramePadding();
 
         UI::Text("Playlist name: ");

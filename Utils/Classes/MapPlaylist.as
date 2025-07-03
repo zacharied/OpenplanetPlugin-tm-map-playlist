@@ -228,7 +228,7 @@ class MapPlaylist {
 
     void AddFromUuid(const string &in uuid) {
         if (uuid.Length < 25 || uuid.Length > 27) {
-            _Logging::Error("Invalid UUID " + uuid + " received. Ignoring...", true);
+            _Logging::Error("Invalid UUID \"" + uuid + "\" received. Ignoring...", true);
             return;
         }
 
