@@ -10,6 +10,10 @@ class Map {
     int SilverTime = -1;
     int BronzeTime = -1;
 
+    // Used in campaigns
+    int Position = -1;
+    bool Selected = true;
+
     // NadeoServices
     Map(CNadeoServicesMap@ map) {
         _Logging::Trace("Loading map info from Nadeo Services response");

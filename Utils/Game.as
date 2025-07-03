@@ -115,6 +115,33 @@ namespace TM {
         return map;
     }
 
+    MwFastBuffer<CNadeoServicesMap@> GetMultipleMapsFromUids(array<string> uids) {
+        _Logging::Debug("Getting " + uids.Length + " maps from UID.");
+        _Logging::Debug("UIDs: " + string::Join(uids, ", "));
+
+        MwFastBuffer<wstring> bufferUids;
+
+        for (uint i = 0; i < uids.Length; i++) {
+            bufferUids.Add(uids[i]);
+        }
+
+        auto app = cast<CGameManiaPlanet>(GetApp());
+        auto menu = app.MenuManager.MenuCustom_CurrentManiaApp;
+        auto userId = menu.UserMgr.Users[0].Id;
+        auto res = menu.DataFileMgr.Map_NadeoServices_GetListFromUid(userId, bufferUids);
+        
+        WaitAndClearTaskLater(res, menu.DataFileMgr);
+
+        if (!res.HasSucceeded || res.HasFailed) {
+            _Logging::Error("Failed to get maps from UIDs", true);
+            _Logging::Error("Failed to get maps from UUIDs: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            return MwFastBuffer<CNadeoServicesMap@>();
+        }
+
+        _Logging::Info("Found " + res.MapList.Length + " maps from " + uids.Length + " UIDs.");
+        return res.MapList;
+    }
+
     bool IsLoadingScreen() {
         CTrackMania@ app = cast<CTrackMania>(GetApp());
         auto pgCSApi = app.Network.PlaygroundClientScriptAPI;
@@ -136,5 +163,136 @@ namespace TM {
 
     bool IsLoadingMap() {
         return loadingMap;
+    }
+
+    void GetWeeklyShorts() {
+        if (!WEEKLY_SHORTS.IsEmpty()) {
+            return;
+        }
+
+        while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+            yield();
+        }
+
+        string url = NadeoServices::BaseURLLive() + "/api/campaign/weekly-shorts?length=500&offset=0";
+
+        auto req = NadeoServices::Get("NadeoLiveServices", url);
+        req.Start();
+
+        while (!req.Finished()) {
+            yield();
+        }
+
+        int resCode = req.ResponseCode();
+        Json::Value@ json = req.Json();
+
+        _Logging::Trace("[GetWeeklyShorts] Response code: " + resCode);
+        _Logging::Trace("[GetWeeklyShorts] JSON: " + Json::Write(json, true));
+
+        if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaignList")) {
+            _Logging::Error("Failed to get weekly shorts weeks from Nadeo Services");
+            return;
+        } else if (json["campaignList"].Length == 0) {
+            _Logging::Error("Weekly shorts endpoint returned 0 weeks");
+            return;
+        }
+
+        Json::Value@ weeks = json["campaignList"];
+
+        for (uint i = 0; i < weeks.Length; i++) {
+            Campaign@ week = Campaign(weeks[i]);
+            WEEKLY_SHORTS.InsertLast(week);
+        }
+
+        _Logging::Debug("Loaded " + weeks.Length + " weekly shorts weeks.");
+    }
+
+    void GetSeasonalCampaigns() {
+        if (!SEASONAL_CAMPAIGNS.IsEmpty()) {
+            return;
+        }
+
+        while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+            yield();
+        }
+
+        string url = NadeoServices::BaseURLLive() + "/api/campaign/official?length=500&offset=0";
+
+        auto req = NadeoServices::Get("NadeoLiveServices", url);
+        req.Start();
+
+        while (!req.Finished()) {
+            yield();
+        }
+
+        int resCode = req.ResponseCode();
+        Json::Value@ json = req.Json();
+
+        _Logging::Trace("[GetSeasonalCampaigns] Response code: " + resCode);
+        _Logging::Trace("[GetSeasonalCampaigns] JSON: " + Json::Write(json, true));
+
+        if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaignList")) {
+            _Logging::Error("Failed to get seasonal campaigns from Nadeo Services");
+            return;
+        } else if (json["campaignList"].Length == 0) {
+            _Logging::Error("Seasonal campaigns endpoint returned 0 campaigns");
+            return;
+        }
+
+        Json::Value@ campaigns = json["campaignList"];
+
+        for (uint i = 0; i < campaigns.Length; i++) {
+            Campaign@ season = Campaign(campaigns[i]);
+            SEASONAL_CAMPAIGNS.InsertLast(season);
+        }
+
+        _Logging::Debug("Loaded " + campaigns.Length + " seasonal campaigns.");
+    }
+
+    Campaign@ GetClubCampaign(int clubId, int campaignId) {
+        if (!Permissions::PlayPublicClubCampaign()) {
+            _Logging::Error("Missing permission to play club campaigns!", true);
+            return null;
+        }
+
+        while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+            yield();
+        }
+
+        string url = NadeoServices::BaseURLLive() + "/api/token/club/" + clubId + "/campaign/" + campaignId;
+
+        _Logging::Debug("Club campaign API request: " + url);
+
+        auto req = NadeoServices::Get("NadeoLiveServices", url);
+        req.Start();
+
+        while (!req.Finished()) {
+            yield();
+        }
+
+        int resCode = req.ResponseCode();
+        Json::Value@ json = req.Json();
+
+        _Logging::Trace("[GetClubCampaign] Response code: " + resCode);
+        _Logging::Trace("[GetClubCampaign] JSON: " + Json::Write(json, true));
+
+        if (json.GetType() == Json::Type::Array) {
+            if (json[0] == "activity:error-notFound") {
+                _Logging::Error("Failed to get club campaign: A club or campaign with that ID doesn't exist!", true);
+                return null;
+            }
+
+            _Logging::Error("Failed to get club campaign: " + string(json[0]), true);
+            return null;
+        } else if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaign")) {
+            _Logging::Error("Failed to get club campaign from Nadeo Services");
+            return null;
+        }
+
+        Json::Value@ data = json["campaign"];
+
+        _Logging::Info("Found club campaign " + string(data["name"]) + " from the club " + string(json["clubName"]));
+
+        return Campaign(data);
     }
 }

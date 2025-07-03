@@ -6,8 +6,11 @@ const string PLUGIN_ICON     = Icons::List;
 const string FULL_NAME       = PLUGIN_ICON + " " + PLUGIN_NAME;
 const float UI_SCALE         = UI::GetScale();
 
-Json::Value savedPlaylists   = Json::Object();
-MapPlaylist@ playlist        = MapPlaylist();
+Json::Value savedPlaylists      = Json::Object();
+MapPlaylist@ playlist           = MapPlaylist();
+
+array<Campaign@> WEEKLY_SHORTS;
+array<Campaign@> SEASONAL_CAMPAIGNS;
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
@@ -41,8 +44,11 @@ enum Medals {
 enum Source {
     TMX_Map_ID,
     TMX_Mappack_ID,
-    Map_URL,
+    URL,
     UUID,
     File,
-    Folder
+    Folder,
+    Weekly_Shorts,
+    Seasonal_Campaigns,
+    Last
 }

@@ -192,10 +192,37 @@ class MapPlaylist {
             case Source::Folder:
                 startnew(CoroutineFuncUserdataString(AddFolder), field.Replace("/", "\\"));
                 break;
-            case Source::Map_URL:
+            case Source::URL:
             default:
                 startnew(CoroutineFuncUserdataString(AddFromUrl), field);
                 break;
+        }
+    }
+
+    void Add(Source source, Campaign@ campaign) {
+        startnew(CoroutineFuncUserdata(AddCampaign), campaign);
+    }
+
+    void AddMap(Map@ map) {
+        _Logging::Debug("Adding " + map.toString() + " to the playlist");
+
+        Maps.InsertLast(map);
+    }
+
+    void AddCampaign(ref@ campRef) {
+        Campaign@ campaign = cast<Campaign>(campRef);
+
+        _Logging::Debug("Adding the " + campaign.Name + " campaign to the playlist");
+
+        campaign.LoadMapData();
+
+        while (!campaign.LoadedData) {
+            yield();
+        }
+
+        for (uint i = 0; i < campaign.MapList.Length; i++) {
+            Map@ map = campaign.MapList[i];
+            Maps.InsertLast(map);
         }
     }
 
@@ -361,6 +388,24 @@ class MapPlaylist {
             if (!uid.IsEmpty()) {
                 AddFromUuid(uid[1]);
             }
+        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.io\\/#\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
+            array<string> matches = Regex::Search(str, "campaigns\\/(.*?)\\/(\\d{1,6})");
+            int clubId;
+            int campaignId;
+
+            if (!matches.IsEmpty() && Text::TryParseInt(matches[2], campaignId)) {
+                if (matches[1] == "seasonal") {
+                    AddSeasonalCampaign(campaignId);
+                } else if (matches[1] == "weekly") {
+                    AddWeeklyCampaign(campaignId);
+                } else if (Text::TryParseInt(matches[1], clubId)) {
+                    AddClubCampaign(clubId, campaignId);
+                } else {
+                    _Logging::Error("Failed to add campaign from Trackmania.io link");
+                }
+            }
+        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.com\\/clubs\\/\\d{1,6}\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
+            // TODO, second ID doesn't match ID from API?
         } else if (Regex::IsMatch(str, "\\w{25,27}", regexFlags)) {
             AddFromUuid(str);
         } else {
@@ -389,6 +434,40 @@ class MapPlaylist {
             }
         } catch {
             _Logging::Error("An error occurred while adding maps from folder in path \"" + path + "\": " + getExceptionInfo(), true);
+        }
+    }
+
+    void AddSeasonalCampaign(int campaignId) {
+        for (uint i = 0; i < SEASONAL_CAMPAIGNS.Length; i++) {
+            Campaign@ season = SEASONAL_CAMPAIGNS[i];
+
+            if (campaignId == season.Id) {
+                startnew(CoroutineFuncUserdata(AddCampaign), season);
+                return;
+            }
+        }
+
+        _Logging::Error("Failed to find a seasonal campaign with that ID", true);
+    }
+
+    void AddWeeklyCampaign(int campaignId) {
+        for (uint i = 0; i < WEEKLY_SHORTS.Length; i++) {
+            Campaign@ week = WEEKLY_SHORTS[i];
+
+            if (campaignId == week.Id) {
+                startnew(CoroutineFuncUserdata(AddCampaign), week);
+                return;
+            }
+        }
+
+        _Logging::Error("Failed to find a weekly shorts week with that ID", true);
+    }
+
+    void AddClubCampaign(int clubId, int campaignId) {
+        Campaign@ campaign = TM::GetClubCampaign(clubId, campaignId);
+
+        if (campaign !is null) {
+            startnew(CoroutineFuncUserdata(AddCampaign), campaign);
         }
     }
 }
