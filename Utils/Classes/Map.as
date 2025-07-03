@@ -29,12 +29,14 @@ class Map {
             SilverTime = map.SilverScore;
             BronzeTime = map.BronzeScore;
 
-#if DEPENDENCY_NADEOSERVICES
-            string displayName = NadeoServices::GetDisplayNameAsync(map.AuthorAccountId);
-            if (displayName != "") Author = displayName;
-#else
-            if (map.AuthorDisplayName != "") Author = map.AuthorDisplayName;
-#endif
+            string displayName = Cache::GetName(map.AuthorAccountId);
+
+            if (displayName != "") {
+                Author = displayName;
+            } else if (map.AuthorDisplayName != "") {
+                Author = map.AuthorDisplayName;
+                Cache::SetName(map.AuthorAccountId, map.AuthorDisplayName);
+            }
         } catch {
             _Logging::Error("An error occurred while parsing the map info from Nadeo Services: " + getExceptionInfo(), true);
         }
