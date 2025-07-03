@@ -51,4 +51,11 @@ namespace UI
 
         return UI::IsItemClicked();
     }
+
+    vec2 MeasureButton(const string &in label) {
+        vec2 text = Draw::MeasureString(label);
+        vec2 padding = UI::GetStyleVarVec2(UI::StyleVar::FramePadding);
+
+        return text + padding;
+    }
 }
