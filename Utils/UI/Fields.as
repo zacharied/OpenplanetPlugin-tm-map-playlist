@@ -1,0 +1,117 @@
+namespace UI {
+    Source m_source = Source::TMX_Map_ID;
+
+    string m_field = "";
+    Campaign@ m_campaign;
+
+    void RenderSources() {
+        UI::SetNextItemWidth(180);
+        if (UI::BeginCombo("##AddSource", tostring(m_source).Replace("_", " "))) {
+            for (uint i = 0; i < Source::Last; i++) {
+                UI::PushID("SourceBtn" + i);
+
+                if (UI::Selectable(tostring(Source(i)).Replace("_", " "), m_source == Source(i))) {
+                    m_source = Source(i);
+                    m_field = "";
+                }
+
+                UI::PopID();
+            }
+
+            UI::EndCombo();
+        }
+
+        UI::SameLine();
+
+        switch (m_source) {
+            case Source::Weekly_Shorts:
+            case Source::Seasonal_Campaigns:
+                RenderDropdown();
+                break;
+            default:
+                RenderField();
+                break;
+        }
+    }
+
+    void RenderField() {
+        bool pressedEnter = false;
+
+        int inputFlags = UI::InputTextFlags::EnterReturnsTrue;
+        UI::InputTextCallback@ callback;
+
+        if (m_source == Source::TMX_Map_ID || m_source == Source::TMX_Mappack_ID) {
+            inputFlags |= UI::InputTextFlags::CharsDecimal | UI::InputTextFlags::CallbackCharFilter | UI::InputTextFlags::CallbackAlways;
+            @callback = UI::InputTextCallback(UI::IdCallback);
+        }
+
+        UI::SetNextItemWidth(200);
+        m_field = UI::InputText("##SourceInput", m_field, pressedEnter, inputFlags, callback);
+
+        UI::SameLine();
+
+        UI::BeginDisabled(m_field.Length == 0);
+
+        if (m_source == TMX_Mappack_ID && UI::Button("Select...##SelectMappackButton")) {
+            startnew(CoroutineFuncUserdataInt64(playlist.SelectMappackAsync), Text::ParseInt(m_field));
+            m_field = "";
+        }
+
+        UI::SameLine();
+
+        if ((UI::Button("Add##AddButton") || pressedEnter) && m_field.Length > 0) {
+            playlist.Add(m_source, m_field);
+            m_field = "";
+        }
+
+        UI::EndDisabled();
+    }
+
+    void RenderDropdown() {
+        array<Campaign@>@ campaigns;
+
+        if (m_source == Source::Weekly_Shorts) {
+            @campaigns = WEEKLY_SHORTS;
+        } else if (m_source == Source::Seasonal_Campaigns) {
+            @campaigns = SEASONAL_CAMPAIGNS;
+        }
+
+        UI::SetNextItemWidth(130);
+        if (UI::BeginCombo("##Campaigns", m_campaign is null ? "None" : m_campaign.Name)) {
+            if (UI::Selectable("None", m_campaign is null)) {
+                @m_campaign = null;
+            }
+
+            for (uint i = 0; i < campaigns.Length; i++) {
+                UI::PushID("CampaignsBtn" + i);
+                Campaign@ campaign = campaigns[i];
+
+                if (UI::Selectable(campaign.Name, m_campaign !is null && m_campaign.Name == campaign.Name)) {
+                    @m_campaign = campaign;
+                }
+
+                UI::PopID();
+            }
+
+            UI::EndCombo();
+        }
+
+        UI::SameLine();
+
+        UI::BeginDisabled(m_campaign is null);
+
+        if (UI::Button("Select...") && m_campaign !is null) {
+            Renderables::Add(AddCampaign(m_campaign));
+            @m_campaign = null;
+        }
+
+        UI::SameLine();
+
+        if (UI::Button("Add##CampaignButton") && m_campaign !is null) {
+            playlist.Add(m_source, m_campaign);
+            @m_campaign = null;
+        }
+
+        UI::EndDisabled();
+    }
+}

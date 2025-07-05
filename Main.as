@@ -18,9 +18,6 @@ void Main() {
     TM::GetSeasonalCampaigns();
 }
 
-Source m_source = Source::TMX_Map_ID;
-string m_field = "";
-
 [Setting hidden]
 bool showWindow = true;
 
@@ -46,37 +43,15 @@ void Render() {
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
         if (UI::BeginTabItem("Maps")) {
-            vec2 region = UI::GetContentRegionAvail();
+            UI::RenderSources();
 
-            UI::SetNextItemWidth(180);
-            if (UI::BeginCombo("##AddSource", tostring(m_source).Replace("_", " "))) {
-                for (uint i = 0; i < Source::Last; i++) {
-                    UI::PushID("SourceBtn" + i);
+            UI::SameLine(0, 20);
 
-                    if (UI::Selectable(tostring(Source(i)).Replace("_", " "), m_source == Source(i))) {
-                        m_source = Source(i);
-                        m_field = "";
-                    }
+            UI::PushStyleColor(UI::Col::Separator, vec4(0.25, 0.25, 0.25, 1));
+            UI::Separator(UI::SeparatorFlags::Vertical, 3);
+            UI::PopStyleColor();
 
-                    UI::PopID();
-                }
-
-                UI::EndCombo();
-            }
-
-            UI::SameLine();
-
-            if (m_source == Source::Weekly_Shorts || m_source == Source::Seasonal_Campaigns) {
-                RenderDropdown();
-            } else {
-                RenderField();
-            }
-
-            UI::SameLine();
-
-            UI::Separator(UI::SeparatorFlags::Vertical, 2.5f);
-
-            UI::SameLine();
+            UI::SameLine(0, 20);
 
             S_Editor = UI::Checkbox("Load in Editor", S_Editor);
 
@@ -178,82 +153,6 @@ void Render() {
     UI::PopStyleVar(4);
 
     Renderables::Render();
-}
-
-void RenderField() {
-    bool pressedEnter = false;
-
-    int inputFlags = UI::InputTextFlags::EnterReturnsTrue;
-    UI::InputTextCallback@ callback;
-
-    if (m_source == Source::TMX_Map_ID || m_source == Source::TMX_Mappack_ID) {
-        inputFlags |= UI::InputTextFlags::CharsDecimal | UI::InputTextFlags::CallbackCharFilter | UI::InputTextFlags::CallbackAlways;
-        @callback = UI::InputTextCallback(UI::IdCallback);
-    }
-
-    UI::SetNextItemWidth(200);
-    m_field = UI::InputText("##SourceInput", m_field, pressedEnter, inputFlags, callback);
-
-    UI::SameLine();
-
-    UI::BeginDisabled(m_field.Length == 0);
-
-    if ((UI::Button("Add##AddButton") || pressedEnter) && m_field.Length > 0) {
-        playlist.Add(m_source, m_field);
-        m_field = "";
-    }
-
-    UI::EndDisabled();
-}
-
-Campaign@ m_campaign;
-
-void RenderDropdown() {
-    array<Campaign@>@ campaigns;
-
-    if (m_source == Source::Weekly_Shorts) {
-        @campaigns = WEEKLY_SHORTS;
-    } else if (m_source == Source::Seasonal_Campaigns) {
-        @campaigns = SEASONAL_CAMPAIGNS;
-    }
-
-    UI::SetNextItemWidth(130);
-    if (UI::BeginCombo("##Campaigns", m_campaign is null ? "None" : m_campaign.Name)) {
-        if (UI::Selectable("None", m_campaign is null)) {
-            @m_campaign = null;
-        }
-
-        for (uint i = 0; i < campaigns.Length; i++) {
-            UI::PushID("CampaignsBtn" + i);
-            Campaign@ campaign = campaigns[i];
-
-            if (UI::Selectable(campaign.Name, m_campaign !is null && m_campaign.Name == campaign.Name)) {
-                @m_campaign = campaign;
-            }
-
-            UI::PopID();
-        }
-
-        UI::EndCombo();
-    }
-
-    UI::SameLine();
-
-    UI::BeginDisabled(m_campaign is null);
-
-    if (UI::Button("Select...") && m_campaign !is null) {
-        Renderables::Add(AddCampaign(m_campaign));
-        @m_campaign = null;
-    }
-
-    UI::SameLine();
-
-    if (UI::Button("Add##CampaignButton") && m_campaign !is null) {
-        playlist.Add(m_source, m_campaign);
-        @m_campaign = null;
-    }
-
-    UI::EndDisabled();
 }
 
 bool held = false;
