@@ -1,31 +1,36 @@
-class AddCampaign: ModalDialog {
-    Campaign@ m_campaign;
-	uint selectedCount;
+class SelectMaps: ModalDialog {
+    array<Map@>@ m_maps;
 
-    AddCampaign(Campaign@ campaign) {
-        super("Select Maps###CampaignMaps");
+    SelectMaps(Campaign@ campaign) {
+        super(campaign.Name + "###SelectMaps");
         m_size = vec2(700, 500);
-        @m_campaign = campaign;
+        @m_maps = campaign.MapList;
         campaign.LoadMapData();
     }
 
+    SelectMaps(array<Map@> maps) {
+        super("Mappack" + "###SelectMaps");
+        m_size = vec2(700, 500);
+        @m_maps = maps;
+    }
+
     void Clear() {
-        for (uint i = 0; i < m_campaign.MapList.Length; i++) {
-            Map@ map = m_campaign.MapList[i];
+        for (uint i = 0; i < m_maps.Length; i++) {
+            Map@ map = m_maps[i];
             map.Selected = false;
         }
     }
 
     void SelectAll() {
-        for (uint i = 0; i < m_campaign.MapList.Length; i++) {
-            Map@ map = m_campaign.MapList[i];
+        for (uint i = 0; i < m_maps.Length; i++) {
+            Map@ map = m_maps[i];
             map.Selected = true;
         }
     }
 
     void AddToPlaylist() {
-        for (uint i = 0; i < m_campaign.MapList.Length; i++) {
-            Map@ map = m_campaign.MapList[i];
+        for (uint i = 0; i < m_maps.Length; i++) {
+            Map@ map = m_maps[i];
 
             if (map.Selected) {
                 playlist.AddMap(map);
@@ -57,13 +62,13 @@ class AddCampaign: ModalDialog {
                 UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch);
                 UI::TableHeadersRow();
 
-                UI::ListClipper clipper(m_campaign.MapList.Length);
+                UI::ListClipper clipper(m_maps.Length);
                 while (clipper.Step()) {
                     for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
                         UI::TableNextRow();
                         UI::TableNextColumn();
 
-                        Map@ map = m_campaign.MapList[i];
+                        Map@ map = m_maps[i];
 
                         if (UI::Checkbox("##CampaignMap" + i, map.Selected)) {
                             if (!map.Selected) {
@@ -77,10 +82,16 @@ class AddCampaign: ModalDialog {
                         UI::AlignTextToFramePadding();
 
                         UI::BeginDisabled(!map.Selected);
+
                         UI::Text(map.Name);
 
                         UI::TableNextColumn();
                         UI::Text(map.Author);
+
+                        UI::TableNextColumn();
+                        UI::Text(UI::FormatMedal(map.AuthorTime, map.GameMode, Medals::Author));
+                        UI::MedalsToolTip(map);
+
                         UI::EndDisabled();
                     }
                 }

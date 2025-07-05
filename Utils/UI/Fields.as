@@ -101,7 +101,7 @@ namespace UI {
         UI::BeginDisabled(m_campaign is null);
 
         if (UI::Button("Select...") && m_campaign !is null) {
-            Renderables::Add(AddCampaign(m_campaign));
+            Renderables::Add(SelectMaps(m_campaign));
             @m_campaign = null;
         }
 
