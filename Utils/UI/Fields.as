@@ -25,7 +25,7 @@ namespace UI {
 
         switch (m_source) {
             case Source::Weekly_Shorts:
-            case Source::Seasonal_Campaigns:
+            case Source::Seasonal_Campaign:
                 RenderDropdown();
                 break;
             default:
@@ -72,7 +72,7 @@ namespace UI {
 
         if (m_source == Source::Weekly_Shorts) {
             @campaigns = WEEKLY_SHORTS;
-        } else if (m_source == Source::Seasonal_Campaigns) {
+        } else if (m_source == Source::Seasonal_Campaign) {
             @campaigns = SEASONAL_CAMPAIGNS;
         }
 

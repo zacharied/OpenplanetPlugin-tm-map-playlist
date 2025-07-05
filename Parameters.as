@@ -46,7 +46,7 @@ enum Source {
     TMX_Mappack_ID,
     URL,
     Weekly_Shorts,
-    Seasonal_Campaigns,
+    Seasonal_Campaign,
     UID,
     File,
     Folder,
