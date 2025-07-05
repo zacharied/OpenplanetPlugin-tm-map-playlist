@@ -53,26 +53,32 @@ void Render() {
 
             UI::SameLine(0, 20);
 
-            S_Editor = UI::Checkbox("Load in Editor", S_Editor);
+            S_Editor = UI::Checkbox(" Load in Editor", S_Editor);
 
             UI::SameLine();
 
+            vec2 region = UI::GetContentRegionAvail();
             vec2 pos = UI::GetCursorPos();
-            UI::SetCursorPos(vec2(region.x - 120 * UI_SCALE, pos.y));
+            vec2 dimensions = UI::MeasureButton(Icons::Random);
+            float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
+            float newPos = Math::Max(region.x - (dimensions.x * 2) - (itemSpacing * 3), 0.0);
+            UI::SetCursorPosX(pos.x + newPos);
 
             UI::BeginDisabled(playlist.IsEmpty());
-
-            if (UI::RedButton(Icons::TrashO + " Clear")) {
-                playlist.Clear();
-            }
-
-            UI::SameLine();
 
             if (UI::Button(Icons::Random)) {
                 playlist.Randomize();
             }
 
             UI::SetItemTooltip("Shuffle playlist");
+
+            UI::SameLine();
+
+            if (UI::RedButton(Icons::TrashO)) {
+                playlist.Clear();
+            }
+
+            UI::SetItemTooltip("Clear playlist");
 
             UI::EndDisabled();
 
