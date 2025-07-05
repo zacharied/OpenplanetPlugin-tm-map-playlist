@@ -183,8 +183,8 @@ class MapPlaylist {
             case Source::TMX_Mappack_ID:
                 startnew(CoroutineFuncUserdataString(AddMappack), field);
                 break;
-            case Source::UUID:
-                startnew(CoroutineFuncUserdataString(AddFromUuid), field);
+            case Source::UID:
+                startnew(CoroutineFuncUserdataString(AddFromUid), field);
                 break;
             case Source::File:
                 startnew(CoroutineFuncUserdataString(AddFromFile), field.Replace("/", "\\"));
@@ -226,19 +226,19 @@ class MapPlaylist {
         }
     }
 
-    void AddFromUuid(const string &in uuid) {
-        if (uuid.Length < 25 || uuid.Length > 27) {
-            _Logging::Error("Invalid UUID \"" + uuid + "\" received. Ignoring...", true);
+    void AddFromUid(const string &in uid) {
+        if (uid.Length < 25 || uid.Length > 27) {
+            _Logging::Error("Invalid UID \"" + uid + "\" received. Ignoring...", true);
             return;
         }
 
-        _Logging::Debug("Adding map with UID \"" + uuid + "\" to playlist");
+        _Logging::Debug("Adding map with UID \"" + uid + "\" to playlist");
 
-        CNadeoServicesMap@ result = TM::GetMapFromUid(uuid);
+        CNadeoServicesMap@ result = TM::GetMapFromUid(uid);
 
         if (result !is null) {
             Maps.InsertLast(Map(result));
-            _Logging::Info("Added map with UID \"" + uuid + "\" to the playlist!");
+            _Logging::Info("Added map with UID \"" + uid + "\" to the playlist!");
         }
     }
 
@@ -380,13 +380,13 @@ class MapPlaylist {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
             if (!uid.IsEmpty()) {
-                AddFromUuid(uid[1]);
+                AddFromUid(uid[1]);
             }
         } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.com\\/tracks\\/\\w{25,27}\\/?", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
             if (!uid.IsEmpty()) {
-                AddFromUuid(uid[1]);
+                AddFromUid(uid[1]);
             }
         } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.io\\/#\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
             array<string> matches = Regex::Search(str, "campaigns\\/(.*?)\\/(\\d{1,6})");
@@ -407,7 +407,7 @@ class MapPlaylist {
         } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.com\\/clubs\\/\\d{1,6}\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
             // TODO, second ID doesn't match ID from API?
         } else if (Regex::IsMatch(str, "\\w{25,27}", regexFlags)) {
-            AddFromUuid(str);
+            AddFromUid(str);
         } else {
             _Logging::Warn("Unknown URL received, map load might fail.");
             Maps.InsertLast(Map(str));

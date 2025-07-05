@@ -47,7 +47,7 @@ enum Source {
     URL,
     Weekly_Shorts,
     Seasonal_Campaigns,
-    UUID,
+    UID,
     File,
     Folder,
     Last

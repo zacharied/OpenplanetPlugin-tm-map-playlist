@@ -104,13 +104,13 @@ namespace TM {
         WaitAndClearTaskLater(res, menu.DataFileMgr);
 
         if (!res.HasSucceeded || res.HasFailed) {
-            _Logging::Error("Failed to find a map with UUID " + mapUid, true);
-            _Logging::Error("Failed to get file URL from UUID: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            _Logging::Error("Failed to find a map with UID " + mapUid, true);
+            _Logging::Error("Failed to get file URL from UID: Error " + res.ErrorCode + " - " + res.ErrorDescription);
             return null;
         }
 
         CNadeoServicesMap@ map = res.Map;
-        _Logging::Info("Found URL " + map.FileUrl + " from UUID " + mapUid);
+        _Logging::Info("Found URL " + map.FileUrl + " from UID " + mapUid);
 
         return map;
     }
@@ -134,7 +134,7 @@ namespace TM {
 
         if (!res.HasSucceeded || res.HasFailed) {
             _Logging::Error("Failed to get maps from UIDs", true);
-            _Logging::Error("Failed to get maps from UUIDs: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            _Logging::Error("Failed to get maps from UIDs: Error " + res.ErrorCode + " - " + res.ErrorDescription);
             return MwFastBuffer<CNadeoServicesMap@>();
         }
 
