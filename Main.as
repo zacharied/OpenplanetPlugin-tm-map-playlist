@@ -39,7 +39,6 @@ void Render() {
     UI::PushStyleVar(UI::StyleVar::WindowRounding, 10.0);
     UI::PushStyleVar(UI::StyleVar::FramePadding, vec2(10, 6));
     UI::PushStyleVar(UI::StyleVar::WindowTitleAlign, vec2(.5, .5));
-    UI::PushStyleVar(UI::StyleVar::CellPadding, UI::GetStyleVarVec2(UI::StyleVar::CellPadding) + vec2(4, 1));
 
     UI::SetNextWindowSize(600, 400, UI::Cond::FirstUseEver);
 
@@ -176,7 +175,7 @@ void Render() {
     }
 
     UI::End();
-    UI::PopStyleVar(5);
+    UI::PopStyleVar(4);
 
     Renderables::Render();
 }
