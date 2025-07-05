@@ -55,11 +55,12 @@ class SelectMaps: ModalDialog {
 
             UI::PushTableVars();
 
-            if (UI::BeginTable("CampaignMaps", 3, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
+            if (UI::BeginTable("CampaignMaps", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
                 UI::TableSetupScrollFreeze(0, 1);
                 UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed, 30);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch);
+                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                 UI::TableHeadersRow();
 
                 UI::ListClipper clipper(m_maps.Length);
