@@ -435,11 +435,40 @@ class MapPlaylist {
         _Logging::Error("Failed to find a weekly shorts week with that ID", true);
     }
 
-    void AddClubCampaign(int clubId, int campaignId) {
+    void AddClubCampaign(int clubId, int campaignId, bool selectMaps = false) {
         Campaign@ campaign = TM::GetClubCampaign(clubId, campaignId);
 
         if (campaign !is null) {
-            startnew(CoroutineFuncUserdata(AddCampaign), campaign);
+            if (selectMaps) {
+                Renderables::Add(SelectMaps(campaign));
+            } else {
+                startnew(CoroutineFuncUserdata(AddCampaign), campaign);
+            }
         }
+    }
+
+    void AddCampaignAsync(ref@ idRef) {
+        array<int> ids = cast<array<int>>(idRef);
+
+        AddClubCampaign(ids[0], ids[1], false);
+    }
+
+    void SelectCampaignMapsAsync(ref@ idRef) {
+        array<int> ids = cast<array<int>>(idRef);
+
+        AddClubCampaign(ids[0], ids[1], true);
+    }
+
+    void SelectMappackAsync(int64 mappackId) {
+        array<MXMapInfo@> mxMaps = TMX::GetMappack(mappackId);
+
+        array<Map@> mappackMaps;
+
+        for (uint i = 0; i < mxMaps.Length; i++) {
+            MXMapInfo@ info = mxMaps[i];
+            mappackMaps.InsertLast(Map(info));
+        }
+
+        Renderables::Add(SelectMaps(mappackMaps));
     }
 }

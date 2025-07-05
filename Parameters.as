@@ -47,6 +47,7 @@ enum Source {
     URL,
     Weekly_Shorts,
     Seasonal_Campaign,
+    Club_Campaign,
     UID,
     File,
     Folder,

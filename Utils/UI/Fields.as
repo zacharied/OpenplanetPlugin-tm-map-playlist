@@ -3,6 +3,8 @@ namespace UI {
 
     string m_field = "";
     Campaign@ m_campaign;
+    int m_clubId;
+    int m_campaignId;
 
     void RenderSources() {
         UI::SetNextItemWidth(180);
@@ -27,6 +29,9 @@ namespace UI {
             case Source::Weekly_Shorts:
             case Source::Seasonal_Campaign:
                 RenderDropdown();
+                break;
+            case Source::Club_Campaign:
+                RenderClubCampaignFields();
                 break;
             default:
                 RenderField();
@@ -110,6 +115,40 @@ namespace UI {
         if (UI::Button("Add##CampaignButton") && m_campaign !is null) {
             playlist.Add(m_source, m_campaign);
             @m_campaign = null;
+        }
+
+        UI::EndDisabled();
+    }
+
+    void RenderClubCampaignFields() {
+        UI::SetNextItemWidth(70);
+        m_clubId = UI::InputInt("##ClubId", m_clubId, 0);
+        UI::SetItemTooltip("Club ID");
+
+        UI::SameLine();
+
+        UI::SetNextItemWidth(70);
+        m_campaignId = UI::InputInt("##CampaignId", m_campaignId, 0);
+        UI::SetItemTooltip("Campaign ID");
+
+        UI::SameLine();
+
+        UI::BeginDisabled(m_clubId <= 0 || m_campaignId <= 0);
+
+        array<int> ids = { m_clubId, m_campaignId };
+
+        if (UI::Button("Select...##SelectMapsButton")) {
+            startnew(CoroutineFuncUserdata(playlist.SelectCampaignMapsAsync), ids);
+            m_clubId = 0;
+            m_campaignId = 0;
+        }
+
+        UI::SameLine();
+
+        if (UI::Button("Add##ClubCampaignButton")) {
+            startnew(CoroutineFuncUserdata(playlist.AddCampaignAsync), ids);
+            m_clubId = 0;
+            m_campaignId = 0;
         }
 
         UI::EndDisabled();
