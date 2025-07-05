@@ -245,62 +245,34 @@ class MapPlaylist {
     void AddFromTMXId(const string &in mapId) {
         _Logging::Debug("Adding TMX map with ID #" + mapId);
 
-        string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&id=" + mapId;
-
         try {
-            Json::Value json = API::GetAsync(reqUrl);
+            MXMapInfo@ info = TMX::GetMap(Text::ParseInt(mapId));
 
-            if (json.GetType() == Json::Type::Null || !json.HasKey("Results")) {
-                _Logging::Error("Something went wrong while fetching map with ID #" + mapId, true);
-                _Logging::Debug(Json::Write(json));
-
-                return;
-            } else if (json["Results"].Length == 0) {
-                _Logging::Error("Failed to find a map with ID #" + mapId + ". Map might be private or deleted.", true);
-                return;
+            if (info !is null) {
+                Maps.InsertLast(Map(info));
+                _Logging::Info("Added TMX map with ID #" + mapId + " to the playlist!");
+            } else {
+                _Logging::Error("An error occurred while fetching map with ID #" + mapId + "from TMX: " + getExceptionInfo(), true);
             }
-
-            MXMapInfo@ info = MXMapInfo(json["Results"][0]);
-            Maps.InsertLast(Map(info));
-
-            _Logging::Info("Added TMX map with ID #" + mapId + " to the playlist!");
         } catch {
-            _Logging::Error("An error occurred while fetching map with ID #" + mapId + "from TMX: " + getExceptionInfo(), true);
+            _Logging::Error("An error occurred while adding map with ID #" + mapId + "to the playlist: " + getExceptionInfo(), true);
         }
     }
 
     void AddMappack(const string &in id) {
         _Logging::Debug("Adding TMX mappack with ID #" + id);
 
-        string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&mappackid=" + id;
-
         try {
-            Json::Value json = API::GetAsync(reqUrl);
+            array<MXMapInfo@> mappackMaps = TMX::GetMappack(Text::ParseInt(id));
 
-            if (json.GetType() == Json::Type::Null || !json.HasKey("Results")) {
-                _Logging::Error("Something went wrong while fetching maps from mappack ID #" + id, true);
-                _Logging::Debug(Json::Write(json));
-
-                return;
-            } else if (json["Results"].Length == 0) {
-                _Logging::Error("Found 0 maps for mappack ID #" + id + ". Mappack might not exist or is empty", true);
-                return;
-            }
-
-            Json::Value@ items = json["Results"];
-
-            for (uint i = 0; i < items.Length; i++) {
-                MXMapInfo@ info = MXMapInfo(items[i]);
+            for (uint i = 0; i < mappackMaps.Length; i++) {
+                MXMapInfo@ info = mappackMaps[i];
                 Maps.InsertLast(Map(info));
             }
 
-            _Logging::Info("Added " + items.Length + " maps to the playlist!");
-
-            if (bool(json["More"])) {
-                _Logging::Warn("Mappack has more than 100 maps! Added first 100 to the playlist", true);
-            }
+            _Logging::Info("Added " + mappackMaps.Length + " maps to the playlist!");
         } catch {
-            _Logging::Error("An error occurred while fetching the maps from mappack ID #" + id + ": " + getExceptionInfo(), true);
+            _Logging::Error("An error occurred while adding the maps from mappack ID #" + id + ": " + getExceptionInfo(), true);
         }
     }
 
