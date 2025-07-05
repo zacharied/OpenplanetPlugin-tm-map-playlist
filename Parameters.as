@@ -45,10 +45,10 @@ enum Source {
     TMX_Map_ID,
     TMX_Mappack_ID,
     URL,
+    Weekly_Shorts,
+    Seasonal_Campaigns,
     UUID,
     File,
     Folder,
-    Weekly_Shorts,
-    Seasonal_Campaigns,
     Last
 }
