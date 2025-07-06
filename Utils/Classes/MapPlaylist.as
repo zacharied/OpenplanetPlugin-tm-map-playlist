@@ -376,8 +376,21 @@ class MapPlaylist {
                     _Logging::Error("Failed to add campaign from Trackmania.io link");
                 }
             }
-        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.com\\/clubs\\/\\d{1,6}\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
-            // TODO, second ID doesn't match ID from API?
+        } else if (Regex::Contains(str, "https:\\/\\/(www\\.)?trackmania\\.com\\/clubs\\/\\d{1,6}\\/campaigns\\/\\d{1,6}\\/?$", regexFlags)) {
+            array<string> matches = Regex::Search(str, "clubs\\/(\\d{1,6})\\/campaigns\\/(\\d{1,6})");
+            int clubId;
+            int activityId;
+
+            if (!matches.IsEmpty() && Text::TryParseInt(matches[1], clubId) && Text::TryParseInt(matches[2], activityId)) {
+                int campaignId = TM::GetCampaignIdFromActivity(clubId, activityId);
+
+                if (campaignId == -1) {
+                    _Logging::Error("Failed to find campaign from activity ID", true);
+                    return;
+                }
+
+                AddClubCampaign(clubId, campaignId);
+            }
         } else if (Regex::IsMatch(str, "\\w{25,27}", regexFlags)) {
             AddFromUid(str);
         } else {

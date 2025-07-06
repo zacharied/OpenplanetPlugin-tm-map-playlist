@@ -295,4 +295,63 @@ namespace TM {
 
         return Campaign(data);
     }
+
+    uint MAX_ATTEMPTS = 5;
+    uint LENGTH = 250;
+
+    int GetCampaignIdFromActivity(int clubId, int activityId) {
+        for (uint i = 0; i < MAX_ATTEMPTS; i++) {
+            uint offset = LENGTH * i;
+            uint currentPage = i + 1;
+
+            string url = NadeoServices::BaseURLLive() + "/api/token/club/" + clubId + "/activity?length=" + LENGTH + "&offset=" + offset + "&active=true";
+
+            _Logging::Debug("Club activities API request: " + url);
+
+            auto req = NadeoServices::Get("NadeoLiveServices", url);
+            req.Start();
+
+            while (!req.Finished()) {
+                yield();
+            }
+
+            int resCode = req.ResponseCode();
+            Json::Value@ json = req.Json();
+
+            _Logging::Trace("[GetCampaignIdFromActivity] Response code: " + resCode);
+
+            if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("activityList")) {
+                _Logging::Error("Failed to get club campaign ID from Nadeo Services");
+                return -1;
+            }
+
+            Json::Value@ activities = json["activityList"];
+
+            for (uint a = 0; a < activities.Length; a++) {
+                Json::Value@ activity = activities[a];
+
+                int id = activity["id"];
+                string type = activity["activityType"];
+
+                if (id == activityId && type == "campaign") {
+                    return activity["campaignId"];
+                }
+            }
+
+            uint items = json["itemCount"];
+            uint maxPages = json["maxPage"];
+
+            if (items < LENGTH || maxPages == currentPage) {
+                // We reached the end
+                return -1;
+            }
+
+            if (currentPage < MAX_ATTEMPTS) {
+                // Limit requests to 1 per second
+                sleep(1000);
+            }
+        }
+
+        return -1;
+    }
 }
