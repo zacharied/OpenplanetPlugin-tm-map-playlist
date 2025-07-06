@@ -58,4 +58,10 @@ namespace UI
 
         return text + padding;
     }
+
+    void SettingDescription(const string &in text) {
+        UI::SameLine();
+        UI::TextDisabled(Icons::QuestionCircle);
+        UI::SetItemTooltip(text);
+    }
 }
