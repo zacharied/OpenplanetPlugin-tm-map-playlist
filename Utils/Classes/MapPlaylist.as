@@ -391,6 +391,15 @@ class MapPlaylist {
 
                 AddClubCampaign(clubId, campaignId);
             }
+        } else if (Regex::Contains(str, "https:\\/\\/(www\\.)?trackmania\\.com\\/campaigns\\/\\d{4}\\/\\w*?\\/?$", regexFlags)) {
+            // Official campaigns on the site use the format year/season
+            array<string> matches = Regex::Search(str, "campaigns\\/(\\d{4})\\/(\\w*?)\\/?$");
+
+            if (!matches.IsEmpty()) {
+                string name = matches[2] + " " + matches[1];
+
+                AddSeasonalCampaign(name);
+            }
         } else if (Regex::IsMatch(str, "\\w{25,27}", regexFlags)) {
             AddFromUid(str);
         } else {
@@ -433,6 +442,19 @@ class MapPlaylist {
         }
 
         _Logging::Error("Failed to find a seasonal campaign with that ID", true);
+    }
+
+    void AddSeasonalCampaign(const string &in name) {
+        for (uint i = 0; i < SEASONAL_CAMPAIGNS.Length; i++) {
+            Campaign@ season = SEASONAL_CAMPAIGNS[i];
+
+            if (name.ToLower() == season.Name.ToLower()) {
+                startnew(CoroutineFuncUserdata(AddCampaign), season);
+                return;
+            }
+        }
+
+        _Logging::Error("Failed to find a seasonal campaign with that name", true);
     }
 
     void AddWeeklyCampaign(int campaignId) {
