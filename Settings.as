@@ -17,6 +17,33 @@ bool S_Loop = false;
 bool S_ColoredNames = true;
 
 [Setting hidden]
+bool S_MapName = true;
+
+[Setting hidden]
+bool S_MapAuthor = true;
+
+[Setting hidden]
+bool S_MapUrl = true;
+
+[Setting hidden]
+bool S_MapMedals = true;
+
+[Setting hidden]
+bool S_MapButtons = true;
+
+[Setting hidden]
+bool S_PlaylistName = true;
+
+[Setting hidden]
+bool S_PlaylistMapCount = true;
+
+[Setting hidden]
+bool S_PlaylistDate = true;
+
+[Setting hidden]
+bool S_PlaylistButtons = true;
+
+[Setting hidden]
 LogLevel S_LogLevel = LogLevel::Info;
 
 [SettingsTab name="General" order="1" icon="Wrench"]
@@ -51,7 +78,38 @@ void RenderGeneral() {
     S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
 }
 
-[SettingsTab name="Dev" order="2" icon="Code"]
+[SettingsTab name="Display" order="2" icon="Eye"]
+void RenderDisplay() {
+    if (UI::Button("Reset to default")) {
+        S_MapName = true;
+        S_MapAuthor = true;
+        S_MapUrl = true;
+        S_MapMedals = true;
+        S_MapButtons = true;
+
+        S_PlaylistName = true;
+        S_PlaylistMapCount = true;
+        S_PlaylistDate = true;
+        S_PlaylistButtons = true;
+    }
+
+    UI::SeparatorText("Maps");
+
+    S_MapName = UI::Checkbox("Name##Map", S_MapName);
+    S_MapAuthor = UI::Checkbox("Author##Map", S_MapAuthor);
+    S_MapUrl = UI::Checkbox("URL##Map", S_MapUrl);
+    S_MapMedals = UI::Checkbox("Medals##Map", S_MapMedals);
+    S_MapButtons = UI::Checkbox("Buttons##Map", S_MapButtons);
+
+    UI::SeparatorText("Playlists");
+
+    S_PlaylistName = UI::Checkbox("Name##Playlist", S_PlaylistName);
+    S_PlaylistMapCount = UI::Checkbox("Map Count##Playlist", S_PlaylistMapCount);
+    S_PlaylistDate = UI::Checkbox("Created at##Playlist", S_PlaylistDate);
+    S_PlaylistButtons = UI::Checkbox("Buttons##Playlist", S_PlaylistButtons);
+}
+
+[SettingsTab name="Dev" order="3" icon="Code"]
 void RenderDev() {
     if (UI::Button("Reset to default")) {
         S_LogLevel = LogLevel::Info;

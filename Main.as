@@ -83,7 +83,7 @@ void Render() {
             UI::EndDisabled();
 
             UI::PushTableVars();
-            if (UI::BeginTable("Maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame)) {
+            if (UI::BeginTable("Maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
@@ -93,6 +93,12 @@ void Render() {
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                 UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed);
                 UI::TableHeadersRow();
+
+                UI::TableSetColumnEnabled(1, S_MapName);
+                UI::TableSetColumnEnabled(2, S_MapAuthor);
+                UI::TableSetColumnEnabled(3, S_MapUrl);
+                UI::TableSetColumnEnabled(4, S_MapMedals);
+                UI::TableSetColumnEnabled(5, S_MapButtons);
 
                 UI::ListClipper clipper(playlist.Length);
                 while (clipper.Step()) {
@@ -125,7 +131,7 @@ void Render() {
             UI::EndDisabled();
 
             UI::PushTableVars();
-            if (UI::BeginTable("Playlists", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
+            if (UI::BeginTable("Playlists", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::Hideable)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
@@ -134,6 +140,11 @@ void Render() {
                 UI::TableSetupColumn("Created at", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthStretch);
                 UI::TableHeadersRow();
+
+                UI::TableSetColumnEnabled(1, S_PlaylistName);
+                UI::TableSetColumnEnabled(2, S_PlaylistMapCount);
+                UI::TableSetColumnEnabled(3, S_PlaylistDate);
+                UI::TableSetColumnEnabled(4, S_PlaylistButtons);
 
                 UI::ListClipper clipper(keys.Length);
                 while (clipper.Step()) {
