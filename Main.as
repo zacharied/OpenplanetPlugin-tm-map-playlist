@@ -163,9 +163,30 @@ void Render() {
             UI::EndTabItem();
         }
 
-        UI::EndTabBar();
+        if (UI::BeginTabItem("Settings")) {
+            UI::BeginTabBar("SettingsTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
-        
+            if (UI::BeginTabItem(Icons::Wrench + " General")) {
+                RenderGeneral();
+                UI::EndTabItem();
+            }
+
+            if (UI::BeginTabItem(Icons::Eye + " Display")) {
+                RenderDisplay();
+                UI::EndTabItem();
+            }
+
+            if (UI::BeginTabItem(Icons::Code + " Dev")) {
+                RenderDev();
+                UI::EndTabItem();
+            }
+
+            UI::EndTabBar();
+            UI::EndTabItem();
+        }
+
+
+        UI::EndTabBar();
     }
 
     UI::End();
