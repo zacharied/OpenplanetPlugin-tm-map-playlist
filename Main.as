@@ -83,13 +83,14 @@ void Render() {
             UI::EndDisabled();
 
             UI::PushTableVars();
-            if (UI::BeginTable("Maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable)) {
+            if (UI::BeginTable("Maps", 7, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch, 0.6);
                 UI::TableSetupColumn("URL", UI::TableColumnFlags::WidthStretch);
+                UI::TableSetupColumn("Mode", UI::TableColumnFlags::WidthFixed, 90);
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                 UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed);
                 UI::TableHeadersRow();
@@ -97,8 +98,9 @@ void Render() {
                 UI::TableSetColumnEnabled(1, S_MapName);
                 UI::TableSetColumnEnabled(2, S_MapAuthor);
                 UI::TableSetColumnEnabled(3, S_MapUrl);
-                UI::TableSetColumnEnabled(4, S_MapMedals);
-                UI::TableSetColumnEnabled(5, S_MapButtons);
+                UI::TableSetColumnEnabled(4, S_MapGamemode);
+                UI::TableSetColumnEnabled(5, S_MapMedals);
+                UI::TableSetColumnEnabled(6, S_MapButtons);
 
                 UI::ListClipper clipper(playlist.Length);
                 while (clipper.Step()) {

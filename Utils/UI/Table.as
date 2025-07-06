@@ -27,6 +27,10 @@ namespace UI {
         }
 
         UI::TableNextColumn();
+        if (map.UID == "") UI::Text("-");
+        else UI::Text(tostring(map.GameMode));
+
+        UI::TableNextColumn();
         UI::Text(UI::FormatMedal(map.AuthorTime, map.GameMode, Medals::Author));
         UI::MedalsToolTip(map);
 
