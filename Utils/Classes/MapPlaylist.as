@@ -336,31 +336,31 @@ class MapPlaylist {
 
         if (Regex::IsMatch(str, "\\d{1,6}")) {
             AddFromTMXId(str);
-        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.exchange\\/(mapgbx|maps\\/download|tracks|tracks\\/view|maps|maps\\/view|s\\/tr|mapshow)\\/\\d{1,6}", regexFlags)) {
+        } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.exchange\\/(mapgbx|maps\\/download|tracks|tracks\\/view|maps|maps\\/view|s\\/tr|mapshow)\\/\\d{1,6}", regexFlags)) {
             array<string> id = Regex::Search(str, "\\/(\\d{1,6})");
 
             if (!id.IsEmpty()) {
                 AddFromTMXId(id[1]);
             }
-        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.exchange\\/(mappack|mappack\\/view|s\\/m|mappackshow)\\/\\d{1,6}", regexFlags)) {
+        } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.exchange\\/(mappack|mappack\\/view|s\\/m|mappackshow)\\/\\d{1,6}", regexFlags)) {
             array<string> id = Regex::Search(str, "\\/(\\d{1,6})");
 
             if (!id.IsEmpty()) {
                 AddMappack(id[1]);
             }
-        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.io\\/.*?\\/\\w{25,27}\\/?$", regexFlags)) {
+        } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.io\\/.*?\\/\\w{25,27}\\/?$", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
             if (!uid.IsEmpty()) {
                 AddFromUid(uid[1]);
             }
-        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.com\\/tracks\\/\\w{25,27}\\/?", regexFlags)) {
+        } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.com\\/tracks\\/\\w{25,27}\\/?", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
             if (!uid.IsEmpty()) {
                 AddFromUid(uid[1]);
             }
-        } else if (Regex::Contains(str, "https:\\/\\/trackmania\\.io\\/#\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
+        } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.io\\/#\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
             array<string> matches = Regex::Search(str, "campaigns\\/(.*?)\\/(\\d{1,6})");
             int clubId;
             int campaignId;
@@ -376,7 +376,7 @@ class MapPlaylist {
                     _Logging::Error("Failed to add campaign from Trackmania.io link");
                 }
             }
-        } else if (Regex::Contains(str, "https:\\/\\/(www\\.)?trackmania\\.com\\/clubs\\/\\d{1,6}\\/campaigns\\/\\d{1,6}\\/?$", regexFlags)) {
+        } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.com\\/clubs\\/\\d{1,6}\\/campaigns\\/\\d{1,6}\\/?$", regexFlags)) {
             array<string> matches = Regex::Search(str, "clubs\\/(\\d{1,6})\\/campaigns\\/(\\d{1,6})");
             int clubId;
             int activityId;
@@ -391,7 +391,7 @@ class MapPlaylist {
 
                 AddClubCampaign(clubId, campaignId);
             }
-        } else if (Regex::Contains(str, "https:\\/\\/(www\\.)?trackmania\\.com\\/campaigns\\/\\d{4}\\/\\w*?\\/?$", regexFlags)) {
+        } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.com\\/campaigns\\/\\d{4}\\/\\w*?\\/?$", regexFlags)) {
             // Official campaigns on the site use the format year/season
             array<string> matches = Regex::Search(str, "campaigns\\/(\\d{4})\\/(\\w*?)\\/?$");
 
