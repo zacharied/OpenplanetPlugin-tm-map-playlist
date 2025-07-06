@@ -2,46 +2,51 @@ namespace TM {
     bool loadingMap;
 
     void LoadMap(ref@ mapData) {
-        Map@ map = cast<Map>(mapData);
+        try {
+            Map@ map = cast<Map>(mapData);
 
-        if (IsLoadingMap()) {
-            // A map is already loading, ignore
-            return;
+            if (IsLoadingMap()) {
+                // A map is already loading, ignore
+                return;
+            }
+
+            _Logging::Debug("Loading map \"" + map.Name + "\" with map type \"" + map.MapType + "\"");
+
+            if (!Permissions::PlayLocalMap()) {
+                _Logging::Error("Missing permission to play local maps. Club / Standard access is required.", true);
+                return;
+            }
+
+            loadingMap = true;
+
+            ClosePauseMenu();
+
+            CTrackMania@ app = cast<CTrackMania>(GetApp());
+            app.BackToMainMenu();
+
+            while (!app.ManiaTitleControlScriptAPI.IsReady) {
+                yield();
+            }
+
+            if (S_Editor) {
+                app.ManiaTitleControlScriptAPI.EditMap(map.URL, "", "");
+            } else {
+                string gameMode;
+                TM::ModesFromMapType.Get(map.MapType, gameMode);
+
+                app.ManiaTitleControlScriptAPI.PlayMap(map.URL, gameMode, "");
+            }
+
+            while (IsLoadingScreen()) {
+                yield();
+            }
+
+            loadingMap = false;
+            @playlist.currentMap = map;
+        } catch {
+            _Logging::Error("An error occurred while loading the map", true);
+            loadingMap = false;
         }
-
-        _Logging::Debug("Loading map \"" + map.Name + "\" with map type \"" + map.MapType + "\"");
-
-        if (!Permissions::PlayLocalMap()) {
-            _Logging::Error("Missing permission to play local maps. Club / Standard access is required.", true);
-            return;
-        }
-
-        loadingMap = true;
-
-        ClosePauseMenu();
-
-        CTrackMania@ app = cast<CTrackMania>(GetApp());
-        app.BackToMainMenu();
-
-        while (!app.ManiaTitleControlScriptAPI.IsReady) {
-            yield();
-        }
-
-        if (S_Editor) {
-            app.ManiaTitleControlScriptAPI.EditMap(map.URL, "", "");
-        } else {
-            string gameMode;
-            TM::ModesFromMapType.Get(map.MapType, gameMode);
-
-            app.ManiaTitleControlScriptAPI.PlayMap(map.URL, gameMode, "");
-        }
-
-        while (IsLoadingScreen()) {
-            yield();
-        }
-
-        loadingMap = false;
-        @playlist.currentMap = map;
     }
 
     void ClosePauseMenu() {
