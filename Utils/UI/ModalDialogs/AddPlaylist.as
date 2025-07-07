@@ -33,9 +33,11 @@ class AddPlaylist: ModalDialog {
             if (UI::TreeNode("Maps (" + playlist.Length + ")###Maps", UI::TreeNodeFlags::FramePadding | UI::TreeNodeFlags::SpanAvailWidth | UI::TreeNodeFlags::DefaultOpen)) {
                 UI::PushTableVars();
 
-                if (UI::BeginTable("AddPlaylistMaps", 2, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
+                if (UI::BeginTable("AddPlaylistMaps", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
                     UI::TableSetupScrollFreeze(0, 1);
-                    UI::TableSetupColumn("Map", UI::TableColumnFlags::WidthStretch);
+                    UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
+                    UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, columnWidths.Author);
+                    UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                     UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed);
                     UI::TableHeadersRow();
 
@@ -50,7 +52,14 @@ class AddPlaylist: ModalDialog {
                             Map@ map = playlist[i];
 
                             UI::AlignTextToFramePadding();
-                            UI::Text(map.toString());
+                            UI::Text(map.Name);
+
+                            UI::TableNextColumn();
+                            UI::Text(map.Author);
+
+                            UI::TableNextColumn();
+                            UI::Text(UI::FormatMedal(map.AuthorTime, map.GameMode, Medals::Author));
+                            UI::MedalsToolTip(map);
 
                             UI::TableNextColumn();
                             if (UI::RedButton(Icons::TrashO)) {

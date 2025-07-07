@@ -19,6 +19,7 @@ class MapPlaylist {
         _Logging::Debug("Clearing playlist...");
 
         Maps.RemoveRange(0, Maps.Length);
+        columnWidths.Reset();
         @currentMap = null;
     }
 
@@ -75,6 +76,7 @@ class MapPlaylist {
             }
 
             Maps.RemoveAt(index);
+            columnWidths.Update(Maps);
         } catch {
             _Logging::Error("An error occurred while deleting a map: " + getExceptionInfo(), true);
             _Logging::Warn("Failed to delete map \"" + map.toString() + "\"");
@@ -146,7 +148,7 @@ class MapPlaylist {
                 continue;
             }
 
-            Maps.InsertLast(Map(map));
+            AddMap(Map(map));
         }
 
         _Logging::Info("Succesfully loaded playlist \"" + string(json["Name"]) + "\" from JSON");
@@ -207,6 +209,7 @@ class MapPlaylist {
         _Logging::Debug("Adding " + map.toString() + " to the playlist");
 
         Maps.InsertLast(map);
+        columnWidths.Update(Maps);
     }
 
     void AddCampaign(ref@ campRef) {
@@ -222,7 +225,7 @@ class MapPlaylist {
 
         for (uint i = 0; i < campaign.MapList.Length; i++) {
             Map@ map = campaign.MapList[i];
-            Maps.InsertLast(map);
+            AddMap(map);
         }
     }
 
@@ -237,7 +240,7 @@ class MapPlaylist {
         CNadeoServicesMap@ result = TM::GetMapFromUid(uid);
 
         if (result !is null) {
-            Maps.InsertLast(Map(result));
+            AddMap(Map(result));
             _Logging::Info("Added map with UID \"" + uid + "\" to the playlist!");
         }
     }
@@ -249,7 +252,7 @@ class MapPlaylist {
             MXMapInfo@ info = TMX::GetMap(Text::ParseInt(mapId));
 
             if (info !is null) {
-                Maps.InsertLast(Map(info));
+                AddMap(Map(info));
                 _Logging::Info("Added TMX map with ID #" + mapId + " to the playlist!");
             } else {
                 _Logging::Error("An error occurred while fetching map with ID #" + mapId + "from TMX: " + getExceptionInfo(), true);
@@ -267,7 +270,7 @@ class MapPlaylist {
 
             for (uint i = 0; i < mappackMaps.Length; i++) {
                 MXMapInfo@ info = mappackMaps[i];
-                Maps.InsertLast(Map(info));
+                AddMap(Map(info));
             }
 
             _Logging::Info("Added " + mappackMaps.Length + " maps to the playlist!");
@@ -321,7 +324,7 @@ class MapPlaylist {
             }
 
             if (cmap !is null) {
-                Maps.InsertLast(Map(cmap, path));
+                AddMap(Map(cmap, path));
                 _Logging::Info("Added map file to the playlist!");
             }
         } catch {
@@ -404,7 +407,7 @@ class MapPlaylist {
             AddFromUid(str);
         } else {
             _Logging::Warn("Unknown URL received, map load might fail.");
-            Maps.InsertLast(Map(str));
+            AddMap(Map(str));
         }
     }
 

@@ -8,6 +8,7 @@ const float UI_SCALE            = UI::GetScale();
 
 Json::Value savedPlaylists      = Json::Object();
 MapPlaylist@ playlist           = MapPlaylist();
+MapColumns@ columnWidths        = MapColumns();
 
 array<Campaign@> WEEKLY_SHORTS;
 array<Campaign@> SEASONAL_CAMPAIGNS;
