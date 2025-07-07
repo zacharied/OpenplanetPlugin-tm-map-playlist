@@ -268,6 +268,10 @@ class MapPlaylist {
         try {
             array<MXMapInfo@> mappackMaps = TMX::GetMappack(Text::ParseInt(id));
 
+            if (mappackMaps.IsEmpty()) {
+                _Logging::Warn("Failed to add mappack to playlist! Mappack seems to be empty or doesn't exist.", true);
+            }
+
             for (uint i = 0; i < mappackMaps.Length; i++) {
                 MXMapInfo@ info = mappackMaps[i];
                 AddMap(Map(info));
@@ -500,13 +504,15 @@ class MapPlaylist {
     void SelectMappackAsync(int64 mappackId) {
         array<MXMapInfo@> mxMaps = TMX::GetMappack(mappackId);
 
-        array<Map@> mappackMaps;
+        if (!mxMaps.IsEmpty()) {
+            array<Map@> mappackMaps;
 
-        for (uint i = 0; i < mxMaps.Length; i++) {
-            MXMapInfo@ info = mxMaps[i];
-            mappackMaps.InsertLast(Map(info));
+            for (uint i = 0; i < mxMaps.Length; i++) {
+                MXMapInfo@ info = mxMaps[i];
+                mappackMaps.InsertLast(Map(info));
+            }
+
+            Renderables::Add(SelectMaps(mappackMaps));
         }
-
-        Renderables::Add(SelectMaps(mappackMaps));
     }
 }
