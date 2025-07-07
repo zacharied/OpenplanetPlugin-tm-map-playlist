@@ -66,12 +66,14 @@ class SelectMaps: ModalDialog {
                 UI::ListClipper clipper(m_maps.Length);
                 while (clipper.Step()) {
                     for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                        UI::PushID("CampaignMap" + i);
+
                         UI::TableNextRow();
                         UI::TableNextColumn();
 
                         Map@ map = m_maps[i];
 
-                        if (UI::Checkbox("##CampaignMap" + i, map.Selected)) {
+                        if (UI::Checkbox("##Selected" + i, map.Selected)) {
                             if (!map.Selected) {
                                 map.Selected = true;
                             }
@@ -94,6 +96,8 @@ class SelectMaps: ModalDialog {
                         UI::MedalsToolTip(map);
 
                         UI::EndDisabled();
+
+                        UI::PopID();
                     }
                 }
                 UI::EndTable();

@@ -42,6 +42,8 @@ class AddPlaylist: ModalDialog {
                     UI::ListClipper clipper(playlist.Length);
                     while (clipper.Step()) {
                         for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, playlist.Length); i++) {
+                            UI::PushID("AddMap" + i);
+
                             UI::TableNextRow();
                             UI::TableNextColumn();
 
@@ -56,6 +58,8 @@ class AddPlaylist: ModalDialog {
                             }
 
                             UI::SetItemTooltip("Remove map");
+
+                            UI::PopID();
                         }
                     }
                     UI::EndTable();
