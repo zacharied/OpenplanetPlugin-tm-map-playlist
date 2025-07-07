@@ -17,6 +17,12 @@ bool S_Loop = false;
 bool S_ColoredNames = true;
 
 [Setting hidden]
+bool S_PlaylistsTab = true;
+
+[Setting hidden]
+bool S_SettingsTab = true;
+
+[Setting hidden]
 bool S_MapName = true;
 
 [Setting hidden]
@@ -81,7 +87,22 @@ void RenderGeneral() {
     S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
 }
 
-[SettingsTab name="Display" order="2" icon="Eye"]
+[SettingsTab name="Tabs" order="2" icon="ThLarge"]
+void RenderTabs() {
+    if (UI::Button("Reset to default")) {
+        S_PlaylistsTab = true;
+        S_SettingsTab = true;
+    }
+
+    UI::BeginDisabled();
+    UI::Checkbox("Maps", true);
+    UI::EndDisabled();
+
+    S_PlaylistsTab = UI::Checkbox("Playlists", S_PlaylistsTab);
+    S_SettingsTab = UI::Checkbox("Settings", S_SettingsTab);
+}
+
+[SettingsTab name="Display" order="3" icon="Eye"]
 void RenderDisplay() {
     if (UI::Button("Reset to default")) {
         S_MapName = true;
@@ -114,7 +135,7 @@ void RenderDisplay() {
     S_PlaylistButtons = UI::Checkbox("Buttons##Playlist", S_PlaylistButtons);
 }
 
-[SettingsTab name="Dev" order="3" icon="Code"]
+[SettingsTab name="Dev" order="4" icon="Code"]
 void RenderDev() {
     if (UI::Button("Reset to default")) {
         S_LogLevel = LogLevel::Info;
