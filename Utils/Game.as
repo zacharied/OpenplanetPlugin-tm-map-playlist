@@ -1,6 +1,8 @@
 namespace TM {
     bool loadingMap;
 
+    const uint COOLDOWN = 5000;
+
     void LoadMap(ref@ mapData) {
         try {
             Map@ map = cast<Map>(mapData);
@@ -37,7 +39,9 @@ namespace TM {
                 app.ManiaTitleControlScriptAPI.PlayMap(map.URL, gameMode, "");
             }
 
-            while (IsLoadingScreen()) {
+            const uint start = Time::Now;
+
+            while (Time::Now < start + COOLDOWN || IsLoadingScreen()) {
                 yield();
             }
 
