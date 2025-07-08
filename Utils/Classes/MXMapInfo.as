@@ -9,6 +9,7 @@ class MXMapInfo {
     int GoldTime;
     int SilverTime;
     int BronzeTime;
+    array<TmxTag@> Tags;
 
     MXMapInfo(Json::Value@ json) {
         _Logging::Debug("Loading MX map info response" + Json::Write(json, true));
@@ -36,6 +37,11 @@ class MXMapInfo {
             GoldTime = json["Medals"]["Gold"];
             SilverTime = json["Medals"]["Silver"];
             BronzeTime = json["Medals"]["Bronze"];
+        }
+
+        for (uint i = 0; i < json["Tags"].Length; i++) {
+            Json::Value@ tag = json["Tags"][i];
+            Tags.InsertLast(TmxTag(tag));
         }
     }
 

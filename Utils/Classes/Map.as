@@ -9,6 +9,7 @@ class Map {
     int GoldTime = -1;
     int SilverTime = -1;
     int BronzeTime = -1;
+    array<TmxTag@> Tags;
 
     // Used in campaigns
     int Position = -1;
@@ -77,6 +78,8 @@ class Map {
             GoldTime = mapInfo.GoldTime;
             SilverTime = mapInfo.SilverTime;
             BronzeTime = mapInfo.BronzeTime;
+
+            Tags = mapInfo.Tags;
         } catch {
             _Logging::Error("An error occurred while parsing the map info from ManiaExchange: " + getExceptionInfo(), true);
         }
@@ -98,6 +101,11 @@ class Map {
             GoldTime = json["GoldTime"];
             SilverTime = json["SilverTime"];
             BronzeTime = json["BronzeTime"];
+
+            for (uint i = 0; i < json["Tags"].Length; i++) {
+                Json::Value@ tag = json["Tags"][i];
+                Tags.InsertLast(TmxTag(tag));
+            }
         } catch {
             _Logging::Error("An error occurred while parsing the map info from JSON: " + getExceptionInfo(), true);
         }
@@ -150,6 +158,15 @@ class Map {
             json["GoldTime"] = GoldTime;
             json["SilverTime"] = SilverTime;
             json["BronzeTime"] = BronzeTime;
+
+            Json::Value tagsArray = Json::Array();
+
+            for (uint i = 0; i < Tags.Length; i++) {
+                TmxTag@ tag = Tags[i];
+                tagsArray.Add(tag.ToJson());
+            }
+
+            json["Tags"] = tagsArray;
 
             return json;
         } catch {

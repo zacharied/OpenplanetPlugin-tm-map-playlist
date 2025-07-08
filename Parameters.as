@@ -23,7 +23,8 @@ const array<string> MAP_FIELDS_ARRAY = {
     "Medals.Author",
     "Medals.Gold",
     "Medals.Silver",
-    "Medals.Bronze"
+    "Medals.Bronze",
+    "Tags"
 };
 
 const string MAP_FIELDS = string::Join(MAP_FIELDS_ARRAY, ",");

@@ -17,6 +17,9 @@ bool S_Loop = false;
 bool S_ColoredNames = true;
 
 [Setting hidden]
+bool S_ColoredTags = true;
+
+[Setting hidden]
 bool S_PlaylistsTab = true;
 
 [Setting hidden]
