@@ -1,5 +1,5 @@
 namespace TMX {
-	MXMapInfo@ GetMap(int mapId) {
+    MXMapInfo@ GetMap(int mapId) {
         string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&id=" + mapId;
 
         try {
@@ -16,11 +16,11 @@ namespace TMX {
             }
 
             return MXMapInfo(json["Results"][0]);
-		} catch {
+        } catch {
             _Logging::Error("An error occurred while fetching map with ID #" + mapId + "from TMX: " + getExceptionInfo(), true);
             return null;
         }
-	}
+    }
 
     MXMappackInfo@ GetMappack(int mappackId) {
         string reqUrl = "https://trackmania.exchange/api/mappacks?fields=" + MAPPACK_FIELDS + "&id=" + mappackId;
