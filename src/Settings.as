@@ -1,3 +1,5 @@
+// --- General ---
+
 [Setting hidden]
 VirtualKey S_SwitchKey = VirtualKey(0);
 
@@ -17,13 +19,9 @@ bool S_Loop = false;
 bool S_ColoredNames = true;
 
 [Setting hidden]
-bool S_ColoredTags = true;
+bool S_ColoredTags = true; // Not used yet
 
-[Setting hidden]
-bool S_PlaylistsTab = true;
-
-[Setting hidden]
-bool S_SettingsTab = true;
+// --- Display ---
 
 [Setting hidden]
 bool S_MapName = true;
@@ -55,13 +53,20 @@ bool S_PlaylistDate = true;
 [Setting hidden]
 bool S_PlaylistButtons = true;
 
+// --- Dev ---
+
 [Setting hidden]
 LogLevel S_LogLevel = LogLevel::Info;
 
 [SettingsTab name="General" order="1" icon="Wrench"]
-void RenderGeneral() {
+void RenderGeneralSettings() {
     if (UI::Button("Reset to default")) {
         S_SwitchKey = VirtualKey(0);
+        S_Editor = false;
+        S_HideWithOP = true;
+        S_HideWithGameUI = true;
+        S_Loop = false;
+        S_ColoredNames = true;
     }
 
     UI::SetNextItemWidth(225);
@@ -75,7 +80,7 @@ void RenderGeneral() {
         }
         UI::EndCombo();
     }
-    UI::SettingDescription("Hotkey used to move to the next map.");
+    UI::SettingDescription("Hotkey to move to the next map.");
 
     S_Editor = UI::Checkbox("Load in editor", S_Editor);
     UI::SettingDescription("If enabled, maps will be loaded in the editor.");
@@ -90,23 +95,8 @@ void RenderGeneral() {
     S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
 }
 
-[SettingsTab name="Tabs" order="2" icon="ThLarge"]
-void RenderTabs() {
-    if (UI::Button("Reset to default")) {
-        S_PlaylistsTab = true;
-        S_SettingsTab = true;
-    }
-
-    UI::BeginDisabled();
-    UI::Checkbox("Maps", true);
-    UI::EndDisabled();
-
-    S_PlaylistsTab = UI::Checkbox("Playlists", S_PlaylistsTab);
-    S_SettingsTab = UI::Checkbox("Settings", S_SettingsTab);
-}
-
-[SettingsTab name="Display" order="3" icon="Eye"]
-void RenderDisplay() {
+[SettingsTab name="Display" order="2" icon="Eye"]
+void RenderDisplaySettings() {
     if (UI::Button("Reset to default")) {
         S_MapName = true;
         S_MapAuthor = true;
@@ -139,7 +129,7 @@ void RenderDisplay() {
 }
 
 [SettingsTab name="Dev" order="4" icon="Code"]
-void RenderDev() {
+void RenderDevSettings() {
     if (UI::Button("Reset to default")) {
         S_LogLevel = LogLevel::Info;
     }

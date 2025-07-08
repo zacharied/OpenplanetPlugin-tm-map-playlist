@@ -122,7 +122,7 @@ void Render() {
             UI::EndTabItem();
         }
 
-        if (S_PlaylistsTab && UI::BeginTabItem("Playlists")) {
+        if (UI::BeginTabItem("Playlists")) {
             array<string> keys = savedPlaylists.GetKeys();
 
             UI::BeginDisabled(playlist.Length == 0);
@@ -166,26 +166,21 @@ void Render() {
             UI::EndTabItem();
         }
 
-        if (S_SettingsTab && UI::BeginTabItem("Settings")) {
+        if (UI::BeginTabItem("Settings")) {
             UI::BeginTabBar("SettingsTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
             if (UI::BeginTabItem(Icons::Wrench + " General")) {
-                RenderGeneral();
-                UI::EndTabItem();
-            }
-
-            if (UI::BeginTabItem(Icons::ThLarge + " Tabs")) {
-                RenderTabs();
+                RenderGeneralSettings();
                 UI::EndTabItem();
             }
 
             if (UI::BeginTabItem(Icons::Eye + " Display")) {
-                RenderDisplay();
+                RenderDisplaySettings();
                 UI::EndTabItem();
             }
 
             if (UI::BeginTabItem(Icons::Code + " Dev")) {
-                RenderDev();
+                RenderDevSettings();
                 UI::EndTabItem();
             }
 
