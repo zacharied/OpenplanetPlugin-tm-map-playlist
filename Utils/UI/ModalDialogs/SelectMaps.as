@@ -1,17 +1,27 @@
 class SelectMaps: ModalDialog {
     array<Map@>@ m_maps;
+    uint m_selectedCount;
 
     SelectMaps(Campaign@ campaign) {
         super(campaign.Name + "###SelectMaps");
         m_size = vec2(700, 500);
         @m_maps = campaign.MapList;
         campaign.LoadMapData();
+        m_selectedCount = m_maps.Length;
     }
 
     SelectMaps(array<Map@> maps) {
-        super("Mappack" + "###SelectMaps");
+        super("Maps" + "###SelectMaps");
         m_size = vec2(700, 500);
         @m_maps = maps;
+        m_selectedCount = m_maps.Length;
+    }
+
+    SelectMaps(MXMappackInfo@ mappack) {
+        super(mappack.Name + " Mappack###SelectMaps");
+        m_size = vec2(700, 500);
+        @m_maps = mappack.Maps;
+        m_selectedCount = m_maps.Length;
     }
 
     void Clear() {
@@ -19,6 +29,7 @@ class SelectMaps: ModalDialog {
             Map@ map = m_maps[i];
             map.Selected = false;
         }
+        m_selectedCount = 0;
     }
 
     void SelectAll() {
@@ -26,6 +37,7 @@ class SelectMaps: ModalDialog {
             Map@ map = m_maps[i];
             map.Selected = true;
         }
+        m_selectedCount = m_maps.Length;
     }
 
     void AddToPlaylist() {
@@ -76,9 +88,11 @@ class SelectMaps: ModalDialog {
                         if (UI::Checkbox("##Selected" + i, map.Selected)) {
                             if (!map.Selected) {
                                 map.Selected = true;
+                                m_selectedCount++;
                             }
                         } else if (map.Selected) {
                             map.Selected = false;
+                            m_selectedCount--;
                         }
 
                         UI::TableNextColumn();
@@ -107,16 +121,22 @@ class SelectMaps: ModalDialog {
         }
         UI::EndChild();
 
+        string buttonStr = "Add " + m_selectedCount + Pluralize(" map", m_selectedCount);
+
         region = UI::GetContentRegionAvail();
         vec2 pos = UI::GetCursorPos();
-        vec2 dimensions = UI::MeasureButton("Add maps");
+        vec2 dimensions = UI::MeasureButton(buttonStr);
         float newPos = Math::Max(region.x - dimensions.x - itemSpacing, 0.0);
         UI::SetCursorPosX(pos.x + newPos);
 
-        if (UI::GreenButton("Add maps")) {
+        UI::BeginDisabled(m_selectedCount == 0);
+
+        if (UI::GreenButton(buttonStr)) {
             AddToPlaylist();
             Close();
         }
+
+        UI::EndDisabled();
 
         UI::SetItemTooltip("Add campaign maps to the playlist.");
     }

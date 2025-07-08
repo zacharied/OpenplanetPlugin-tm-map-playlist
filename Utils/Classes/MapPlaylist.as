@@ -266,18 +266,25 @@ class MapPlaylist {
         _Logging::Debug("Adding TMX mappack with ID #" + id);
 
         try {
-            array<MXMapInfo@> mappackMaps = TMX::GetMappack(Text::ParseInt(id));
+            MXMappackInfo@ mappack = TMX::GetMappack(Text::ParseInt(id));
 
-            if (mappackMaps.IsEmpty()) {
-                _Logging::Warn("Failed to add mappack to playlist! Mappack seems to be empty or doesn't exist.", true);
+            if (mappack is null) {
+                _Logging::Warn("Failed to add mappack to playlist! Mappack doesn't exist or is private.", true);
+                return;
+            } else if (mappack.MapCount == 0) {
+                _Logging::Warn("Failed to add mappack to playlist! Mappack is empty.", true);
+                return;
             }
 
-            for (uint i = 0; i < mappackMaps.Length; i++) {
-                MXMapInfo@ info = mappackMaps[i];
-                AddMap(Map(info));
+            mappack.GetMaps();
+
+            array<Map@> maps = mappack.Maps;
+
+            for (uint i = 0; i < maps.Length; i++) {
+                AddMap(maps[i]);
             }
 
-            _Logging::Info("Added " + mappackMaps.Length + " maps to the playlist!");
+            _Logging::Info("Added " + maps.Length + " maps to the playlist!");
         } catch {
             _Logging::Error("An error occurred while adding the maps from mappack ID #" + id + ": " + getExceptionInfo(), true);
         }
@@ -502,17 +509,18 @@ class MapPlaylist {
     }
 
     void SelectMappackAsync(int64 mappackId) {
-        array<MXMapInfo@> mxMaps = TMX::GetMappack(mappackId);
+        MXMappackInfo@ mappack = TMX::GetMappack(mappackId);
 
-        if (!mxMaps.IsEmpty()) {
-            array<Map@> mappackMaps;
-
-            for (uint i = 0; i < mxMaps.Length; i++) {
-                MXMapInfo@ info = mxMaps[i];
-                mappackMaps.InsertLast(Map(info));
-            }
-
-            Renderables::Add(SelectMaps(mappackMaps));
+        if (mappack is null) {
+            _Logging::Warn("Failed to add mappack to playlist! Mappack doesn't exist or is private.", true);
+            return;
+        } else if (mappack.MapCount == 0) {
+            _Logging::Warn("Failed to add mappack to playlist! Mappack is empty.", true);
+            return;
         }
+
+        mappack.GetMaps();
+
+        Renderables::Add(SelectMaps(mappack));
     }
 }

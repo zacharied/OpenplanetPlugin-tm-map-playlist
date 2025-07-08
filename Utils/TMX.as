@@ -22,39 +22,79 @@ namespace TMX {
         }
 	}
 
-    array<MXMapInfo@> GetMappack(int mappackId) {
-        string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&mappackid=" + mappackId;
-        array<MXMapInfo@> maps;
+    MXMappackInfo@ GetMappack(int mappackId) {
+        string reqUrl = "https://trackmania.exchange/api/mappacks?fields=" + MAPPACK_FIELDS + "&id=" + mappackId;
 
         try {
             Json::Value json = API::GetAsync(reqUrl);
 
             if (json.GetType() == Json::Type::Null || !json.HasKey("Results")) {
-                _Logging::Error("Something went wrong while fetching maps from mappack ID #" + mappackId, true);
+                _Logging::Error("Something went wrong while fetching mappack with ID #" + mappackId);
                 _Logging::Debug(Json::Write(json));
 
-                return maps;
+                return null;
             } else if (json["Results"].Length == 0) {
-                _Logging::Error("Found 0 maps for mappack ID #" + mappackId + ". Mappack might not exist or is empty", true);
-                return maps;
+                _Logging::Error("Failed to find a mappack with ID #" + mappackId + ". Mappack might not exist.");
+                return null;
             }
 
-            Json::Value@ items = json["Results"];
+            MXMappackInfo@ mappack = MXMappackInfo(json["Results"][0]);
 
-            for (uint i = 0; i < items.Length; i++) {
-                maps.InsertLast(MXMapInfo(items[i]));
-            }
-
-            _Logging::Info("Found " + items.Length + " maps from mappack ID #" + mappackId);
-
-            if (bool(json["More"])) {
-                _Logging::Warn("Mappack has more than 100 maps! Fetched the first 100", true);
-            }
-
-            return maps;
+            _Logging::Info("Found mappack \"" + mappack.Name + "\" from ID #" + mappackId + ".");
+            return mappack;
         } catch {
-            _Logging::Error("An error occurred while fetching the maps from mappack ID #" + mappackId + ": " + getExceptionInfo(), true);
-            return array<MXMapInfo@>();
+            _Logging::Error("An error occurred while fetching mappack with ID #" + mappackId + ": " + getExceptionInfo(), true);
+            return null;
         }
+    }
+
+    array<MXMapInfo@> GetMappackMaps(int mappackId) {
+        array<MXMapInfo@> maps;
+        bool moreMaps = true;
+        int lastId = 0;
+
+        while (moreMaps) {
+            string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&mappackid=" + mappackId;
+            if (moreMaps && lastId != 0) reqUrl += "&after=" + lastId;
+
+            try {
+                Json::Value json = API::GetAsync(reqUrl);
+
+                if (json.GetType() == Json::Type::Null || !json.HasKey("Results")) {
+                    _Logging::Error("Something went wrong while fetching maps from mappack ID #" + mappackId, true);
+                    _Logging::Debug(Json::Write(json));
+
+                    return maps;
+                } else if (json["Results"].Length == 0) {
+                    if (maps.IsEmpty()) {
+                        _Logging::Error("Found 0 maps for mappack ID #" + mappackId + ". Mappack might not exist or is empty", true);
+                    }
+
+                    return maps;
+                }
+
+                Json::Value@ items = json["Results"];
+                moreMaps = json["More"];
+
+                for (uint i = 0; i < items.Length; i++) {
+                    MXMapInfo@ info = MXMapInfo(items[i]);
+                    maps.InsertLast(info);
+
+                    if (moreMaps && i == items.Length -1) {
+                        lastId = info.MapId;
+                    }
+                }
+
+                if (moreMaps) {
+                    sleep(1000);
+                }
+            } catch {
+                _Logging::Error("An error occurred while fetching the maps from mappack ID #" + mappackId + ": " + getExceptionInfo(), true);
+                return array<MXMapInfo@>();
+            }
+        }
+
+        _Logging::Info("Found " + maps.Length + " maps from mappack ID #" + mappackId);
+        return maps;
     }
 }

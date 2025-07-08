@@ -28,6 +28,17 @@ const array<string> MAP_FIELDS_ARRAY = {
 
 const string MAP_FIELDS = string::Join(MAP_FIELDS_ARRAY, ",");
 
+const array<string> MAPPACK_FIELDS_ARRAY = {
+    "MappackId",
+    "Name",
+    "MapCount",
+    "Owner.Name",
+    "Owner.UserId",
+    "CreatedAt"
+};
+
+const string MAPPACK_FIELDS = string::Join(MAPPACK_FIELDS_ARRAY, ",");
+
 enum GameMode {
     Race,
     Platform,
