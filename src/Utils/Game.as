@@ -309,6 +309,15 @@ namespace TM {
     uint LENGTH = 250;
 
     int GetCampaignIdFromActivity(int clubId, int activityId) {
+        if (!Permissions::PlayPublicClubCampaign()) {
+            _Logging::Error("Missing permission to play club campaigns!", true);
+            return -1;
+        }
+
+        while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+            yield();
+        }
+
         for (uint i = 0; i < MAX_ATTEMPTS; i++) {
             uint offset = LENGTH * i;
             uint currentPage = i + 1;
