@@ -141,6 +141,7 @@ void RenderDev() {
         S_LogLevel = LogLevel::Info;
     }
 
+    UI::SetNextItemWidth(225);
     if (UI::BeginCombo("Log level", tostring(S_LogLevel))) {
         for (int i = 0; i <= LogLevel::Trace; i++) {
             if (UI::Selectable(tostring(LogLevel(i)), S_LogLevel == LogLevel(i))) {

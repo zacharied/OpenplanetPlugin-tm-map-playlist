@@ -206,7 +206,7 @@ class MapPlaylist {
     }
 
     void AddMap(Map@ map) {
-        _Logging::Debug("Adding " + map.toString() + " to the playlist");
+        _Logging::Trace("Adding " + map.toString() + " to the playlist");
 
         Maps.InsertLast(map);
         columnWidths.Update(Maps);
