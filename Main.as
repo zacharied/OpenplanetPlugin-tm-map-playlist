@@ -36,6 +36,9 @@ void Render() {
     UI::PushStyleVar(UI::StyleVar::WindowRounding, 10.0);
     UI::PushStyleVar(UI::StyleVar::FramePadding, vec2(10, 6));
     UI::PushStyleVar(UI::StyleVar::WindowTitleAlign, vec2(.5, .5));
+    UI::PushStyleColor(UI::Col::TabActive, vec4(0.45, 0.45, 0.45, 1.0));
+    UI::PushStyleColor(UI::Col::TabHovered, vec4(0.35, 0.35, 0.35, 1));
+    UI::PushStyleColor(UI::Col::Tab, vec4(0.25, 0.25, 0.25, 1));
 
     UI::SetNextWindowSize(600, 400, UI::Cond::FirstUseEver);
 
@@ -195,6 +198,7 @@ void Render() {
     }
 
     UI::End();
+    UI::PopStyleColor(3);
     UI::PopStyleVar(4);
 
     Renderables::Render();
