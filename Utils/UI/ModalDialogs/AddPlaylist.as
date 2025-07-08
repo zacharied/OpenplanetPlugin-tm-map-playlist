@@ -21,7 +21,7 @@ class AddPlaylist: ModalDialog {
         bool nameExists = keys.Find(m_playlistName) != -1;
 
         if (nameExists) {
-            UI::Text("\\$f90" + Icons::ExclamationTriangle + "\\$z A playlist with that name already exists!\nSaving will overwrite the previous playlist.");
+            Controls::FrameWarning(Icons::ExclamationTriangle + " A playlist with that name already exists! Saving will overwrite the previous playlist.");
         }
 
         vec2 region = UI::GetContentRegionAvail();

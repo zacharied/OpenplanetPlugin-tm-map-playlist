@@ -5,4 +5,4 @@ category = "Utilities"
 version = "0.1"
 
 [script]
-dependencies = [ "NadeoServices" ]
+dependencies = [ "NadeoServices", "Controls" ]
