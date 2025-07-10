@@ -33,6 +33,14 @@ class Campaign {
         }
     }
 
+    uint get_Length() {
+        if (!_Loaded) {
+            return MapUids.Length;
+        }
+
+        return MapList.Length;
+    }
+
     void LoadMapData() {
         if (LoadedData) {
             // Data was already loaded

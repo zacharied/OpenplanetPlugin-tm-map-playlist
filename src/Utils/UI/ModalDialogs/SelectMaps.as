@@ -7,7 +7,7 @@ class SelectMaps: ModalDialog {
         m_size = vec2(700, 500);
         @m_maps = campaign.MapList;
         campaign.LoadMapData();
-        m_selectedCount = m_maps.Length;
+        m_selectedCount = campaign.Length;
     }
 
     SelectMaps(array<Map@> maps) {
