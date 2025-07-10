@@ -16,6 +16,7 @@ void Main() {
 
     TM::GetWeeklyShorts();
     TM::GetSeasonalCampaigns();
+    TM::GetFavorites();
 }
 
 [Setting hidden]

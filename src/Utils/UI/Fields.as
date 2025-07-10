@@ -33,6 +33,9 @@ namespace UI {
             case Source::Club_Campaign:
                 RenderClubCampaignFields();
                 break;
+            case Source::Favorites:
+                RenderFavoritesButtons();
+                break;
             default:
                 RenderField();
                 break;
@@ -150,6 +153,28 @@ namespace UI {
             m_clubId = 0;
             m_campaignId = 0;
         }
+
+        UI::EndDisabled();
+    }
+
+    void RenderFavoritesButtons() {
+        UI::SameLine();
+
+        UI::BeginDisabled(FAVORITES.IsEmpty());
+
+        if (UI::Button("Select...##SelectFavorites")) {
+            playlist.AddFavorites(true);
+        }
+
+        if (FAVORITES.IsEmpty()) UI::SetItemTooltip("You don't have any maps in your favorites\n\nIf you have added a map, reload the plugin.");
+
+        UI::SameLine();
+
+        if (UI::Button("Add##AddFavorites")) {
+            playlist.AddFavorites();
+        }
+
+        if (FAVORITES.IsEmpty()) UI::SetItemTooltip("You don't have any maps in your favorites\n\nIf you have added a map, reload the plugin.");
 
         UI::EndDisabled();
     }

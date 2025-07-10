@@ -523,4 +523,14 @@ class MapPlaylist {
 
         Renderables::Add(SelectMaps(mappack));
     }
+
+    void AddFavorites(bool selectMaps = false) {
+        if (selectMaps) {
+            Renderables::Add(SelectMaps(FAVORITES));
+        } else {
+            for (uint i = 0; i < FAVORITES.Length; i++) {
+                AddMap(FAVORITES[i]);
+            }
+        }
+    }
 }

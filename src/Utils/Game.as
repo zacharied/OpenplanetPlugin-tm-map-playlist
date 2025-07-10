@@ -258,6 +258,36 @@ namespace TM {
         _Logging::Debug("Loaded " + campaigns.Length + " seasonal campaigns.");
     }
 
+    void GetFavorites() {
+        if (!FAVORITES.IsEmpty()) {
+            return;
+        }
+
+        auto app = cast<CGameManiaPlanet>(GetApp());
+        auto menu = app.MenuManager.MenuCustom_CurrentManiaApp;
+        auto userId = menu.UserMgr.Users[0].Id;
+        auto res = menu.DataFileMgr.Map_NadeoServices_GetFavoriteList(userId, MwFastBuffer<wstring>(), true, false, true, false);
+        
+        WaitAndClearTaskLater(res, menu.DataFileMgr);
+
+        if (!res.HasSucceeded || res.HasFailed) {
+            _Logging::Error("Failed to get maps from UIDs", true);
+            _Logging::Error("Failed to get maps from UIDs: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            return;
+        }
+
+        _Logging::Info("Found " + res.MapList.Length + " maps in favorites.");
+
+        MwFastBuffer<CNadeoServicesMap@> favoriteMaps = res.MapList;
+
+        for (uint i = 0; i < favoriteMaps.Length; i++) {
+            Map@ map = Map(favoriteMaps[i]);
+            FAVORITES.InsertLast(map);
+        }
+
+        _Logging::Debug("Loaded " + favoriteMaps.Length + " favorites.");
+    }
+
     Campaign@ GetClubCampaign(int clubId, int campaignId) {
         if (!Permissions::PlayPublicClubCampaign()) {
             _Logging::Error("Missing permission to play club campaigns!", true);

@@ -12,6 +12,7 @@ MapColumns@ columnWidths        = MapColumns();
 
 array<Campaign@> WEEKLY_SHORTS;
 array<Campaign@> SEASONAL_CAMPAIGNS;
+array<Map@> FAVORITES;
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
@@ -62,6 +63,7 @@ enum Source {
     Seasonal_Campaign,
     Club_Campaign,
     UID,
+    Favorites,
     File,
     Folder,
     Last
