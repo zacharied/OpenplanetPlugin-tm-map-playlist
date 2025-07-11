@@ -91,8 +91,8 @@ void Render() {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
-                UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthFixed, columnWidths.Name);
-                UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, columnWidths.Author);
+                UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Name);
+                UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Author);
                 UI::TableSetupColumn("URL", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("Mode", UI::TableColumnFlags::WidthFixed, 90 * UI_SCALE);
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
@@ -124,9 +124,7 @@ void Render() {
         }
 
         if (UI::BeginTabItem("Playlists")) {
-            array<string> keys = savedPlaylists.GetKeys();
-
-            UI::BeginDisabled(playlist.Length == 0);
+            UI::BeginDisabled(playlist.IsEmpty());
 
             if (UI::GreenButton(Icons::Plus + " New")) {
                 Renderables::Add(AddPlaylist());
@@ -152,11 +150,11 @@ void Render() {
                 UI::TableSetColumnEnabled(3, S_PlaylistDate);
                 UI::TableSetColumnEnabled(4, S_PlaylistButtons);
 
-                UI::ListClipper clipper(keys.Length);
+                UI::ListClipper clipper(savedPlaylists.Length);
                 while (clipper.Step()) {
-                    for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, keys.Length); i++) {
+                    for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, savedPlaylists.Length); i++) {
                         UI::PushID("Playlist"+i);
-                        Json::Value@ list = savedPlaylists[keys[i]];
+                        MapPlaylist@ list = savedPlaylists[i];
                         UI::RenderPlaylist(list, i);
                         UI::PopID();
                     }

@@ -1,57 +1,67 @@
 namespace Saves {
     const string SAVE_LOCATION = IO::FromStorageFolder("playlists.json");
 
-    void SavePlaylist(const string &in name, Json::Value@ save, bool edit = false) {
-        if (save.GetType() != Json::Type::Object) {
-            _Logging::Error("Invalid JSON type for playlist. Expected object, received " + tostring(save.GetType()));
-            return;
+    void SavePlaylist(MapPlaylist save) {
+        _Logging::Info("Saving playlist \"" + save.Name + "\" to file.");
+
+        for (uint i = 0; i < savedPlaylists.Length; i++) {
+            MapPlaylist@ list = savedPlaylists[i];
+            if (list.Name == save.Name) {
+                _Logging::Warn("Trying to add playlist \"" + save.Name + "\" when one with that name already exists!");
+                return;
+            }
         }
 
-        _Logging::Info("Saving playlist \"" + name + "\" to file.");
-        _Logging::Debug(Json::Write(save, true));
-
-        if (savedPlaylists.GetType() == Json::Type::Null) {
-            _Logging::Debug("Failed to find playlist file when saving playlist. Creating...");
-            CreateFile();
-        } else if (!edit && savedPlaylists.HasKey(name)) {
-            _Logging::Warn("Trying to add playlist \"" + name + "\" when one with that name already exists!");
-            return;
-        }
-
-        save["Name"] = name;
-
-        savedPlaylists[name] = save;
+        savedPlaylists.InsertLast(save);
         UpdateFile();
+    }
+
+    void EditPlaylist(const string &in oldName, MapPlaylist save) {
+        _Logging::Info("Editing playlist \"" + oldName + "\".");
+
+        DeletePlaylist(oldName);
+        savedPlaylists.InsertLast(save);
+
+        UpdateFile();
+        SortPlaylists();
     }
 
     void DeletePlaylist(const string &in name) {
         _Logging::Info("Deleting playlist \"" + name + "\".");
 
-        if (savedPlaylists.GetType() == Json::Type::Null) {
-            _Logging::Warn("Trying to delete playlist when playlists file doesn't exist. Please report this to the devs.", true);
-            return;
-        } else if (!savedPlaylists.HasKey(name)) {
-            _Logging::Error("Playlists file doesn't have a playlist called \"" + name + "\"", true);
-            return;
+        for (uint i = 0; i < savedPlaylists.Length; i++) {
+            MapPlaylist@ list = savedPlaylists[i];
+            if (list.Name == name) {
+                savedPlaylists.RemoveAt(i);
+                break;
+            }
         }
 
-        savedPlaylists.Remove(name);
         UpdateFile();
+        SortPlaylists();
     }
 
     void CreateFile() {
         _Logging::Trace("Creating playlists file.");
 
-        savedPlaylists = Json::Object();
+        Json::Value@ json = Json::Array();
 
-        Json::ToFile(SAVE_LOCATION, savedPlaylists);
+        Json::ToFile(SAVE_LOCATION, json);
     }
 
     void UpdateFile() {
         _Logging::Trace("Updating playlists file.");
-        _Logging::Debug(Json::Write(savedPlaylists, true));
 
-        Json::ToFile(SAVE_LOCATION, savedPlaylists);
+        Json::Value@ json = Json::Array();
+
+        for (uint i = 0; i < savedPlaylists.Length; i++) {
+            MapPlaylist@ list = savedPlaylists[i];
+            json.Add(list.ToJson());
+        }
+
+        _Logging::Debug(Json::Write(json, true));
+
+        Json::ToFile(SAVE_LOCATION, json);
     }
 
     void LoadPlaylists() {
@@ -62,6 +72,21 @@ namespace Saves {
 
         _Logging::Trace("Loading playlists file.");
 
-        savedPlaylists = Json::FromFile(SAVE_LOCATION);
+        Json::Value@ json = Json::FromFile(SAVE_LOCATION);
+
+        for (uint i = 0; i < json.Length; i++) {
+            MapPlaylist@ list = MapPlaylist(json[i]);
+            savedPlaylists.InsertLast(list);
+        }
+
+        SortPlaylists();
+    }
+
+    void SortPlaylists() {
+        if (savedPlaylists.Length > 1) {
+            savedPlaylists.Sort(function(a, b) { 
+                return a.CreatedAt < b.CreatedAt;
+            });
+        }
     }
 }

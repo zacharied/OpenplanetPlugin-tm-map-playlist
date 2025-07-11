@@ -1,8 +1,8 @@
 class DeletePlaylist: ModalDialog {
-    string m_playlistName;
+    MapPlaylist@ m_playlist;
 
-    DeletePlaylist(const string &in name) {
-        m_playlistName = name;
+    DeletePlaylist(MapPlaylist@ list) {
+        @m_playlist = list;
         super("Delete Playlist###DeletePlaylist");
         m_size = vec2(400, 150);
     }
@@ -10,7 +10,7 @@ class DeletePlaylist: ModalDialog {
     void RenderDialog() override {
         UI::AlignTextToFramePadding();
 
-        UI::TextWrapped("Are you sure you want to delete the playlist \"" + m_playlistName + "\"?");
+        UI::TextWrapped("Are you sure you want to delete the playlist \"" + m_playlist.Name + "\"?");
 
         vec2 region = UI::GetContentRegionAvail();
         UI::VPadding(region.y - 40 * UI_SCALE);
@@ -19,7 +19,7 @@ class DeletePlaylist: ModalDialog {
         UI::SetCursorPos(vec2(region.x - 150 * UI_SCALE, pos.y));
 
         if (UI::RedButton(Icons::TrashO + " Delete")) {
-            Saves::DeletePlaylist(m_playlistName);
+            Saves::DeletePlaylist(m_playlist.Name);
             Close();
         }
 

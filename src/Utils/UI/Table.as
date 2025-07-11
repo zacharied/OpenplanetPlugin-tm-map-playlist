@@ -77,7 +77,7 @@ namespace UI {
         UI::SetItemTooltip("Remove map");
     }
 
-    void RenderPlaylist(Json::Value@ list, int i) {
+    void RenderPlaylist(MapPlaylist@ list, int i) {
         UI::TableNextRow();
         UI::TableNextColumn();
 
@@ -85,26 +85,27 @@ namespace UI {
         UI::Text(tostring(i + 1));
 
         UI::TableNextColumn();
-        UI::Text(list["Name"]);
+        UI::Text(list.Name);
 
         UI::TableNextColumn();
-        UI::Text(tostring(list["Maps"].Length));
+        UI::Text(tostring(list.Length));
 
         UI::TableNextColumn();
-        UI::Text(Time::FormatString("%F %T", int(list["Timestamp"])));
+        UI::Text(Time::FormatString("%F %T", list.CreatedAt));
 
         UI::TableNextColumn();
 
         if (UI::Button(Icons::Upload)) {
             // TODO probably want to set the current tab
-            playlist.Load(list);
+            playlist = list;
+            UI::ShowNotification(FULL_NAME, "Loaded playlist \"" + list.Name + "\"!");
         }
         UI::SetItemTooltip("Load");
 
         UI::SameLine();
 
         if (UI::RedButton(Icons::TrashO)) {
-            Renderables::Add(DeletePlaylist(list["Name"]));
+            Renderables::Add(DeletePlaylist(list));
         }
         UI::SetItemTooltip("Delete");
     }

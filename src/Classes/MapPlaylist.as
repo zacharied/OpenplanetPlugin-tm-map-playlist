@@ -2,6 +2,31 @@ class MapPlaylist {
     array<Map@> Maps;
     Map@ currentMap;
     string Name;
+    int CreatedAt;
+    MapColumns@ columnWidths = MapColumns();
+
+    MapPlaylist() { }
+
+    MapPlaylist(Json::Value@ json) {
+        _Logging::Debug("Loading playlist \"" + string(json["Name"]) + "\" from JSON");
+        _Logging::Debug(Json::Write(json, true));
+
+        Name = json["Name"];
+        CreatedAt = json["Timestamp"];
+
+        for (uint i = 0; i < json["Maps"].Length; i++) {
+            Json::Value@ map = json["Maps"][i];
+
+            if (map.GetType() != Json::Type::Object) {
+                _Logging::Warn("Invalid JSON type for playlist map. Ignoring...");
+                continue;
+            }
+
+            AddMap(Map(map));
+        }
+
+        _Logging::Info("Succesfully loaded playlist \"" + string(json["Name"]) + "\" from JSON");
+    }
 
     uint get_Length() {
         return Maps.Length;
@@ -127,40 +152,18 @@ class MapPlaylist {
         }
     }
 
-    void Load(Json::Value@ json) {
-        if (json.GetType() != Json::Type::Object) {
-            _Logging::Error("Failed to load playlist from JSON! Expected a JSON object, received " + tostring(json.GetType()), true);
-            return;
-        }
-
-        Clear();
-
-        _Logging::Debug("Loading playlist \"" + string(json["Name"]) + "\" from JSON");
-        _Logging::Debug(Json::Write(json, true));
-
-        Name = json["Name"];
-
-        for (uint i = 0; i < json["Maps"].Length; i++) {
-            Json::Value@ map = json["Maps"][i];
-
-            if (map.GetType() != Json::Type::Object) {
-                _Logging::Warn("Invalid JSON type for playlist map. Ignoring...");
-                continue;
-            }
-
-            AddMap(Map(map));
-        }
-
-        _Logging::Info("Succesfully loaded playlist \"" + string(json["Name"]) + "\" from JSON");
-        UI::ShowNotification(FULL_NAME, "Loaded playlist \"" + string(json["Name"]) + "\"!");
-    }
-
     Json::Value@ ToJson() {
         _Logging::Trace("Converting playlist to JSON");
 
         Json::Value json = Json::Object();
+        json["Name"] = Name;
         json["Maps"] = Json::Array();
-        json["Timestamp"] = Time::Stamp;
+
+        if (CreatedAt > 0) {
+            json["Timestamp"] = CreatedAt;
+        } else {
+            json["Timestamp"] = Time::Stamp;
+        }
 
         try {
             for (uint i = 0; i < Maps.Length; i++) {

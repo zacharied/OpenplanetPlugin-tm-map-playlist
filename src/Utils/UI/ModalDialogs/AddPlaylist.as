@@ -7,8 +7,6 @@ class AddPlaylist: ModalDialog {
     }
 
     void RenderDialog() override {
-        array<string> keys = savedPlaylists.GetKeys();
-
         UI::AlignTextToFramePadding();
 
         UI::Text("Playlist name: ");
@@ -18,7 +16,15 @@ class AddPlaylist: ModalDialog {
         UI::SetNextItemWidth(225);
         m_playlistName = UI::InputText("##PlaylistName", m_playlistName);
 
-        bool nameExists = keys.Find(m_playlistName) != -1;
+        bool nameExists;
+
+        for (uint i = 0; i < savedPlaylists.Length; i++) {
+            MapPlaylist@ list = savedPlaylists[i];
+            if (list.Name == m_playlistName) {
+                nameExists = true;
+                break;
+            }
+        }
 
         if (nameExists) {
             Controls::FrameWarning(Icons::ExclamationTriangle + " A playlist with that name already exists! Saving will overwrite the previous playlist.");
@@ -36,7 +42,7 @@ class AddPlaylist: ModalDialog {
                 if (UI::BeginTable("AddPlaylistMaps", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
                     UI::TableSetupScrollFreeze(0, 1);
                     UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
-                    UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, columnWidths.Author);
+                    UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Author);
                     UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                     UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed);
                     UI::TableHeadersRow();
@@ -88,7 +94,9 @@ class AddPlaylist: ModalDialog {
         UI::BeginDisabled(m_playlistName == "");
 
         if (UI::GreenButton(Icons::FloppyO + " Save")) {
-            Saves::SavePlaylist(m_playlistName, playlist.ToJson(), nameExists);
+            MapPlaylist new = playlist;
+            new.Name = m_playlistName;
+            Saves::SavePlaylist(new);
             m_playlistName = "";
             Close();
         }
