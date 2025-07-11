@@ -14,10 +14,12 @@ void Main() {
         yield();
     }
 
-    TM::GetWeeklyShorts();
-    TM::GetSeasonalCampaigns();
-    TM::GetFavorites();
-    TM::GetTOTDMonths();
+    if (!S_SkipLoad) {
+        TM::GetWeeklyShorts();
+        TM::GetSeasonalCampaigns();
+        TM::GetFavorites();
+        TM::GetTOTDMonths();
+    }
 }
 
 [Setting hidden]

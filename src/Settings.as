@@ -58,6 +58,9 @@ bool S_PlaylistButtons = true;
 [Setting hidden]
 LogLevel S_LogLevel = LogLevel::Info;
 
+[Setting hidden]
+bool S_SkipLoad = false;
+
 [SettingsTab name="General" order="1" icon="Wrench"]
 void RenderGeneralSettings() {
     if (UI::Button("Reset to default")) {
@@ -132,6 +135,7 @@ void RenderDisplaySettings() {
 void RenderDevSettings() {
     if (UI::Button("Reset to default")) {
         S_LogLevel = LogLevel::Info;
+        S_SkipLoad = false;
     }
 
     UI::SetNextItemWidth(225);
@@ -143,4 +147,27 @@ void RenderDevSettings() {
         }
         UI::EndCombo();
     }
+
+    if (UI::OrangeButton(Icons::Refresh + " Reload Weekly Shorts")) {
+        WEEKLY_SHORTS.RemoveRange(0, WEEKLY_SHORTS.Length);
+        TM::GetWeeklyShorts();
+    }
+
+    if (UI::OrangeButton(Icons::Refresh + " Reload Seasonal Campaigns")) {
+        SEASONAL_CAMPAIGNS.RemoveRange(0, SEASONAL_CAMPAIGNS.Length);
+        TM::GetSeasonalCampaigns();
+    }
+
+    if (UI::OrangeButton(Icons::Refresh + " Reload Favorites")) {
+        FAVORITES.RemoveRange(0, FAVORITES.Length);
+        TM::GetFavorites();
+    }
+
+    if (UI::OrangeButton(Icons::Refresh + " Reload TOTDs")) {
+        TOTD_MONTHS.RemoveRange(0, TOTD_MONTHS.Length);
+        TM::GetTOTDMonths();
+    }
+
+    S_SkipLoad = UI::Checkbox("Skip loading data", S_SkipLoad);
+    UI::SettingDescription("Skip loading seasonal campaigns, weekly shorts, favorites, and TOTDs.");
 }
