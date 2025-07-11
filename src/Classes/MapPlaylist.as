@@ -158,12 +158,7 @@ class MapPlaylist {
         Json::Value json = Json::Object();
         json["Name"] = Name;
         json["Maps"] = Json::Array();
-
-        if (CreatedAt > 0) {
-            json["Timestamp"] = CreatedAt;
-        } else {
-            json["Timestamp"] = Time::Stamp;
-        }
+        json["Timestamp"] = CreatedAt;
 
         try {
             for (uint i = 0; i < Maps.Length; i++) {

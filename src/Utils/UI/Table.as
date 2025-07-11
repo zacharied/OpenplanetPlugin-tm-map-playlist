@@ -95,12 +95,30 @@ namespace UI {
 
         UI::TableNextColumn();
 
+        UI::BeginDisabled(playlist.IsEmpty());
+
+        if (UI::Button(Icons::FloppyO)) {
+            Saves::EditPlaylist(list.Name, playlist);
+        }
+        UI::SetItemTooltip("Save current playlist as \""+ list.Name +"\".");
+
+        UI::EndDisabled();
+
+        UI::SameLine();
+
         if (UI::Button(Icons::Upload)) {
             // TODO probably want to set the current tab
             playlist = list;
             UI::ShowNotification(FULL_NAME, "Loaded playlist \"" + list.Name + "\"!");
         }
         UI::SetItemTooltip("Load");
+
+        UI::SameLine();
+
+        if (UI::Button(Icons::Pencil)) {
+            Renderables::Add(EditPlaylist(list));
+        }
+        UI::SetItemTooltip("Edit");
 
         UI::SameLine();
 

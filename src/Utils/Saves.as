@@ -12,6 +12,8 @@ namespace Saves {
             }
         }
 
+        save.CreatedAt = Time::Stamp;
+
         savedPlaylists.InsertLast(save);
         UpdateFile();
     }
