@@ -88,10 +88,9 @@ class AddPlaylist: ModalDialog {
         }
         UI::EndChild();
 
-        vec2 pos = UI::GetCursorPos();
-        UI::SetCursorPos(vec2(region.x - 65 * UI_SCALE, pos.y));
-
         UI::BeginDisabled(m_playlistName == "");
+
+        UI::BottomRightButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
         if (UI::GreenButton(Icons::FloppyO + " Save")) {
             MapPlaylist new = playlist;

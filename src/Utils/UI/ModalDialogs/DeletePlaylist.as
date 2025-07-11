@@ -15,8 +15,9 @@ class DeletePlaylist: ModalDialog {
         vec2 region = UI::GetContentRegionAvail();
         UI::VPadding(region.y - 40 * UI_SCALE);
 
-        vec2 pos = UI::GetCursorPos();
-        UI::SetCursorPos(vec2(region.x - 150 * UI_SCALE, pos.y));
+        float width = UI::MeasureButton(Icons::TrashO + " Delete").x;
+        float width2 = UI::MeasureButton("Cancel").x;
+        UI::BottomRightButtons(width + width2, 2);
 
         if (UI::RedButton(Icons::TrashO + " Delete")) {
             Saves::DeletePlaylist(m_playlist.Name);

@@ -61,12 +61,8 @@ void Render() {
 
             UI::SameLine();
 
-            vec2 region = UI::GetContentRegionAvail();
-            vec2 pos = UI::GetCursorPos();
             vec2 dimensions = UI::MeasureButton(Icons::Random);
-            float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
-            float newPos = Math::Max(region.x - (dimensions.x * 2) - (itemSpacing * 3), 0.0);
-            UI::SetCursorPosX(pos.x + newPos);
+            UI::BottomRightButtons(dimensions.x * 2, 2);
 
             UI::BeginDisabled(playlist.IsEmpty());
 
