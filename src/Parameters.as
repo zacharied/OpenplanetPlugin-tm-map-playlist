@@ -12,6 +12,7 @@ MapPlaylist playlist                = MapPlaylist();
 array<Campaign@> WEEKLY_SHORTS;
 array<Campaign@> SEASONAL_CAMPAIGNS;
 array<Map@> FAVORITES;
+array<TOTDMonth@> TOTD_MONTHS;
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
@@ -53,7 +54,6 @@ enum Medals {
     Author
 }
 
-// TODO support club campaigns (tm.com)
 enum Source {
     TMX_Map_ID,
     TMX_Mappack_ID,
@@ -61,6 +61,7 @@ enum Source {
     Weekly_Shorts,
     Seasonal_Campaign,
     Club_Campaign,
+    TOTD_Month,
     UID,
     Favorites,
     File,

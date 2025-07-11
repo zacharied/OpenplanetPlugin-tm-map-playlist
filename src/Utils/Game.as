@@ -288,6 +288,55 @@ namespace TM {
         _Logging::Debug("Loaded " + favoriteMaps.Length + " favorites.");
     }
 
+    void GetTOTDMonths() {
+        if (!TOTD_MONTHS.IsEmpty()) {
+            return;
+        }
+
+        while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+            yield();
+        }
+
+        string url = NadeoServices::BaseURLLive() + "/api/token/campaign/month?offset=0&length=250";
+
+        auto req = NadeoServices::Get("NadeoLiveServices", url);
+        req.Start();
+
+        while (!req.Finished()) {
+            yield();
+        }
+
+        int resCode = req.ResponseCode();
+        Json::Value@ json = req.Json();
+
+        _Logging::Trace("[GetTOTDMonths] Response code: " + resCode);
+        //_Logging::Trace("[GetTOTDMonths] JSON: " + Json::Write(json, true));
+
+        if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("monthList")) {
+            _Logging::Error("Failed to get TOTD months from Nadeo Services");
+            return;
+        } else if (json["monthList"].Length == 0) {
+            _Logging::Error("TOTD endpoint returned 0 months");
+            return;
+        }
+
+        Json::Value@ monthList = json["monthList"];
+
+        for (uint i = 0; i < monthList.Length; i++) {
+            Json::Value@ data = monthList[i];
+            
+            if (data["days"].Length == 0) {
+                // Month doesn't have any maps
+                continue;
+            }
+
+            TOTDMonth@ month = TOTDMonth(monthList[i]);
+            TOTD_MONTHS.InsertLast(month);
+        }
+
+        _Logging::Debug("Loaded " + TOTD_MONTHS.Length + " TOTD months.");
+    }
+
     Campaign@ GetClubCampaign(int clubId, int campaignId) {
         if (!Permissions::PlayPublicClubCampaign()) {
             _Logging::Error("Missing permission to play club campaigns!", true);

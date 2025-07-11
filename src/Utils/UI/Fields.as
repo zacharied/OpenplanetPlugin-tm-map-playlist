@@ -28,6 +28,7 @@ namespace UI {
         switch (m_source) {
             case Source::Weekly_Shorts:
             case Source::Seasonal_Campaign:
+            case Source::TOTD_Month:
                 RenderDropdown();
                 break;
             case Source::Club_Campaign:
@@ -76,12 +77,20 @@ namespace UI {
     }
 
     void RenderDropdown() {
-        array<Campaign@>@ campaigns;
+        array<Campaign@> campaigns = {};
 
         if (m_source == Source::Weekly_Shorts) {
-            @campaigns = WEEKLY_SHORTS;
+            for (uint i = 0; i < WEEKLY_SHORTS.Length; i++) {
+                campaigns.InsertLast(WEEKLY_SHORTS[i]);
+            }
         } else if (m_source == Source::Seasonal_Campaign) {
-            @campaigns = SEASONAL_CAMPAIGNS;
+            for (uint i = 0; i < SEASONAL_CAMPAIGNS.Length; i++) {
+                campaigns.InsertLast(SEASONAL_CAMPAIGNS[i]);
+            }
+        } else if (m_source == Source::TOTD_Month) {
+            for (uint i = 0; i < TOTD_MONTHS.Length; i++) {
+                campaigns.InsertLast(TOTD_MONTHS[i]);
+            }
         }
 
         UI::SetNextItemWidth(130);

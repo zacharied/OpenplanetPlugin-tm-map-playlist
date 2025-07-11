@@ -14,6 +14,8 @@ class Campaign {
     array<Map@> MapList;
     bool _Loaded = false;
 
+    Campaign() { }
+
     Campaign(Json::Value@ json) {
         _Logging::Debug("Loading campaign information: " + Json::Write(json, true));
 
