@@ -93,6 +93,8 @@ namespace UI {
             }
         }
 
+        UI::BeginDisabled(campaigns.IsEmpty());
+
         UI::SetNextItemWidth(130);
         if (UI::BeginCombo("##Campaigns", m_campaign is null ? "None" : m_campaign.Name)) {
             if (UI::Selectable("None", m_campaign is null)) {
@@ -112,6 +114,10 @@ namespace UI {
 
             UI::EndCombo();
         }
+
+        UI::EndDisabled();
+
+        if (campaigns.IsEmpty()) UI::SetItemTooltip("Couldn't find any " + tostring(m_source).Replace("_", " ") + "\n\nPlugin might need to be reloaded.");
 
         UI::SameLine();
 
