@@ -129,6 +129,8 @@ class Map {
             return GameMode::Stunt;
         } else if (this.MapType == "TM_Platform") {
             return GameMode::Platform;
+        } else if (this.MapType == "TM_Royal") {
+            return GameMode::Royal;
         }
 
         return GameMode::Race;

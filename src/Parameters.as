@@ -44,7 +44,8 @@ const string MAPPACK_FIELDS = string::Join(MAPPACK_FIELDS_ARRAY, ",");
 enum GameMode {
     Race,
     Platform,
-    Stunt
+    Stunt,
+    Royal
 }
 
 enum Medals {
