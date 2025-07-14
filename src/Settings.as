@@ -150,22 +150,26 @@ void RenderDevSettings() {
 
     if (UI::OrangeButton(Icons::Refresh + " Reload Weekly Shorts")) {
         WEEKLY_SHORTS.RemoveRange(0, WEEKLY_SHORTS.Length);
-        TM::GetWeeklyShorts();
+        startnew(TM::GetWeeklyShorts);
     }
 
     if (UI::OrangeButton(Icons::Refresh + " Reload Seasonal Campaigns")) {
         SEASONAL_CAMPAIGNS.RemoveRange(0, SEASONAL_CAMPAIGNS.Length);
-        TM::GetSeasonalCampaigns();
+        startnew(TM::GetSeasonalCampaigns);
     }
 
     if (UI::OrangeButton(Icons::Refresh + " Reload Favorites")) {
         FAVORITES.RemoveRange(0, FAVORITES.Length);
-        TM::GetFavorites();
+        startnew(TM::GetFavorites);
     }
 
     if (UI::OrangeButton(Icons::Refresh + " Reload TOTDs")) {
         TOTD_MONTHS.RemoveRange(0, TOTD_MONTHS.Length);
-        TM::GetTOTDMonths();
+        startnew(TM::GetTOTDMonths);
+    }
+
+    if (UI::RedButton(Icons::TrashO + " Clear map cache")) {
+        Cache::ClearMapCache();
     }
 
     S_SkipLoad = UI::Checkbox("Skip loading data", S_SkipLoad);

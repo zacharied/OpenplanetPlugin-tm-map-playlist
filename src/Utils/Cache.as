@@ -41,4 +41,10 @@ namespace Cache {
             Maps.Set(map.UID, map.ToJson());
         }
     }
+
+    void ClearMapCache() {
+        _Logging::Debug("Clearing map cache with " + Maps.GetSize() + " maps.");
+
+        Maps.DeleteAll();
+    }
 }
