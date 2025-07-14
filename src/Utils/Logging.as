@@ -7,43 +7,44 @@ enum LogLevel {
 }
 
 namespace _Logging {
-    void Error(const string &in msg, bool showNotification = false) {
+    const vec4 ERROR_COLOR = UI::HSV(1.0, 1.0, 1.0);
+    const vec4 WARN_COLOR  = UI::HSV(0.11, 1.0, 1.0);
+
+    void Error(const string &in text, bool notification = false) {
         if (S_LogLevel >= LogLevel::Error) {
-            if (showNotification) {
-                vec4 color = UI::HSV(1.0, 1.0, 1.0);
-                UI::ShowNotification(PLUGIN_NAME + " - Error", msg, color, 8000);
-            }
+            error("[ERROR] " + text);
 
-            error("[ERROR] " + msg);
+            if (notification) {
+                UI::ShowNotification(FULL_NAME + " - Error", text, ERROR_COLOR, 6000);
+            }
         }
     }
 
-    void Warn(const string &in msg, bool showNotification = false) {
+    void Warn(const string &in text, bool notification = false) {
         if (S_LogLevel >= LogLevel::Warn) {
-            if (showNotification) {
-                vec4 color = UI::HSV(0.11, 1.0, 1.0);
-                UI::ShowNotification(PLUGIN_NAME + " - Warning", msg, color, 5000);
+            warn("[WARN] " + text);
+
+            if (notification) {
+                UI::ShowNotification(FULL_NAME + " - Warning", text, WARN_COLOR, 6000);
             }
-
-            warn("[WARN] " + msg);
         }
     }
 
-    void Info(const string &in msg) {
+    void Info(const string &in text) {
         if (S_LogLevel >= LogLevel::Info) {
-            print("[INFO] " + msg);
+            print("[INFO] " + text);
         }
     }
 
-    void Debug(const string &in msg) {
+    void Debug(const string &in text) {
         if (S_LogLevel >= LogLevel::Debug) {
-            trace("[DEBUG] " + msg);
+            trace("[DEBUG] " + text);
         }
     }
 
-    void Trace(const string &in msg) {
+    void Trace(const string &in text) {
         if (S_LogLevel >= LogLevel::Trace) {
-            trace("[TRACE] " + msg);
+            trace("[TRACE] " + text);
         }
     }
 }
