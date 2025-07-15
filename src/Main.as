@@ -32,7 +32,7 @@ void RenderMenu() {
 }
 
 void Render() {
-    if (!HAS_PERMISSIONS || !showWindow || (S_HideWithOP && !UI::IsOverlayShown()) || (S_HideWithGameUI && !UI::IsGameUIVisible())) {
+    if (!HAS_PERMISSIONS || (S_HideWithOP && !UI::IsOverlayShown()) || (S_HideWithGameUI && !UI::IsGameUIVisible())) {
         return;
     }
 
@@ -46,7 +46,8 @@ void Render() {
 
     UI::SetNextWindowSize(600, 400, UI::Cond::FirstUseEver);
 
-    if (UI::Begin(FULL_NAME, showWindow, UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking)) {
+    if (showWindow) {
+        UI::Begin(FULL_NAME, showWindow, UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking);
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
         if (UI::BeginTabItem("Maps")) {
@@ -186,11 +187,11 @@ void Render() {
             UI::EndTabItem();
         }
 
-
         UI::EndTabBar();
+
+        UI::End();
     }
 
-    UI::End();
     UI::PopStyleColor(3);
     UI::PopStyleVar(4);
 

@@ -109,7 +109,7 @@ namespace UI {
         if (UI::Button(Icons::Upload)) {
             // TODO probably want to set the current tab
             playlist = list;
-            UI::ShowNotification(FULL_NAME, "Loaded playlist \"" + list.Name + "\"!");
+            UI::ShowNotification(PLUGIN_NAME, "Loaded playlist \"" + list.Name + "\"!");
         }
         UI::SetItemTooltip("Load");
 

@@ -15,7 +15,7 @@ namespace _Logging {
             error("[ERROR] " + text);
 
             if (notification) {
-                UI::ShowNotification(FULL_NAME + " - Error", text, ERROR_COLOR, 6000);
+                UI::ShowNotification(PLUGIN_NAME + " - Error", text, ERROR_COLOR, 6000);
             }
         }
     }
@@ -25,7 +25,7 @@ namespace _Logging {
             warn("[WARN] " + text);
 
             if (notification) {
-                UI::ShowNotification(FULL_NAME + " - Warning", text, WARN_COLOR, 6000);
+                UI::ShowNotification(PLUGIN_NAME + " - Warning", text, WARN_COLOR, 6000);
             }
         }
     }
