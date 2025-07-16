@@ -271,8 +271,8 @@ namespace TM {
         WaitAndClearTaskLater(res, menu.DataFileMgr);
 
         if (!res.HasSucceeded || res.HasFailed) {
-            _Logging::Error("Failed to get maps from UIDs", true);
-            _Logging::Error("Failed to get maps from UIDs: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            _Logging::Error("Failed to get favorite maps", true);
+            _Logging::Error("Failed to get favorite maps: Error " + res.ErrorCode + " - " + res.ErrorDescription);
             return;
         }
 
