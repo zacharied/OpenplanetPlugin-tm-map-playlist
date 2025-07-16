@@ -1,5 +1,5 @@
-const float MIN_AUTHOR = 120;
-const float MIN_NAME = 150;
+const float MIN_AUTHOR = 90;
+const float MIN_NAME = 120;
 
 class MapColumns {
     float Name = MIN_NAME;

@@ -54,7 +54,7 @@ namespace UI {
             @callback = UI::InputTextCallback(UI::IdCallback);
         }
 
-        UI::SetNextItemWidth(200);
+        UI::SetNextItemWidth(225);
         m_field = UI::InputText("##SourceInput", m_field, pressedEnter, inputFlags, callback);
 
         UI::SameLine();
