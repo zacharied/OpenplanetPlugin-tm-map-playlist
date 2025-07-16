@@ -130,6 +130,11 @@ namespace UI {
                 UI::EndTabItem();
             }
 
+            if (UI::BeginTabItem(Icons::List + " Playlist")) {
+                RenderPlaylistSettings();
+                UI::EndTabItem();
+            }
+
             if (UI::BeginTabItem(Icons::Eye + " Display")) {
                 RenderDisplaySettings();
                 UI::EndTabItem();
