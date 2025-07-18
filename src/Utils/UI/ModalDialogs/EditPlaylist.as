@@ -57,7 +57,7 @@ class EditPlaylist: ModalDialog {
                             UI::Text(map.Author);
 
                             UI::TableNextColumn();
-                            UI::Text(UI::FormatMedal(map.AuthorTime, map.GameMode, Medals::Author));
+                            UI::Text(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
                             UI::MedalsToolTip(map);
 
                             UI::TableNextColumn();

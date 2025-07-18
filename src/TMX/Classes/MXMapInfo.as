@@ -5,10 +5,10 @@ class MXMapInfo {
     string MapType;
     string Author = "Unknown";
     int MapId;
-    int AuthorTime;
-    int GoldTime;
-    int SilverTime;
-    int BronzeTime;
+    int AuthorScore;
+    int GoldScore;
+    int SilverScore;
+    int BronzeScore;
     array<TmxTag@> Tags;
 
     MXMapInfo(Json::Value@ json) {
@@ -33,10 +33,10 @@ class MXMapInfo {
         }
 
         if (json["Medals"].GetType() != Json::Type::Null) {
-            AuthorTime = json["Medals"]["Author"];
-            GoldTime = json["Medals"]["Gold"];
-            SilverTime = json["Medals"]["Silver"];
-            BronzeTime = json["Medals"]["Bronze"];
+            AuthorScore = json["Medals"]["Author"];
+            GoldScore = json["Medals"]["Gold"];
+            SilverScore = json["Medals"]["Silver"];
+            BronzeScore = json["Medals"]["Bronze"];
         }
 
         for (uint i = 0; i < json["Tags"].Length; i++) {

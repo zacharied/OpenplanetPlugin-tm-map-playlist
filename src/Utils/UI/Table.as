@@ -18,20 +18,20 @@ namespace UI {
         UI::Text(map.Author);
 
         UI::TableNextColumn();
-        UI::Text(map.URL);
+        UI::Text(map.Url);
 
         UI::SetItemTooltip("Click to copy to clipboard");
         if (UI::IsItemClicked()) {
-            IO::SetClipboard(map.URL);
+            IO::SetClipboard(map.Url);
             UI::ShowNotification(PLUGIN_NAME, Icons::Clipboard + " URL copied to clipboard");
         }
 
         UI::TableNextColumn();
-        if (map.UID == "") UI::Text("-");
+        if (map.Uid == "") UI::Text("-");
         else UI::Text(tostring(map.GameMode));
 
         UI::TableNextColumn();
-        UI::Text(UI::FormatMedal(map.AuthorTime, map.GameMode, Medals::Author));
+        UI::Text(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
         UI::MedalsToolTip(map);
 
         UI::TableNextColumn();

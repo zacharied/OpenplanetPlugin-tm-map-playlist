@@ -49,10 +49,10 @@ namespace UI {
 
     void MedalsToolTip(Map@ map) {
         if (UI::BeginItemTooltip()) {
-            UI::Text(FormatMedal(map.AuthorTime, map.GameMode, Medals::Author));
-            UI::Text(FormatMedal(map.GoldTime, map.GameMode, Medals::Gold));
-            UI::Text(FormatMedal(map.SilverTime, map.GameMode, Medals::Silver));
-            UI::Text(FormatMedal(map.BronzeTime, map.GameMode, Medals::Bronze));
+            UI::Text(FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
+            UI::Text(FormatMedal(map.GoldScore, map.GameMode, Medals::Gold));
+            UI::Text(FormatMedal(map.SilverScore, map.GameMode, Medals::Silver));
+            UI::Text(FormatMedal(map.BronzeScore, map.GameMode, Medals::Bronze));
 
             UI::EndTooltip();
         }

@@ -4,7 +4,7 @@ const float MIN_NAME = 120;
 class MapColumns {
     float Name = MIN_NAME;
     float Author = MIN_AUTHOR;
-    float URL;
+    float Url;
 
     void Update(array<Map@> maps) {
         if (maps.IsEmpty()) {
@@ -17,13 +17,13 @@ class MapColumns {
 
             Name = Math::Max(Name, Draw::MeasureString(map.Name).x);
             Author = Math::Max(Author, Draw::MeasureString(map.Author).x);
-            URL = Math::Max(URL, Draw::MeasureString(map.URL).x);
+            Url = Math::Max(Url, Draw::MeasureString(map.Url).x);
         }
     }
 
     void Reset() {
         Name = MIN_NAME;
         Author = MIN_AUTHOR;
-        URL = 0.0f;
+        Url = 0.0f;
     }
 }

@@ -58,7 +58,7 @@ class Campaign {
 
         for (uint i = 0; i < maps.Length; i++) {
             Map@ map = Map(maps[i]);
-            map.Position = MapUids.Find(map.UID);
+            map.Position = MapUids.Find(map.Uid);
             MapList.InsertLast(map);
         }
 

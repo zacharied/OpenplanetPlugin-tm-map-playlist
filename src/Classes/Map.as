@@ -1,14 +1,14 @@
 class Map {
     string GbxName;
     string Name;
-    string UID;
+    string Uid;
     string MapType;
     string Author = "Unknown";
-    string URL;
-    int AuthorTime = -1;
-    int GoldTime = -1;
-    int SilverTime = -1;
-    int BronzeTime = -1;
+    string Url;
+    int AuthorScore = -1;
+    int GoldScore = -1;
+    int SilverScore = -1;
+    int BronzeScore = -1;
     array<TmxTag@> Tags;
 
     // Used in campaigns
@@ -20,15 +20,15 @@ class Map {
         _Logging::Trace("Loading map info from Nadeo Services response");
 
         try {
-            URL = map.FileUrl;
+            Url = map.FileUrl;
             GbxName = Text::OpenplanetFormatCodes(map.Name);
             Name = Text::StripFormatCodes(map.Name);
-            UID = map.Uid;
+            Uid = map.Uid;
             MapType = CleanMapType(map.Type);
-            AuthorTime = map.AuthorScore;
-            GoldTime = map.GoldScore;
-            SilverTime = map.SilverScore;
-            BronzeTime = map.BronzeScore;
+            AuthorScore = map.AuthorScore;
+            GoldScore = map.GoldScore;
+            SilverScore = map.SilverScore;
+            BronzeScore = map.BronzeScore;
 
             string displayName = Cache::GetName(map.AuthorAccountId);
 
@@ -48,16 +48,16 @@ class Map {
         _Logging::Trace("Loading map info from GBX file");
 
         try {
-            URL = path;
+            Url = path;
             GbxName = Text::OpenplanetFormatCodes(map.MapName);
             Name = Text::StripFormatCodes(map.MapName);
-            UID = map.Id.GetName();
+            Uid = map.Id.GetName();
             MapType = CleanMapType(map.MapType);
             Author = map.AuthorNickName;
-            AuthorTime = map.TMObjective_AuthorTime;
-            GoldTime = map.TMObjective_GoldTime;
-            SilverTime = map.TMObjective_SilverTime;
-            BronzeTime = map.TMObjective_BronzeTime;
+            AuthorScore = map.TMObjective_AuthorTime;
+            GoldScore = map.TMObjective_GoldTime;
+            SilverScore = map.TMObjective_SilverTime;
+            BronzeScore = map.TMObjective_BronzeTime;
         } catch {
             _Logging::Error("An error occurred while parsing the map info from a GBX file: " + getExceptionInfo(), true);
         }
@@ -68,16 +68,16 @@ class Map {
         _Logging::Trace("Loading map info from MX response");
 
         try {
-            URL = mapInfo.DownloadURL;
+            Url = mapInfo.DownloadURL;
             Name = mapInfo.Name;
             GbxName = Text::OpenplanetFormatCodes(mapInfo.GbxMapName);
-            UID = mapInfo.MapUid;
+            Uid = mapInfo.MapUid;
             MapType = CleanMapType(mapInfo.MapType);
             Author = mapInfo.Author;
-            AuthorTime = mapInfo.AuthorTime;
-            GoldTime = mapInfo.GoldTime;
-            SilverTime = mapInfo.SilverTime;
-            BronzeTime = mapInfo.BronzeTime;
+            AuthorScore = mapInfo.AuthorScore;
+            GoldScore = mapInfo.GoldScore;
+            SilverScore = mapInfo.SilverScore;
+            BronzeScore = mapInfo.BronzeScore;
 
             Tags = mapInfo.Tags;
         } catch {
@@ -91,16 +91,16 @@ class Map {
         _Logging::Trace(Json::Write(json, true));
 
         try {
-            URL = json["URL"];
+            Url = json["Url"];
             Name = json["Name"];
             GbxName = json["GbxName"];
-            UID = json["UID"];
+            Uid = json["Uid"];
             MapType = json["MapType"];
             Author = json["Author"];
-            AuthorTime = json["AuthorTime"];
-            GoldTime = json["GoldTime"];
-            SilverTime = json["SilverTime"];
-            BronzeTime = json["BronzeTime"];
+            AuthorScore = json["AuthorScore"];
+            GoldScore = json["GoldScore"];
+            SilverScore = json["SilverScore"];
+            BronzeScore = json["BronzeScore"];
 
             for (uint i = 0; i < json["Tags"].Length; i++) {
                 Json::Value@ tag = json["Tags"][i];
@@ -113,15 +113,15 @@ class Map {
 
     // Unknown source
     Map(const string &in url) {
-        URL = url;
+        Url = url;
     }
 
     bool opEquals(Map@ other) {
-        if (this.UID != "" && other.UID != "") {
-            return this.UID == other.UID;
+        if (this.Uid != "" && other.Uid != "") {
+            return this.Uid == other.Uid;
         }
 
-        return this.URL == other.URL;
+        return this.Url == other.Url;
     }
 
     GameMode get_GameMode() {
@@ -139,23 +139,23 @@ class Map {
     int GetMedal(Medals medal) {
         switch (medal) {
             case Medals::Bronze:
-                return BronzeTime;
+                return BronzeScore;
             case Medals::Silver:
-                return SilverTime;
+                return SilverScore;
             case Medals::Gold:
-                return GoldTime;
+                return GoldScore;
             case Medals::Author:
             default:
-                return AuthorTime;
+                return AuthorScore;
         }
     }
 
     string toString() {
         if (this.Name == "") {
-            return this.URL;
+            return this.Url;
         }
 
-        return this.Name + " (" + this.URL + ")";
+        return this.Name + " (" + this.Url + ")";
     }
 
     Json::Value@ ToJson() {
@@ -164,16 +164,16 @@ class Map {
         Json::Value json = Json::Object();
 
         try {
-            json["URL"] = URL;
+            json["Url"] = Url;
             json["Name"] = Name;
             json["GbxName"] = GbxName;
-            json["UID"] = UID;
+            json["Uid"] = Uid;
             json["MapType"] = MapType;
             json["Author"] = Author;
-            json["AuthorTime"] = AuthorTime;
-            json["GoldTime"] = GoldTime;
-            json["SilverTime"] = SilverTime;
-            json["BronzeTime"] = BronzeTime;
+            json["AuthorScore"] = AuthorScore;
+            json["GoldScore"] = GoldScore;
+            json["SilverScore"] = SilverScore;
+            json["BronzeScore"] = BronzeScore;
 
             Json::Value tagsArray = Json::Array();
 

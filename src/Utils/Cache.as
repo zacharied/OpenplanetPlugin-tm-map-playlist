@@ -37,8 +37,8 @@ namespace Cache {
     }
 
     void SetMap(Map@ map) {
-        if (!Maps.Exists(map.UID)) {
-            Maps.Set(map.UID, map.ToJson());
+        if (!Maps.Exists(map.Uid)) {
+            Maps.Set(map.Uid, map.ToJson());
         }
     }
 

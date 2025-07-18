@@ -31,12 +31,12 @@ namespace TM {
             }
 
             if (S_Editor) {
-                app.ManiaTitleControlScriptAPI.EditMap(map.URL, "", "");
+                app.ManiaTitleControlScriptAPI.EditMap(map.Url, "", "");
             } else {
                 string gameMode;
                 TM::ModesFromMapType.Get(map.MapType, gameMode);
 
-                app.ManiaTitleControlScriptAPI.PlayMap(map.URL, gameMode, "");
+                app.ManiaTitleControlScriptAPI.PlayMap(map.Url, gameMode, "");
             }
 
             const uint start = Time::Now;
@@ -69,7 +69,7 @@ namespace TM {
             return false;
         }
 
-        return app.RootMap.MapInfo.MapUid.ToLower() == playlist.currentMap.UID.ToLower();
+        return app.RootMap.MapInfo.MapUid.ToLower() == playlist.currentMap.Uid.ToLower();
     }
 
     void ClosePauseMenu() {
