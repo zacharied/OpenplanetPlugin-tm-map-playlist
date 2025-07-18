@@ -53,6 +53,25 @@ namespace TM {
         }
     }
 
+    bool InEditor() {
+        CTrackMania@ app = cast<CTrackMania>(GetApp());
+        return app.Editor !is null;
+    }
+
+    bool InCurrentMap() {
+        if (playlist.currentMap is null) {
+            return false;
+        }
+
+        CTrackMania@ app = cast<CTrackMania>(GetApp());
+
+        if (app.RootMap is null || app.RootMap.MapInfo.MapUid == "") {
+            return false;
+        }
+
+        return app.RootMap.MapInfo.MapUid.ToLower() == playlist.currentMap.UID.ToLower();
+    }
+
     void ClosePauseMenu() {
         if (IsPauseMenuDisplayed()) {
             CSmArenaClient@ playground = cast<CSmArenaClient>(GetApp().CurrentPlayground);
@@ -450,5 +469,76 @@ namespace TM {
         }
 
         return -1;
+    }
+
+    array<uint> royalTimes = { 0, 0, 0, 0 };
+
+    int GetFinishScore() {
+        if (!TM::InCurrentMap()) {
+            return -1;
+        }
+
+        auto app = cast<CTrackMania>(GetApp());
+        int score = -1;
+
+        CSmArenaClient@ playground = cast<CSmArenaClient>(app.CurrentPlayground);
+        CSmArenaRulesMode@ script = cast<CSmArenaRulesMode>(app.PlaygroundScript);
+
+        if (playground !is null && script !is null && playground.GameTerminals.Length > 0) {
+            CSmPlayer@ player = cast<CSmPlayer>(playground.GameTerminals[0].ControlledPlayer);
+            auto seq = playground.GameTerminals[0].UISequence_Current;
+
+            if (player !is null && (seq == SGamePlaygroundUIConfig::EUISequence::Finish || seq == SGamePlaygroundUIConfig::EUISequence::UIInteraction)) {
+                CSmScriptPlayer@ playerScriptAPI = cast<CSmScriptPlayer>(player.ScriptAPI);
+                auto ghost = script.Ghost_RetrieveFromPlayer(playerScriptAPI);
+
+                if (ghost !is null) {
+                    switch (playlist.currentMap.GameMode) {
+                        case GameMode::Stunt:
+                            score = ghost.Result.StuntsScore;
+                            break;
+                        case GameMode::Platform:
+                            score = ghost.Result.NbRespawns;
+                            break;
+                        case GameMode::Race:
+                        case GameMode::Royal:
+                        default:
+                            if (ghost.Result.Time > 0 && ghost.Result.Time < uint(-1)) {
+                                score = ghost.Result.Time;
+                            }
+                            break;
+                    }
+
+                    script.DataFileMgr.Ghost_Release(ghost.Id);
+
+                    // from the Random Altered Campaign Challenge plugin https://openplanet.dev/plugin/randomalteredcampaign
+                    // Credit to ArEyeses for the code
+                    if (playlist.currentMap.GameMode == GameMode::Royal) {
+                        uint resIndex = player.CurrentLaunchedRespawnLandmarkIndex;
+
+                        if (resIndex >= 0 && resIndex < playground.Arena.MapLandmarks.Length) {
+                            uint section = playground.Arena.MapLandmarks[resIndex].Order;
+
+                            if (section == 5) {
+                                return royalTimes[0] + royalTimes[1] + royalTimes[2] + royalTimes[3] + score;
+                            }
+
+                            royalTimes[section - 1] = score;
+
+                            // Reset section times from previous runs
+                            for (uint i = section; i < royalTimes.Length; i++) {
+                                royalTimes[i] = 0;
+                            }
+
+                            return -1;
+                        }
+
+                        return -1;
+                    }
+                }
+            }
+        }
+
+        return score;
     }
 }

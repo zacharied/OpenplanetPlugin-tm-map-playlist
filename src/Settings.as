@@ -17,6 +17,12 @@ bool S_Editor = false;
 [Setting hidden]
 bool S_Loop = false;
 
+[Setting hidden]
+bool S_SwitchOnMedal = false;
+
+[Setting hidden]
+Medals S_GoalMedal = Medals::Author;
+
 // --- Display ---
 
 [Setting hidden]
@@ -81,6 +87,8 @@ void RenderPlaylistSettings() {
         S_Editor = false;
         S_Loop = false;
         S_SwitchKey = VirtualKey(0);
+        S_SwitchOnMedal = false;
+        S_GoalMedal = Medals::Author;
     }
 
     UI::SetNextItemWidth(175);
@@ -101,6 +109,21 @@ void RenderPlaylistSettings() {
 
     S_Loop = UI::Checkbox("Loop playlist", S_Loop);
     UI::SettingDescription("When enabled, the playlist will start again after reaching the last map.");
+
+    S_SwitchOnMedal = UI::Checkbox("Auto switch on medal", S_SwitchOnMedal);
+    UI::SettingDescription("When enabled, the plugin will automatically switch to the next map after reaching the selected medal.\n\nNOTE: Doesn't work in the editor or in maps from unknown sources.");
+
+    if (S_SwitchOnMedal) {
+        UI::SetNextItemWidth(175);
+        if (UI::BeginCombo("Goal medal", tostring(S_GoalMedal))) {
+            for (int i = 0; i <= Medals::Author; i++) {
+                if (UI::Selectable(tostring(Medals(i)), S_GoalMedal == Medals(i))) {
+                    S_GoalMedal = Medals(i);
+                }
+            }
+            UI::EndCombo();
+        }
+    }
 }
 
 [SettingsTab name="Display" order="3" icon="Eye"]

@@ -20,6 +20,8 @@ void Main() {
         TM::GetFavorites();
         TM::GetTOTDMonths();
     }
+
+    startnew(MainLoop);
 }
 
 [Setting hidden]
@@ -51,4 +53,51 @@ void OnKeyPress(bool down, VirtualKey key) {
     }
 
     held = down;
+}
+
+void MainLoop() {
+    string currentUid = "";
+    bool notified = false;
+
+    auto app = cast<CTrackMania>(GetApp());
+
+    while (playlist.IsEmpty() || playlist.currentMap is null) {
+        // Don't do anything yet
+        yield();
+    }
+
+    while (true) {
+        yield();
+
+        if (TM::InEditor() || !TM::InCurrentMap()) {
+            sleep(1000);
+            continue;
+        }
+
+        if (app.RootMap.Id.GetName() != currentUid) {
+            currentUid = app.RootMap.Id.GetName();
+            notified = false;
+        }
+
+        if (S_SwitchOnMedal && !notified) {
+            int score = TM::GetFinishScore();
+
+            if (score <= -1) {
+                sleep(50);
+                continue;
+            }
+
+            bool inverse = playlist.currentMap.GameMode == GameMode::Stunt;
+            int goal = playlist.currentMap.GetMedal(S_GoalMedal);
+
+            if ((inverse && score >= goal) || (!inverse && score <= goal)) {
+                UI::ShowNotification(PLUGIN_NAME, "Got the " + tostring(S_GoalMedal) + " medal! Loading next map...");
+                notified = true;
+                sleep(1000);
+                playlist.NextMap();
+            } else {
+                sleep(1000);
+            }
+        }
+    }
 }

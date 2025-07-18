@@ -136,6 +136,20 @@ class Map {
         return GameMode::Race;
     }
 
+    int GetMedal(Medals medal) {
+        switch (medal) {
+            case Medals::Bronze:
+                return BronzeTime;
+            case Medals::Silver:
+                return SilverTime;
+            case Medals::Gold:
+                return GoldTime;
+            case Medals::Author:
+            default:
+                return AuthorTime;
+        }
+    }
+
     string toString() {
         if (this.Name == "") {
             return this.URL;
