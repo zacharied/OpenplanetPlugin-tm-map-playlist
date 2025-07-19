@@ -235,10 +235,10 @@ class MapPlaylist {
 
         _Logging::Debug("Adding map with UID \"" + uid + "\" to playlist");
 
-        CNadeoServicesMap@ result = TM::GetMapFromUid(uid);
+        Map@ result = TM::GetMapFromUid(uid);
 
         if (result !is null) {
-            AddMap(Map(result));
+            AddMap(result);
             _Logging::Info("Added map with UID \"" + uid + "\" to the playlist!");
         }
     }

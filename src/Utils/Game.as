@@ -121,8 +121,14 @@ namespace TM {
         return map;
     }
 
-    CNadeoServicesMap@ GetMapFromUid(const string &in mapUid) {
+    Map@ GetMapFromUid(const string &in mapUid) {
         _Logging::Debug("Getting map from UID " + mapUid);
+
+        Map@ cachedMap = Cache::GetMap(mapUid);
+
+        if (cachedMap !is null) {
+            return cachedMap;
+        }
 
         auto app = cast<CGameManiaPlanet>(GetApp());
         auto menu = app.MenuManager.MenuCustom_CurrentManiaApp;
@@ -137,8 +143,8 @@ namespace TM {
             return null;
         }
 
-        CNadeoServicesMap@ map = res.Map;
-        _Logging::Info("Found URL " + map.FileUrl + " from UID " + mapUid);
+        Map@ map = Map(res.Map);
+        _Logging::Info("Found URL " + map.Url + " from UID " + mapUid);
 
         return map;
     }

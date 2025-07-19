@@ -15,6 +15,8 @@ class Map {
     int Position = -1;
     bool Selected = true;
 
+    Map() { }
+
     // NadeoServices
     Map(CNadeoServicesMap@ map) {
         _Logging::Trace("Loading map info from Nadeo Services response");
@@ -38,6 +40,8 @@ class Map {
                 Author = map.AuthorDisplayName;
                 Cache::SetName(map.AuthorAccountId, map.AuthorDisplayName);
             }
+
+            Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from Nadeo Services: " + getExceptionInfo(), true);
         }
@@ -58,6 +62,8 @@ class Map {
             GoldScore = map.TMObjective_GoldTime;
             SilverScore = map.TMObjective_SilverTime;
             BronzeScore = map.TMObjective_BronzeTime;
+
+            Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from a GBX file: " + getExceptionInfo(), true);
         }
@@ -78,8 +84,9 @@ class Map {
             GoldScore = mapInfo.GoldScore;
             SilverScore = mapInfo.SilverScore;
             BronzeScore = mapInfo.BronzeScore;
-
             Tags = mapInfo.Tags;
+
+            Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from ManiaExchange: " + getExceptionInfo(), true);
         }
@@ -106,6 +113,8 @@ class Map {
                 Json::Value@ tag = json["Tags"][i];
                 Tags.InsertLast(TmxTag(tag));
             }
+
+            Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from JSON: " + getExceptionInfo(), true);
         }

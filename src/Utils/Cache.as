@@ -31,14 +31,14 @@ namespace Cache {
             return null;
         }
 
-        Json::Value@ json = cast<Json::Value>(Maps[mapUid]);
+        Map@ map = cast<Map>(Maps[mapUid]);
 
-        return Map(json);
+        return map;
     }
 
-    void SetMap(Map@ map) {
+    void SetMap(Map map) {
         if (!Maps.Exists(map.Uid)) {
-            Maps.Set(map.Uid, map.ToJson());
+            Maps.Set(map.Uid, map);
         }
     }
 

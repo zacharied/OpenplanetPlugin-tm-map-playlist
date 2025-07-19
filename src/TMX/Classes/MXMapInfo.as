@@ -12,7 +12,7 @@ class MXMapInfo {
     array<TmxTag@> Tags;
 
     MXMapInfo(Json::Value@ json) {
-        _Logging::Debug("Loading MX map info response" + Json::Write(json, true));
+        _Logging::Debug("Loading MX map info response: " + Json::Write(json, true));
 
         Name = json["Name"];
         MapUid = json["MapUid"];
