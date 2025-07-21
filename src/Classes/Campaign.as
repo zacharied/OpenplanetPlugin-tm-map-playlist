@@ -19,61 +19,61 @@ class Campaign {
     Campaign(Json::Value@ json) {
         _Logging::Debug("Loading campaign information: " + Json::Write(json, true));
 
-        Id = json["id"];
-        Name = json["name"];
-        SeasonUid = json["seasonUid"];
-        ClubId = json["clubId"];
-        StartTimestamp = json["startTimestamp"];
-        EndTimestamp = json["endTimestamp"];
-        Year = json["year"];
-        Week = json["week"];
-        Day = json["day"];
+        this.Id = json["id"];
+        this.Name = json["name"];
+        this.SeasonUid = json["seasonUid"];
+        this.ClubId = json["clubId"];
+        this.StartTimestamp = json["startTimestamp"];
+        this.EndTimestamp = json["endTimestamp"];
+        this.Year = json["year"];
+        this.Week = json["week"];
+        this.Day = json["day"];
 
         for (uint i = 0; i < json["playlist"].Length; i++) {
             Json::Value@ map = json["playlist"][i];
-            MapUids.InsertLast(string(map["mapUid"]));
+            this.MapUids.InsertLast(string(map["mapUid"]));
         }
     }
 
     uint get_Length() {
-        if (!_Loaded) {
-            return MapUids.Length;
+        if (!this._Loaded) {
+            return this.MapUids.Length;
         }
 
-        return MapList.Length;
+        return this.MapList.Length;
     }
 
     void LoadMapData() {
-        if (LoadedData) {
+        if (this.LoadedData) {
             // Data was already loaded
             return;
         }
 
-        _Logging::Debug("Loading data for " + MapUids.Length + " maps in the \"" + Name + "\" campaign.");
-        startnew(CoroutineFunc(GetMaps));
+        _Logging::Debug("Loading data for " + this.MapUids.Length + " maps in the \"" + this.Name + "\" campaign.");
+        startnew(CoroutineFunc(this.GetMaps));
     }
 
     void GetMaps() {
-        auto maps = TM::GetMultipleMapsFromUids(MapUids);
+        auto maps = TM::GetMultipleMapsFromUids(this.MapUids);
 
         for (uint i = 0; i < maps.Length; i++) {
             Map@ map = Map(maps[i]);
-            map.Position = MapUids.Find(map.Uid);
-            MapList.InsertLast(map);
+            map.Position = this.MapUids.Find(map.Uid);
+            this.MapList.InsertLast(map);
         }
 
         // Map_NadeoServices_GetListFromUid doesn't return maps in order
-        if (MapList.Length > 1) {
-            MapList.Sort(function(a, b) { 
+        if (this.MapList.Length > 1) {
+            this.MapList.Sort(function(a, b) { 
                 return a.Position < b.Position;
             });
         }
 
-        _Loaded = true;
+        this._Loaded = true;
     }
 
     bool get_LoadedData() {
-        return _Loaded;
+        return this._Loaded;
     }
 
     bool IsNewer(Campaign@ other) {
@@ -85,6 +85,6 @@ class Campaign {
     }
 
     bool OpEquals(Campaign@ other) {
-        return Id == other.Id;
+        return this.Id == other.Id;
     }
 }

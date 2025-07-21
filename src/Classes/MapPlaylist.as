@@ -11,8 +11,8 @@ class MapPlaylist {
         _Logging::Debug("Loading playlist \"" + string(json["Name"]) + "\" from JSON");
         _Logging::Debug(Json::Write(json, true));
 
-        Name = json["Name"];
-        CreatedAt = json["Timestamp"];
+        this.Name = json["Name"];
+        this.CreatedAt = json["Timestamp"];
 
         for (uint i = 0; i < json["Maps"].Length; i++) {
             Json::Value@ map = json["Maps"][i];
@@ -22,30 +22,30 @@ class MapPlaylist {
                 continue;
             }
 
-            AddMap(Map(map));
+            this.AddMap(Map(map));
         }
 
-        _Logging::Info("Succesfully loaded playlist \"" + string(json["Name"]) + "\" from JSON");
+        _Logging::Info("Succesfully loaded playlist \"" + this.Name + "\" from JSON");
     }
 
     uint get_Length() {
-        return Maps.Length;
+        return this.Maps.Length;
     }
 
     Map@ opIndex(uint i) {
-        return Maps[i];
+        return this.Maps[i];
     }
 
     bool IsEmpty() {
-        return Maps.IsEmpty();
+        return this.Maps.IsEmpty();
     }
 
     void Clear() {
         _Logging::Debug("Clearing playlist...");
 
-        Maps.RemoveRange(0, Maps.Length);
-        columnWidths.Reset();
-        @currentMap = null;
+        this.Maps.RemoveRange(0, Maps.Length);
+        this.columnWidths.Reset();
+        @this.currentMap = null;
     }
 
     void PlayMap(Map@ map) {
@@ -53,21 +53,21 @@ class MapPlaylist {
     }
 
     void NextMap() {
-        if (Maps.IsEmpty()) return;
+        if (this.Maps.IsEmpty()) return;
 
         try {
-            if (currentMap is null) {
-                startnew(CoroutineFuncUserdata(TM::LoadMap), Maps[0]);
+            if (this.currentMap is null) {
+                startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
             } else {
-                int index = Maps.FindByRef(currentMap);
+                int index = Maps.FindByRef(this.currentMap);
 
-                if (index == int(Maps.Length - 1)) {
+                if (index == int(this.Maps.Length - 1)) {
                     // reached last item
                     if (S_Loop) {
-                        startnew(CoroutineFuncUserdata(TM::LoadMap), Maps[0]);
+                        startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
                     }
                 } else {
-                    startnew(CoroutineFuncUserdata(TM::LoadMap), Maps[index + 1]);
+                    startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[index + 1]);
                 }
             }
         } catch {
@@ -79,29 +79,29 @@ class MapPlaylist {
         _Logging::Debug("Deleting map " + map.toString());
 
         try {
-            if (Maps.IsEmpty()) return;
+            if (this.Maps.IsEmpty()) return;
 
-            int index = Maps.FindByRef(map);
+            int index = this.Maps.FindByRef(map);
 
             if (index == -1) {
                 _Logging::Error("Failed to find map " + map.toString() + " index while deleting it from playlist!");
                 return;
             }
 
-            if (currentMap !is null && currentMap == map) {
-                if (index == int(Maps.Length - 1)) {
-                    if (Maps.Length > 1 && S_Loop) {
-                        @currentMap = Maps[0];
+            if (this.currentMap !is null && this.currentMap == map) {
+                if (index == int(this.Maps.Length - 1)) {
+                    if (S_Loop && this.Maps.Length > 1) {
+                        @this.currentMap = this.Maps[0];
                     } else {
-                        @currentMap = null;
+                        @this.currentMap = null;
                     }
                 } else {
-                    @currentMap = Maps[index + 1];
+                    @this.currentMap = this.Maps[index + 1];
                 }
             }
 
-            Maps.RemoveAt(index);
-            columnWidths.Update(Maps);
+            this.Maps.RemoveAt(index);
+            this.columnWidths.Update(this.Maps);
         } catch {
             _Logging::Error("An error occurred while deleting a map: " + getExceptionInfo(), true);
             _Logging::Warn("Failed to delete map \"" + map.toString() + "\"");
@@ -110,7 +110,7 @@ class MapPlaylist {
 
     void ShiftMap(Map@ map, bool down = false) {
         try {
-            int index = Maps.FindByRef(map);
+            int index = this.Maps.FindByRef(map);
 
             if (index == -1) {
                 _Logging::Error("Failed to find map " + map.toString() + " index while moving it in playlist!");
@@ -119,13 +119,13 @@ class MapPlaylist {
 
             _Logging::Debug("Shifting map " + map.toString() + " in playlist.");
 
-            Maps.RemoveAt(index);
+            this.Maps.RemoveAt(index);
 
             // In a table, the first elements are up
             if (down) {
-                Maps.InsertAt(index + 1, map);
+                this.Maps.InsertAt(index + 1, map);
             } else {
-                Maps.InsertAt(index - 1, map);
+                this.Maps.InsertAt(index - 1, map);
             }
         } catch {
             _Logging::Error("An error occurred while moving a map in the playlist: " + getExceptionInfo(), true);
@@ -136,8 +136,8 @@ class MapPlaylist {
     // Durstenfeld shuffle
     void Randomize() {
         try {
-            _Logging::Debug("Randomizing playlist. Playlist length: " + Maps.Length);
-            array<Map@> shuffled = Maps;
+            _Logging::Debug("Randomizing playlist. Playlist length: " + this.Maps.Length);
+            array<Map@> shuffled = this.Maps;
 
             for (int i = shuffled.Length - 1; i > 0; i--) {
                 int j = Math::Rand(0, i + 1);
@@ -156,13 +156,13 @@ class MapPlaylist {
         _Logging::Trace("Converting playlist to JSON");
 
         Json::Value json = Json::Object();
-        json["Name"] = Name;
+        json["Name"] = this.Name;
         json["Maps"] = Json::Array();
-        json["Timestamp"] = CreatedAt;
+        json["Timestamp"] = this.CreatedAt;
 
         try {
-            for (uint i = 0; i < Maps.Length; i++) {
-                Map@ map = Maps[i];
+            for (uint i = 0; i < this.Maps.Length; i++) {
+                Map@ map = this.Maps[i];
                 json["Maps"].Add(map.ToJson());
             }
 
@@ -178,36 +178,36 @@ class MapPlaylist {
     void Add(Source source, const string &in field) {
         switch (source) {
             case Source::TMX_Map_ID:
-                startnew(CoroutineFuncUserdataString(AddFromTMXId), field);
+                startnew(CoroutineFuncUserdataString(this.AddFromTMXId), field);
                 break;
             case Source::TMX_Mappack_ID:
-                startnew(CoroutineFuncUserdataString(AddMappack), field);
+                startnew(CoroutineFuncUserdataString(this.AddMappack), field);
                 break;
             case Source::UID:
-                startnew(CoroutineFuncUserdataString(AddFromUid), field);
+                startnew(CoroutineFuncUserdataString(this.AddFromUid), field);
                 break;
             case Source::File:
-                startnew(CoroutineFuncUserdataString(AddFromFile), field.Replace("/", "\\"));
+                startnew(CoroutineFuncUserdataString(this.AddFromFile), field.Replace("/", "\\"));
                 break;
             case Source::Folder:
-                startnew(CoroutineFuncUserdataString(AddFolder), field.Replace("/", "\\"));
+                startnew(CoroutineFuncUserdataString(this.AddFolder), field.Replace("/", "\\"));
                 break;
             case Source::URL:
             default:
-                startnew(CoroutineFuncUserdataString(AddFromUrl), field);
+                startnew(CoroutineFuncUserdataString(this.AddFromUrl), field);
                 break;
         }
     }
 
     void Add(Source source, Campaign@ campaign) {
-        startnew(CoroutineFuncUserdata(AddCampaign), campaign);
+        startnew(CoroutineFuncUserdata(this.AddCampaign), campaign);
     }
 
     void AddMap(Map@ map) {
         _Logging::Trace("Adding " + map.toString() + " to the playlist");
 
-        Maps.InsertLast(map);
-        columnWidths.Update(Maps);
+        this.Maps.InsertLast(map);
+        this.columnWidths.Update(this.Maps);
     }
 
     void AddCampaign(ref@ campRef) {
@@ -223,7 +223,7 @@ class MapPlaylist {
 
         for (uint i = 0; i < campaign.MapList.Length; i++) {
             Map@ map = campaign.MapList[i];
-            AddMap(map);
+            this.AddMap(map);
         }
     }
 
@@ -238,7 +238,7 @@ class MapPlaylist {
         Map@ result = TM::GetMapFromUid(uid);
 
         if (result !is null) {
-            AddMap(result);
+            this.AddMap(result);
             _Logging::Info("Added map with UID \"" + uid + "\" to the playlist!");
         }
     }
@@ -250,13 +250,11 @@ class MapPlaylist {
             MXMapInfo@ info = TMX::GetMap(Text::ParseInt(mapId));
 
             if (info !is null) {
-                AddMap(Map(info));
+                this.AddMap(Map(info));
                 _Logging::Info("Added TMX map with ID #" + mapId + " to the playlist!");
-            } else {
-                _Logging::Error("An error occurred while fetching map with ID #" + mapId + "from TMX: " + getExceptionInfo(), true);
             }
         } catch {
-            _Logging::Error("An error occurred while adding map with ID #" + mapId + "to the playlist: " + getExceptionInfo(), true);
+            _Logging::Error("An error occurred while adding map with ID #" + mapId + " to the playlist: " + getExceptionInfo(), true);
         }
     }
 
@@ -279,7 +277,7 @@ class MapPlaylist {
             array<Map@> maps = mappack.Maps;
 
             for (uint i = 0; i < maps.Length; i++) {
-                AddMap(maps[i]);
+                this.AddMap(maps[i]);
             }
 
             _Logging::Info("Added " + maps.Length + " maps to the playlist!");
@@ -333,7 +331,7 @@ class MapPlaylist {
             }
 
             if (cmap !is null) {
-                AddMap(Map(cmap, path));
+                this.AddMap(Map(cmap, path));
                 _Logging::Info("Added map file to the playlist!");
             }
         } catch {
@@ -347,30 +345,30 @@ class MapPlaylist {
         _Logging::Debug("Adding URL \"" + str + "\"");
 
         if (Regex::IsMatch(str, "\\d{1,6}")) {
-            AddFromTMXId(str);
+            this.AddFromTMXId(str);
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.exchange\\/(mapgbx|maps\\/download|tracks|tracks\\/view|maps|maps\\/view|s\\/tr|mapshow)\\/\\d{1,6}", regexFlags)) {
             array<string> id = Regex::Search(str, "\\/(\\d{1,6})");
 
             if (!id.IsEmpty()) {
-                AddFromTMXId(id[1]);
+                this.AddFromTMXId(id[1]);
             }
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.exchange\\/(mappack|mappack\\/view|s\\/m|mappackshow)\\/\\d{1,6}", regexFlags)) {
             array<string> id = Regex::Search(str, "\\/(\\d{1,6})");
 
             if (!id.IsEmpty()) {
-                AddMappack(id[1]);
+                this.AddMappack(id[1]);
             }
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.io\\/.*?\\/\\w{25,27}\\/?$", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
             if (!uid.IsEmpty()) {
-                AddFromUid(uid[1]);
+                this.AddFromUid(uid[1]);
             }
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.com\\/tracks\\/\\w{25,27}\\/?", regexFlags)) {
             array<string> uid = Regex::Search(str, "(\\w{25,27})");
 
             if (!uid.IsEmpty()) {
-                AddFromUid(uid[1]);
+                this.AddFromUid(uid[1]);
             }
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.io\\/#\\/campaigns\\/.*?\\/\\d{1,6}\\/?$", regexFlags)) {
             array<string> matches = Regex::Search(str, "campaigns\\/(.*?)\\/(\\d{1,6})");
@@ -379,11 +377,11 @@ class MapPlaylist {
 
             if (!matches.IsEmpty() && Text::TryParseInt(matches[2], campaignId)) {
                 if (matches[1] == "seasonal") {
-                    AddSeasonalCampaign(campaignId);
+                    this.AddSeasonalCampaign(campaignId);
                 } else if (matches[1] == "weekly") {
-                    AddWeeklyCampaign(campaignId);
+                    this.AddWeeklyCampaign(campaignId);
                 } else if (Text::TryParseInt(matches[1], clubId)) {
-                    AddClubCampaign(clubId, campaignId);
+                    this.AddClubCampaign(clubId, campaignId);
                 } else {
                     _Logging::Error("Failed to add campaign from Trackmania.io link");
                 }
@@ -401,7 +399,7 @@ class MapPlaylist {
                     return;
                 }
 
-                AddClubCampaign(clubId, campaignId);
+                this.AddClubCampaign(clubId, campaignId);
             }
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.com\\/campaigns\\/\\d{4}\\/\\w*?\\/?$", regexFlags)) {
             // Official campaigns on the site use the format year/season
@@ -410,13 +408,13 @@ class MapPlaylist {
             if (!matches.IsEmpty()) {
                 string name = matches[2] + " " + matches[1];
 
-                AddSeasonalCampaign(name);
+                this.AddSeasonalCampaign(name);
             }
         } else if (Regex::IsMatch(str, "\\w{25,27}", regexFlags)) {
-            AddFromUid(str);
+            this.AddFromUid(str);
         } else {
             _Logging::Warn("Unknown URL received, map load might fail.");
-            AddMap(Map(str));
+            this.AddMap(Map(str));
         }
     }
 
@@ -436,7 +434,7 @@ class MapPlaylist {
 
             for (uint i = 0; i < files.Length; i++) {
                 if (!files[i].ToLower().EndsWith(".map.gbx")) continue;
-                AddFromFile(files[i].Replace("/", "\\"));
+                this.AddFromFile(files[i].Replace("/", "\\"));
             }
         } catch {
             _Logging::Error("An error occurred while adding maps from folder in path \"" + path + "\": " + getExceptionInfo(), true);
@@ -448,7 +446,7 @@ class MapPlaylist {
             Campaign@ season = SEASONAL_CAMPAIGNS[i];
 
             if (campaignId == season.Id) {
-                startnew(CoroutineFuncUserdata(AddCampaign), season);
+                startnew(CoroutineFuncUserdata(this.AddCampaign), season);
                 return;
             }
         }
@@ -461,7 +459,7 @@ class MapPlaylist {
             Campaign@ season = SEASONAL_CAMPAIGNS[i];
 
             if (name.ToLower() == season.Name.ToLower()) {
-                startnew(CoroutineFuncUserdata(AddCampaign), season);
+                startnew(CoroutineFuncUserdata(this.AddCampaign), season);
                 return;
             }
         }
@@ -474,7 +472,7 @@ class MapPlaylist {
             Campaign@ week = WEEKLY_SHORTS[i];
 
             if (campaignId == week.Id) {
-                startnew(CoroutineFuncUserdata(AddCampaign), week);
+                startnew(CoroutineFuncUserdata(this.AddCampaign), week);
                 return;
             }
         }
@@ -489,7 +487,7 @@ class MapPlaylist {
             if (selectMaps) {
                 Renderables::Add(SelectMaps(campaign));
             } else {
-                startnew(CoroutineFuncUserdata(AddCampaign), campaign);
+                startnew(CoroutineFuncUserdata(this.AddCampaign), campaign);
             }
         }
     }
@@ -497,13 +495,13 @@ class MapPlaylist {
     void AddCampaignAsync(ref@ idRef) {
         array<int> ids = cast<array<int>>(idRef);
 
-        AddClubCampaign(ids[0], ids[1], false);
+        this.AddClubCampaign(ids[0], ids[1]);
     }
 
     void SelectCampaignMapsAsync(ref@ idRef) {
         array<int> ids = cast<array<int>>(idRef);
 
-        AddClubCampaign(ids[0], ids[1], true);
+        this.AddClubCampaign(ids[0], ids[1], true);
     }
 
     void SelectMappackAsync(int64 mappackId) {
@@ -527,7 +525,7 @@ class MapPlaylist {
             Renderables::Add(SelectMaps(FAVORITES));
         } else {
             for (uint i = 0; i < FAVORITES.Length; i++) {
-                AddMap(FAVORITES[i]);
+                this.AddMap(FAVORITES[i]);
             }
         }
     }

@@ -17,7 +17,7 @@ namespace TMX {
 
             return MXMapInfo(json["Results"][0]);
         } catch {
-            _Logging::Error("An error occurred while fetching map with ID #" + mapId + "from TMX: " + getExceptionInfo(), true);
+            _Logging::Error("An error occurred while fetching map with ID #" + mapId + " from TMX: " + getExceptionInfo(), true);
             return null;
         }
     }

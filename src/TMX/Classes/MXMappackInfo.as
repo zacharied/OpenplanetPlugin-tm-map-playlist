@@ -6,22 +6,22 @@ class MXMappackInfo {
     array<Map@> Maps;
 
     MXMappackInfo(Json::Value@ json) {
-        ID = json["MappackId"];
-        Name = json["Name"];
-        MapCount = json["MapCount"];
-        Owner = json["Owner"]["Name"];
+        this.ID = json["MappackId"];
+        this.Name = json["Name"];
+        this.MapCount = json["MapCount"];
+        this.Owner = json["Owner"]["Name"];
     }
 
     void GetMaps() {
-        if (MapCount > 200) {
+        if (this.MapCount > 200) {
             _Logging::Warn("Mappack has more than 200 maps. Please wait while maps are fetched.", true);
         }
 
-        array<MXMapInfo@> mxMaps = TMX::GetMappackMaps(ID);
+        array<MXMapInfo@> mxMaps = TMX::GetMappackMaps(this.ID);
 
         for (uint i = 0; i < mxMaps.Length; i++) {
             MXMapInfo@ info = mxMaps[i];
-            Maps.InsertLast(Map(info));
+            this.Maps.InsertLast(Map(info));
         }
     }
 }

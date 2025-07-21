@@ -4,45 +4,48 @@ class SelectMaps: ModalDialog {
 
     SelectMaps(Campaign@ campaign) {
         super(campaign.Name + "###SelectMaps");
-        m_size = vec2(700, 500);
-        @m_maps = campaign.MapList;
+        this.m_size = vec2(700, 500);
+
+        @this.m_maps = campaign.MapList;
         campaign.LoadMapData();
-        m_selectedCount = campaign.Length;
+        this.m_selectedCount = campaign.Length;
     }
 
     SelectMaps(array<Map@> maps) {
         super("Maps" + "###SelectMaps");
-        m_size = vec2(700, 500);
-        @m_maps = maps;
-        m_selectedCount = m_maps.Length;
+        this.m_size = vec2(700, 500);
+
+        @this.m_maps = maps;
+        this.m_selectedCount = this.m_maps.Length;
     }
 
     SelectMaps(MXMappackInfo@ mappack) {
         super(mappack.Name + " Mappack###SelectMaps");
-        m_size = vec2(700, 500);
-        @m_maps = mappack.Maps;
-        m_selectedCount = m_maps.Length;
+        this.m_size = vec2(700, 500);
+
+        @this.m_maps = mappack.Maps;
+        this.m_selectedCount = this.m_maps.Length;
     }
 
     void Clear() {
-        for (uint i = 0; i < m_maps.Length; i++) {
-            Map@ map = m_maps[i];
+        for (uint i = 0; i < this.m_maps.Length; i++) {
+            Map@ map = this.m_maps[i];
             map.Selected = false;
         }
-        m_selectedCount = 0;
+        this.m_selectedCount = 0;
     }
 
     void SelectAll() {
-        for (uint i = 0; i < m_maps.Length; i++) {
-            Map@ map = m_maps[i];
+        for (uint i = 0; i < this.m_maps.Length; i++) {
+            Map@ map = this.m_maps[i];
             map.Selected = true;
         }
-        m_selectedCount = m_maps.Length;
+        m_selectedCount = this.m_maps.Length;
     }
 
     void AddToPlaylist() {
-        for (uint i = 0; i < m_maps.Length; i++) {
-            Map@ map = m_maps[i];
+        for (uint i = 0; i < this.m_maps.Length; i++) {
+            Map@ map = this.m_maps[i];
 
             if (map.Selected) {
                 playlist.AddMap(map);
@@ -56,13 +59,13 @@ class SelectMaps: ModalDialog {
 
         if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI_SCALE)))) {
             if (UI::Button("Select all")) {
-                SelectAll();
+                this.SelectAll();
             }
 
             UI::SameLine();
 
             if (UI::Button("Deselect all")) {
-                Clear();
+                this.Clear();
             }
 
             UI::PushTableVars();
@@ -75,7 +78,7 @@ class SelectMaps: ModalDialog {
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                 UI::TableHeadersRow();
 
-                UI::ListClipper clipper(m_maps.Length);
+                UI::ListClipper clipper(this.m_maps.Length);
                 while (clipper.Step()) {
                     for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
                         UI::PushID("CampaignMap" + i);
@@ -83,16 +86,16 @@ class SelectMaps: ModalDialog {
                         UI::TableNextRow();
                         UI::TableNextColumn();
 
-                        Map@ map = m_maps[i];
+                        Map@ map = this.m_maps[i];
 
                         if (UI::Checkbox("##Selected" + i, map.Selected)) {
                             if (!map.Selected) {
                                 map.Selected = true;
-                                m_selectedCount++;
+                                this.m_selectedCount++;
                             }
                         } else if (map.Selected) {
                             map.Selected = false;
-                            m_selectedCount--;
+                            this.m_selectedCount--;
                         }
 
                         UI::TableNextColumn();
@@ -121,7 +124,7 @@ class SelectMaps: ModalDialog {
         }
         UI::EndChild();
 
-        string buttonStr = "Add " + m_selectedCount + Pluralize(" map", m_selectedCount);
+        string buttonStr = "Add " + this.m_selectedCount + Pluralize(" map", this.m_selectedCount);
 
         region = UI::GetContentRegionAvail();
         vec2 pos = UI::GetCursorPos();
@@ -129,11 +132,11 @@ class SelectMaps: ModalDialog {
         float newPos = Math::Max(region.x - dimensions.x - itemSpacing, 0.0);
         UI::SetCursorPosX(pos.x + newPos);
 
-        UI::BeginDisabled(m_selectedCount == 0);
+        UI::BeginDisabled(this.m_selectedCount == 0);
 
         if (UI::GreenButton(buttonStr)) {
             AddToPlaylist();
-            Close();
+            this.Close();
         }
 
         UI::EndDisabled();

@@ -2,15 +2,14 @@ class EditPlaylist: ModalDialog {
     MapPlaylist oldList;
     string oldName;
     string m_playlistName;
-    array<Map@> m_maps;
 
     EditPlaylist(MapPlaylist@ list) {
         super("Edit Playlist###EditPlaylist");
-        m_size = vec2(700, 500);
+        this.m_size = vec2(700, 500);
 
-        oldName = list.Name;
-        m_playlistName = oldName;
-        oldList = list;
+        this.oldName = list.Name;
+        this.m_playlistName = oldName;
+        this.oldList = list;
     }
 
     void RenderDialog() override {
@@ -21,7 +20,7 @@ class EditPlaylist: ModalDialog {
         UI::SameLine();
 
         UI::SetNextItemWidth(225);
-        m_playlistName = UI::InputText("##PlaylistName", m_playlistName);
+        this.m_playlistName = UI::InputText("##PlaylistName", this.m_playlistName);
 
         vec2 region = UI::GetContentRegionAvail();
 
@@ -29,26 +28,26 @@ class EditPlaylist: ModalDialog {
             UI::PushStyleVar(UI::StyleVar::IndentSpacing, 5);
             UI::PushStyleColor(UI::Col::HeaderHovered, vec4(0.3f, 0.3f, 0.3f, 0.8f));
 
-            if (UI::TreeNode("Maps (" + oldList.Length + ")###Maps", UI::TreeNodeFlags::FramePadding | UI::TreeNodeFlags::SpanAvailWidth | UI::TreeNodeFlags::DefaultOpen)) {
+            if (UI::TreeNode("Maps (" + this.oldList.Length + ")###Maps", UI::TreeNodeFlags::FramePadding | UI::TreeNodeFlags::SpanAvailWidth | UI::TreeNodeFlags::DefaultOpen)) {
                 UI::PushTableVars();
 
                 if (UI::BeginTable("EditPlaylistMaps", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
                     UI::TableSetupScrollFreeze(0, 1);
                     UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
-                    UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, oldList.columnWidths.Author);
+                    UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, this.oldList.columnWidths.Author);
                     UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
                     UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed);
                     UI::TableHeadersRow();
 
-                    UI::ListClipper clipper(oldList.Length);
+                    UI::ListClipper clipper(this.oldList.Length);
                     while (clipper.Step()) {
-                        for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, oldList.Length); i++) {
+                        for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, this.oldList.Length); i++) {
                             UI::PushID("EditMap" + i);
 
                             UI::TableNextRow();
                             UI::TableNextColumn();
 
-                            Map@ map = oldList[i];
+                            Map@ map = this.oldList[i];
 
                             UI::AlignTextToFramePadding();
                             UI::Text(map.Name);
@@ -62,7 +61,7 @@ class EditPlaylist: ModalDialog {
 
                             UI::TableNextColumn();
                             if (UI::RedButton(Icons::TrashO)) {
-                                oldList.DeleteMap(map);
+                                this.oldList.DeleteMap(map);
                             }
 
                             UI::SetItemTooltip("Remove map");
@@ -81,15 +80,15 @@ class EditPlaylist: ModalDialog {
         }
         UI::EndChild();
 
-        UI::BeginDisabled(m_playlistName == "" || oldList.IsEmpty());
+        UI::BeginDisabled(this.m_playlistName == "" || this.oldList.IsEmpty());
 
         UI::BottomRightButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
         if (UI::GreenButton(Icons::FloppyO + " Save")) {
-            oldList.Name = m_playlistName;
-            Saves::EditPlaylist(oldName, oldList);
-            m_playlistName = "";
-            Close();
+            this.oldList.Name = this.m_playlistName;
+            Saves::EditPlaylist(this.oldName, this.oldList);
+
+            this.Close();
         }
 
         UI::EndDisabled();

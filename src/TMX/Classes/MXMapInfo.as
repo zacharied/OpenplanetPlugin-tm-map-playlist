@@ -1,5 +1,5 @@
 class MXMapInfo {
-    string Name;
+    string Name = "Unknown";
     string GbxMapName;
     string MapUid;
     string MapType;
@@ -14,38 +14,38 @@ class MXMapInfo {
     MXMapInfo(Json::Value@ json) {
         _Logging::Debug("Loading MX map info response: " + Json::Write(json, true));
 
-        Name = json["Name"];
-        MapUid = json["MapUid"];
-        MapId = json["MapId"];
+        this.Name = json["Name"];
+        this.MapUid = json["MapUid"];
+        this.MapId = json["MapId"];
 
         if (json["GbxMapName"].GetType() != Json::Type::Null) {
-            GbxMapName = json["GbxMapName"];
+            this.GbxMapName = json["GbxMapName"];
         } else {
-            GbxMapName = Name;
+            this.GbxMapName = this.Name;
         }
 
         if (json["MapType"].GetType() != Json::Type::Null) {
-            MapType = json["MapType"];
+            this.MapType = json["MapType"];
         }
 
         if (json["Uploader"].GetType() != Json::Type::Null) {
-            Author = json["Uploader"]["Name"];
+            this.Author = json["Uploader"]["Name"];
         }
 
         if (json["Medals"].GetType() != Json::Type::Null) {
-            AuthorScore = json["Medals"]["Author"];
-            GoldScore = json["Medals"]["Gold"];
-            SilverScore = json["Medals"]["Silver"];
-            BronzeScore = json["Medals"]["Bronze"];
+            this.AuthorScore = json["Medals"]["Author"];
+            this.GoldScore = json["Medals"]["Gold"];
+            this.SilverScore = json["Medals"]["Silver"];
+            this.BronzeScore = json["Medals"]["Bronze"];
         }
 
         for (uint i = 0; i < json["Tags"].Length; i++) {
             Json::Value@ tag = json["Tags"][i];
-            Tags.InsertLast(TmxTag(tag));
+            this.Tags.InsertLast(TmxTag(tag));
         }
     }
 
     string get_DownloadURL() {
-        return "http://trackmania.exchange/mapgbx/" + MapId;
+        return "http://trackmania.exchange/mapgbx/" + this.MapId;
     }
 }

@@ -3,7 +3,7 @@ class AddPlaylist: ModalDialog {
 
     AddPlaylist() {
         super("Add Playlist###AddPlaylist");
-        m_size = vec2(700, 500);
+        this.m_size = vec2(700, 500);
     }
 
     void RenderDialog() override {
@@ -14,14 +14,14 @@ class AddPlaylist: ModalDialog {
         UI::SameLine();
 
         UI::SetNextItemWidth(225);
-        m_playlistName = UI::InputText("##PlaylistName", m_playlistName);
+        this.m_playlistName = UI::InputText("##PlaylistName", this.m_playlistName);
 
         bool nameExists = false;
 
-        if (m_playlistName != "") {
+        if (this.m_playlistName != "") {
             for (uint i = 0; i < savedPlaylists.Length; i++) {
                 MapPlaylist@ list = savedPlaylists[i];
-                if (list.Name == m_playlistName) {
+                if (list.Name == this.m_playlistName) {
                     nameExists = true;
                     break;
                 }
@@ -90,15 +90,16 @@ class AddPlaylist: ModalDialog {
         }
         UI::EndChild();
 
-        UI::BeginDisabled(m_playlistName == "" || nameExists);
+        UI::BeginDisabled(this.m_playlistName == "" || nameExists);
 
         UI::BottomRightButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
         if (UI::GreenButton(Icons::FloppyO + " Save")) {
             MapPlaylist new = playlist;
-            new.Name = m_playlistName;
+            new.Name = this.m_playlistName;
             Saves::SavePlaylist(new);
-            Close();
+
+            this.Close();
         }
 
         UI::EndDisabled();

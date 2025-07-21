@@ -2,8 +2,8 @@ namespace UI {
     // From Better TOTD by Xertrov https://github.com/XertroV/tm-better-totd
     const string BRONZE_ICON = "\\$964" + Icons::Circle + " \\$z";
     const string SILVER_ICON = "\\$899" + Icons::Circle + " \\$z";
-    const string GOLD_ICON = "\\$db4" + Icons::Circle + " \\$z";
-    const string AT_ICON = "\\$071" + Icons::Circle + " \\$z";
+    const string GOLD_ICON   = "\\$db4" + Icons::Circle + " \\$z";
+    const string AT_ICON     = "\\$071" + Icons::Circle + " \\$z";
 
     string FormatMedal(int time, GameMode mode, Medals medal) {
         string icon = GetMedalIcon(medal);

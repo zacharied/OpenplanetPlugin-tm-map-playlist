@@ -6,17 +6,17 @@ class TmxTag {
     string Color;
 
     TmxTag(Json::Value@ json) {
-        ID = json["TagId"];
-        Name = json["Name"];
-        Color = json["Color"];
+        this.ID = json["TagId"];
+        this.Name = json["Name"];
+        this.Color = json["Color"];
     }
 
     Json::Value@ ToJson() {
         Json::Value json = Json::Object();
 
-        json["TagId"] = ID;
-        json["Name"] = Name;
-        json["Color"] = Color;
+        json["TagId"] = this.ID;
+        json["Name"] = this.Name;
+        json["Color"] = this.Color;
 
         return json;
     }

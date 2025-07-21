@@ -7,25 +7,25 @@ class TOTDMonth : Campaign {
     TOTDMonth(Json::Value@ json) {
         _Logging::Debug("Loading TOTD month information: " + Json::Write(json, true));
 
-        Year = json["year"];
-        Month = json["month"];
-        LastDay = json["lastDay"];
-        Name = monthStrings[Month - 1] + " " + Year;
+        this.Year = json["year"];
+        this.Month = json["month"];
+        this.LastDay = json["lastDay"];
+        this.Name = monthStrings[this.Month - 1] + " " + this.Year;
 
         for (uint i = 0; i < json["days"].Length; i++) {
             Json::Value@ map = json["days"][i];
-            MapUids.InsertLast(string(map["mapUid"]));
+            this.MapUids.InsertLast(string(map["mapUid"]));
         }
     }
 
     void LoadMapData() override {
-        if (LoadedData) {
+        if (this.LoadedData) {
             // Data was already loaded
             return;
         }
 
-        _Logging::Debug("Loading data for " + MapUids.Length + " maps in the \"" + Name + "\" TOTD month.");
-        startnew(CoroutineFunc(GetMaps));
+        _Logging::Debug("Loading data for " + this.MapUids.Length + " maps in the \"" + this.Name + "\" TOTD month.");
+        startnew(CoroutineFunc(this.GetMaps));
     }
 
     bool IsNewer(TOTDMonth@ other) {

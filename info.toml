@@ -2,7 +2,7 @@
 name     = "Map Playlist"
 author   = "Fort-TM"
 category = "Utilities"
-version = "0.1"
+version  = "0.1"
 
 [script]
 dependencies = [ "NadeoServices", "Controls" ]
