@@ -29,7 +29,7 @@ Medals S_GoalMedal = Medals::Author;
 bool S_ColoredNames = true;
 
 [Setting hidden]
-bool S_ColoredTags = true; // Not used yet
+bool S_ColoredTags = true;
 
 [Setting hidden]
 bool S_MapName = true;
@@ -41,7 +41,13 @@ bool S_MapAuthor = true;
 bool S_MapUrl = true;
 
 [Setting hidden]
+bool S_MapUid = false;
+
+[Setting hidden]
 bool S_MapGamemode = false;
+
+[Setting hidden]
+bool S_MapTags = false;
 
 [Setting hidden]
 bool S_MapMedals = true;
@@ -130,11 +136,14 @@ void RenderPlaylistSettings() {
 void RenderDisplaySettings() {
     if (UI::Button("Reset to default")) {
         S_ColoredNames = true;
+        S_ColoredTags = true;
 
         S_MapName = true;
         S_MapAuthor = true;
         S_MapUrl = true;
+        S_MapUid = false;
         S_MapGamemode = false;
+        S_MapTags = false;
         S_MapMedals = true;
         S_MapButtons = true;
 
@@ -145,6 +154,8 @@ void RenderDisplaySettings() {
     }
 
     S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
+    S_ColoredTags = UI::Checkbox("Use TMX colors for map tags", S_ColoredTags);
+    UI::SettingDescription("When disabled, map tags will use the default gray background color instead of the colors provided by TMX");
 
     UI::PushFontSize(21);
     UI::SeparatorText("Maps");
@@ -153,6 +164,8 @@ void RenderDisplaySettings() {
     S_MapName = UI::Checkbox("Name##Map", S_MapName);
     S_MapAuthor = UI::Checkbox("Author##Map", S_MapAuthor);
     S_MapUrl = UI::Checkbox("URL##Map", S_MapUrl);
+    S_MapUid = UI::Checkbox("UID##Map", S_MapUid);
+    S_MapTags = UI::Checkbox("TMX Tags##Map", S_MapTags);
     S_MapGamemode = UI::Checkbox("Mode##Map", S_MapGamemode);
     S_MapMedals = UI::Checkbox("Medals##Map", S_MapMedals);
     S_MapButtons = UI::Checkbox("Buttons##Map", S_MapButtons);

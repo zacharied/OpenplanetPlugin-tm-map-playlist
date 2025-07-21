@@ -27,8 +27,23 @@ namespace UI {
         }
 
         UI::TableNextColumn();
+        UI::Text(map.Uid);
+
+        UI::SetItemTooltip("Click to copy to clipboard");
+        if (UI::IsItemClicked()) {
+            IO::SetClipboard(map.Uid);
+            UI::ShowNotification(PLUGIN_NAME, Icons::Clipboard + " Uid copied to clipboard");
+        }
+
+        UI::TableNextColumn();
         if (map.Uid == "") UI::Text("-");
         else UI::Text(tostring(map.GameMode));
+
+        UI::TableNextColumn();
+        for (uint t = 0; t < map.Tags.Length; t++) {
+            map.Tags[t].Render();
+            UI::SameLine();
+        }
 
         UI::TableNextColumn();
         UI::Text(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
