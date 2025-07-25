@@ -206,6 +206,13 @@ class MapPlaylist {
     void AddMap(Map@ map) {
         _Logging::Trace("Adding " + map.toString() + " to the playlist");
 
+        for (uint i = 0; i < this.Maps.Length; i++) {
+            if (map == this.Maps[i]) {
+                _Logging::Warn("Duplicated map \"" + map.toString() + "\" detected. Skipping...");
+                return;
+            }
+        }
+
         this.Maps.InsertLast(map);
         this.columnWidths.Update(this.Maps);
     }
