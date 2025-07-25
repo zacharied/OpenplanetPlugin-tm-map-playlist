@@ -128,9 +128,11 @@ class Map {
     bool opEquals(Map@ other) {
         if (this.Uid != "" && other.Uid != "") {
             return this.Uid == other.Uid;
+        } else if (this.Url != "" && other.Url != "") {
+            return this.Url == other.Url;
         }
 
-        return this.Url == other.Url;
+        return false;
     }
 
     GameMode get_GameMode() {
