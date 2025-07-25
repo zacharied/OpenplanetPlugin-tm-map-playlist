@@ -164,7 +164,7 @@ class Map {
             return this.Url;
         }
 
-        return this.Name + " (" + this.Url + ")";
+        return this.Name + " (" + this.Uid + ")";
     }
 
     Json::Value@ ToJson() {
