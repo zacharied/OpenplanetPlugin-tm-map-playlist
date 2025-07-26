@@ -6,7 +6,13 @@ class TmxTag {
     string Color;
 
     TmxTag(Json::Value@ json) {
-        this.ID = json["TagId"];
+        // Tags endpoint and map/mappack endpoints use different keys
+        if (json.HasKey("TagId")) {
+            this.ID = json["TagId"];
+        } else {
+            this.ID = json["ID"];
+        }
+
         this.Name = json["Name"];
         this.Color = json["Color"];
     }
@@ -15,6 +21,7 @@ class TmxTag {
         Json::Value json = Json::Object();
 
         json["TagId"] = this.ID;
+        json["ID"] = this.ID;
         json["Name"] = this.Name;
         json["Color"] = this.Color;
 

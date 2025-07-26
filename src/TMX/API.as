@@ -1,4 +1,6 @@
 namespace TMX {
+    array<TmxTag@> Tags;
+
     MXMapInfo@ GetMap(int mapId) {
         string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&id=" + mapId;
 
@@ -96,5 +98,28 @@ namespace TMX {
 
         _Logging::Info("Found " + maps.Length + " maps from mappack ID #" + mappackId);
         return maps;
+    }
+
+    void GetTags() {
+        string reqUrl = "https://trackmania.exchange/api/meta/tags";
+
+        try {
+            Json::Value json = API::GetAsync(reqUrl);
+
+            if (json.GetType() == Json::Type::Null) {
+                _Logging::Error("Something went wrong while fetching the tags from TMX", true);
+                return;
+            }
+            
+            for (uint i = 0; i < json.Length; i++) {
+                TmxTag@ tag = TmxTag(json[i]);
+                Tags.InsertLast(tag);
+            }
+
+            Tags.Sort(function(a, b) { return a.Name < b.Name; });
+        } catch {
+            _Logging::Error("An error occurred while fetching the tags from TMX: " + getExceptionInfo(), true);
+            return;
+        }
     }
 }
