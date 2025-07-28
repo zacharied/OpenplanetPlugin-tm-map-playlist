@@ -6,3 +6,4 @@ version  = "0.1"
 
 [script]
 dependencies = [ "NadeoServices", "Controls" ]
+optional_dependencies = [ "WarriorMedals" ]

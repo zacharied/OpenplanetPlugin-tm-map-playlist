@@ -156,9 +156,34 @@ class Map {
             case Medals::Gold:
                 return this.GoldScore;
             case Medals::Author:
+                return this.AuthorScore;
+#if DEPENDENCY_WARRIORMEDALS
+            case Medals::Warrior:
+                return this.WarriorScore;
+#endif
             default:
                 return this.AuthorScore;
         }
+    }
+
+    bool get_HasWarrior() {
+        if (this.GameMode != GameMode::Race) {
+            return false;
+        }
+
+        return this.WarriorScore > 0;
+    }
+
+    int get_WarriorScore() {
+        if (this.GameMode != GameMode::Race || this.Uid == "") {
+            return 0;
+        }
+
+#if DEPENDENCY_WARRIORMEDALS
+        return WarriorMedals::GetWMTime(this.Uid);
+#else
+        return 0;
+#endif
     }
 
     string toString() {

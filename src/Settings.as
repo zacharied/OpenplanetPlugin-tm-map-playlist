@@ -117,12 +117,19 @@ void RenderPlaylistSettings() {
     UI::SettingDescription("When enabled, the playlist will start again after reaching the last map.");
 
     S_SwitchOnMedal = UI::Checkbox("Auto switch on medal", S_SwitchOnMedal);
-    UI::SettingDescription("When enabled, the plugin will automatically switch to the next map after reaching the selected medal.\n\nNOTE: Doesn't work in the editor or in maps from unknown sources.");
+    string medalText = "When enabled, the plugin will automatically switch to the next map after reaching the selected medal.";
+#if DEPENDENCY_WARRIORMEDALS
+    medalText += "\n\nIf a map doesn't have a Warrior time, it will default to Author instead.";
+#endif
+    medalText += "\n\nNOTE: Doesn't work in the editor or in maps from unknown sources.";
+
+    UI::SettingDescription(medalText);
+
 
     if (S_SwitchOnMedal) {
         UI::SetNextItemWidth(175);
         if (UI::BeginCombo("Goal medal", tostring(S_GoalMedal))) {
-            for (int i = 0; i <= Medals::Author; i++) {
+            for (int i = 0; i < Medals::Last; i++) {
                 if (UI::Selectable(tostring(Medals(i)), S_GoalMedal == Medals(i))) {
                     S_GoalMedal = Medals(i);
                 }

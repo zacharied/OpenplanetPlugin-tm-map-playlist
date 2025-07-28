@@ -52,7 +52,11 @@ enum Medals {
     Bronze,
     Silver,
     Gold,
-    Author
+    Author,
+#if DEPENDENCY_WARRIORMEDALS
+    Warrior,
+#endif
+    Last
 }
 
 enum Source {

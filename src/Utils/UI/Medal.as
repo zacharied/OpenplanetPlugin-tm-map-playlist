@@ -14,6 +14,10 @@ namespace UI {
 
     string GetMedalIcon(Medals medal) {
         switch (medal) {
+#if DEPENDENCY_WARRIORMEDALS
+            case Medals::Warrior:
+                return WarriorMedals::GetColorStr() + Icons::Circle + " \\$z";
+#endif
             case Medals::Author:
                 return AT_ICON;
             case Medals::Gold:
@@ -49,6 +53,11 @@ namespace UI {
 
     void MedalsToolTip(Map@ map) {
         if (UI::BeginItemTooltip()) {
+#if DEPENDENCY_WARRIORMEDALS
+            if (map.HasWarrior) {
+                UI::Text(FormatMedal(map.WarriorScore, map.GameMode, Medals::Warrior));
+            }
+#endif
             UI::Text(FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
             UI::Text(FormatMedal(map.GoldScore, map.GameMode, Medals::Gold));
             UI::Text(FormatMedal(map.SilverScore, map.GameMode, Medals::Silver));

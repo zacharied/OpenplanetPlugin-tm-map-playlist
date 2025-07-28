@@ -90,8 +90,18 @@ void MainLoop() {
             bool inverse = playlist.currentMap.GameMode == GameMode::Stunt;
             int goal = playlist.currentMap.GetMedal(S_GoalMedal);
 
+            bool fallback = false;
+
+#if DEPENDENCY_WARRIORMEDALS
+            if (S_GoalMedal == Medals::Warrior && !playlist.currentMap.HasWarrior) {
+                fallback = true;
+                goal = playlist.currentMap.GetMedal(Medals::Author);
+            }
+#endif
+
             if ((inverse && score >= goal) || (!inverse && score <= goal)) {
-                UI::ShowNotification(PLUGIN_NAME, "Got the " + tostring(S_GoalMedal) + " medal! Loading next map...");
+                string medalName = fallback ? tostring(Medals(S_GoalMedal - 1)) : tostring(S_GoalMedal);
+                UI::ShowNotification(PLUGIN_NAME, "Got the " + medalName + " medal! Loading next map...");
                 notified = true;
                 sleep(1000);
                 playlist.NextMap();
