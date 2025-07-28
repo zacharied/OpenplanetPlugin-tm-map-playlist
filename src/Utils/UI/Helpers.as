@@ -75,6 +75,12 @@ namespace UI
     void SettingDescription(const string &in text) {
         UI::SameLine();
         UI::TextDisabled(Icons::QuestionCircle);
-        UI::SetItemTooltip(text);
+        if (UI::BeginItemTooltip()) {
+            UI::PushTextWrapPos(500);
+            UI::TextWrapped(text);
+            UI::PopTextWrapPos();
+
+            UI::EndTooltip();
+        }
     }
 }
