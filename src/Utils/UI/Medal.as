@@ -74,7 +74,7 @@ namespace UI {
             case GameMode::Stunt:
                 if (time < 1) return "-";
 
-                return tostring(time) + " points";
+                return tostring(time) + " pts";
             case GameMode::Platform:
                 if (time < 0) return "-";
 

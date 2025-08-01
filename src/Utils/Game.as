@@ -497,9 +497,14 @@ namespace TM {
 
         if (playground !is null && script !is null && playground.GameTerminals.Length > 0) {
             CSmPlayer@ player = cast<CSmPlayer>(playground.GameTerminals[0].ControlledPlayer);
+
+            if (player is null) {
+                return -1;
+            }
+
             auto seq = playground.GameTerminals[0].UISequence_Current;
 
-            if (player !is null && (seq == SGamePlaygroundUIConfig::EUISequence::Finish || seq == SGamePlaygroundUIConfig::EUISequence::UIInteraction)) {
+            if (seq == SGamePlaygroundUIConfig::EUISequence::Finish || seq == SGamePlaygroundUIConfig::EUISequence::UIInteraction) {
                 CSmScriptPlayer@ playerScriptAPI = cast<CSmScriptPlayer>(player.ScriptAPI);
                 auto ghost = script.Ghost_RetrieveFromPlayer(playerScriptAPI);
 
