@@ -27,8 +27,9 @@ void Main() {
         TM::GetSeasonalCampaigns();
         TM::GetFavorites();
         TM::GetTOTDMonths();
-        TM::GetAccountPbs();
     }
+
+    startnew(TM::GetAccountPbs);
 
     startnew(MainLoop);
     startnew(PbLoop);
