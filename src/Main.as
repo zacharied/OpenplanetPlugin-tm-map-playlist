@@ -9,8 +9,9 @@ void Main() {
     Saves::LoadPlaylists();
 
     NadeoServices::AddAudience("NadeoLiveServices");
+    NadeoServices::AddAudience("NadeoServices");
 
-    while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+    while (!NadeoServices::IsAuthenticated("NadeoLiveServices") || !NadeoServices::IsAuthenticated("NadeoServices")) {
         yield();
     }
 
@@ -19,9 +20,11 @@ void Main() {
         TM::GetSeasonalCampaigns();
         TM::GetFavorites();
         TM::GetTOTDMonths();
+        TM::GetAccountPbs();
     }
 
     startnew(MainLoop);
+    startnew(PbLoop);
 }
 
 [Setting hidden]
@@ -62,7 +65,6 @@ void MainLoop() {
     auto app = cast<CTrackMania>(GetApp());
 
     while (playlist.IsEmpty() || playlist.currentMap is null) {
-        // Don't do anything yet
         yield();
     }
 
@@ -109,5 +111,52 @@ void MainLoop() {
                 sleep(1000);
             }
         }
+    }
+}
+
+void PbLoop() {
+    auto app = cast<CTrackMania>(GetApp());
+
+    while (true) {
+        if (TM::InEditor() || !TM::InMap()) {
+            sleep(1000);
+            continue;
+        }
+        
+        if (app.Network is null || app.Network.ClientManiaAppPlayground is null) {
+            sleep(500);
+            continue;
+        }
+
+        auto userId = app.UserManagerScript.Users[0].Id;
+        auto map = app.RootMap;
+        string mapUid = map.Id.GetName();
+
+        bool isStunt = map.MapType == "TrackMania\\TM_Stunt";
+        bool isPlatform = map.MapType == "TrackMania\\TM_Platform";
+
+        string mode = "TimeAttack";
+        if (isStunt) {
+            mode = "Stunt";
+        } else if (isPlatform) {
+            mode = "Platform";
+        }
+
+        auto scoreMgr = app.Network.ClientManiaAppPlayground.ScoreMgr;
+        uint score = scoreMgr.Map_GetRecord_v2(userId, mapUid, "PersonalBest", "", mode, "");
+
+        if (score < uint(-1)) {
+            if (!PB_UIDS.Exists(mapUid)) {
+                PB_UIDS.Set(mapUid, score);
+            } else {
+                uint oldPb = uint(PB_UIDS[mapUid]);
+
+                if ((isStunt && score > oldPb) || (!isStunt && score < oldPb)) {
+                    PB_UIDS[mapUid] = score;
+                }
+            }
+        }
+
+        sleep(500);
     }
 }

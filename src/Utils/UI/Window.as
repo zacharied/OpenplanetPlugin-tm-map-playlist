@@ -44,7 +44,7 @@ namespace UI {
             UI::EndDisabled();
 
             UI::PushTableVars();
-            if (UI::BeginTable("Maps", 9, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable)) {
+            if (UI::BeginTable("Maps", 11, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
@@ -54,7 +54,9 @@ namespace UI {
                 UI::TableSetupColumn("UID", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Uid);
                 UI::TableSetupColumn("Mode", UI::TableColumnFlags::WidthFixed, 60 * UI_SCALE);
                 UI::TableSetupColumn("Tags", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Tags);
-                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 110 * UI_SCALE);
+                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Medals);
+                UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 110 * UI_SCALE);
+                UI::TableSetupColumn("Delta", UI::TableColumnFlags::WidthFixed, 90 * UI_SCALE);
                 UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed);
                 UI::TableHeadersRow();
 
@@ -65,7 +67,9 @@ namespace UI {
                 UI::TableSetColumnEnabled(5, S_MapGamemode);
                 UI::TableSetColumnEnabled(6, S_MapTags);
                 UI::TableSetColumnEnabled(7, S_MapMedals);
-                UI::TableSetColumnEnabled(8, S_MapButtons);
+                UI::TableSetColumnEnabled(8, S_MapPb);
+                UI::TableSetColumnEnabled(9, S_MapDelta);
+                UI::TableSetColumnEnabled(10, S_MapButtons);
 
                 UI::ListClipper clipper(playlist.Length);
                 while (clipper.Step()) {

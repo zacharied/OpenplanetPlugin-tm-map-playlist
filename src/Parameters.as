@@ -9,6 +9,8 @@ const float UI_SCALE                = UI::GetScale();
 array<MapPlaylist@> savedPlaylists  = array<MapPlaylist@>();
 MapPlaylist playlist                = MapPlaylist();
 
+dictionary PB_UIDS;
+
 array<Campaign@> WEEKLY_SHORTS;
 array<Campaign@> SEASONAL_CAMPAIGNS;
 array<Map@> FAVORITES;

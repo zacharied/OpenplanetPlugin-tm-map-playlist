@@ -53,6 +53,11 @@ namespace TM {
         }
     }
 
+    bool InMap() {
+        CTrackMania@ app = cast<CTrackMania>(GetApp());
+        return app.RootMap !is null;
+    }
+
     bool InEditor() {
         CTrackMania@ app = cast<CTrackMania>(GetApp());
         return app.Editor !is null;
@@ -546,5 +551,150 @@ namespace TM {
         }
 
         return score;
+    }
+
+    dictionary newPbs;
+
+    void GetAccountPbs() {
+        while (!NadeoServices::IsAuthenticated("NadeoServices")) {
+            yield();
+        }
+
+        string userId = NadeoServices::GetAccountID();
+        uint offset = 0;
+        bool stunt = true;
+        bool platform = true;
+
+        while (true) {
+            string url = NadeoServices::BaseURLCore() + "/v2/accounts/" + userId + "/mapRecords?offset=" + offset;
+
+            if (stunt) {
+                url += "&gameMode=Stunt";
+            } else if (platform) {
+                url += "&gameMode=Platform";
+            }
+
+            _Logging::Debug("Account PBs API request: " + url);
+
+            auto req = NadeoServices::Get("NadeoServices", url);
+            req.Start();
+
+            while (!req.Finished()) {
+                yield();
+            }
+
+            int resCode = req.ResponseCode();
+            Json::Value@ json = req.Json();
+
+            _Logging::Trace("[GetAccountPbs] Response code: " + resCode);
+
+            if (resCode >= 400 || json.GetType() != Json::Type::Array) {
+                _Logging::Error("Failed to get account PBs from Nadeo Services");
+                return;
+            }
+
+            string modeStr = stunt ? "Stunt" : platform ? "Platform" : "Race";
+            _Logging::Debug("Found " + json.Length + " " + modeStr + " records");
+
+            for (uint i = 0; i < json.Length; i++) {
+                Json::Value@ record = json[i];
+
+                string mapId = record["mapId"];
+                string mode = record["gameMode"];
+
+                int score;
+
+                if (mode == "Stunt") {
+                    score = record["recordScore"]["score"];
+                } else if (mode == "Platform") {
+                    score = record["recordScore"]["respawnCount"];
+                } else {
+                    score = record["recordScore"]["time"];
+                }
+
+                if (score >= 0 && !newPbs.Exists(mapId)) {
+                    newPbs.Set(mapId, score);
+                }
+            }
+
+            if (stunt) {
+                stunt = false;
+                sleep(1000);
+                continue;
+            }
+
+            if (platform) {
+                platform = false;
+                sleep(1000);
+                continue;
+            }
+
+            // records endpoint returns 1000 records per request
+            if (json.Length < 1000) {
+                break;
+            }
+
+            offset += 1000;
+
+            sleep(1000);
+        }
+
+        GetMapUids();
+    }
+
+    void GetMapUids() {
+        while (!NadeoServices::IsAuthenticated("NadeoServices")) {
+            yield();
+        }
+
+        array<string> mapIds = newPbs.GetKeys();
+        uint index = 0;
+
+        while (index < mapIds.Length) {
+            array<string> idlist;
+
+            for (uint i = index; i < mapIds.Length; i++) {
+                idlist.InsertLast(mapIds[i]);
+
+                if (idlist.Length >= 200) {
+                    break;
+                }
+            }
+
+            string url = NadeoServices::BaseURLCore() + "/maps/?mapIdList=" + string::Join(idlist, ",");
+
+            _Logging::Debug("Map Info API request: " + url);
+
+            auto req = NadeoServices::Get("NadeoServices", url);
+            req.Start();
+
+            while (!req.Finished()) {
+                yield();
+            }
+
+            int resCode = req.ResponseCode();
+            Json::Value@ json = req.Json();
+
+            _Logging::Trace("[GetMapUids] Response code: " + resCode);
+
+            if (resCode >= 400 || json.GetType() != Json::Type::Array) {
+                _Logging::Error("Failed to get map IDs from Nadeo Services");
+                return;
+            }
+
+            for (uint i = 0; i < json.Length; i++) {
+                Json::Value@ map = json[i];
+
+                string mapId = map["mapId"];
+                string mapUid = map["mapUid"];
+
+                if (newPbs.Exists(mapId)) {
+                    PB_UIDS.Set(mapUid, int(newPbs[mapId]));
+                }
+            }
+
+            index += idlist.Length;
+            sleep(1000);
+        }
     }
 }

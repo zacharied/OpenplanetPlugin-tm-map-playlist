@@ -1,5 +1,6 @@
 const float MIN_AUTHOR = 90;
 const float MIN_NAME = 120;
+const float MIN_MEDALS = 60;
 
 class MapColumns {
     float Name = MIN_NAME;
@@ -7,6 +8,7 @@ class MapColumns {
     float Url;
     float Uid;
     float Tags;
+    float Medals = MIN_MEDALS;
 
     void Update(array<Map@> maps) {
         if (maps.IsEmpty()) {
@@ -21,6 +23,7 @@ class MapColumns {
             Author = Math::Max(Author, Draw::MeasureString(map.Author).x);
             Url = Math::Max(Url, Draw::MeasureString(map.Url).x);
             Uid = Math::Max(Uid, Draw::MeasureString(map.Uid).x);
+            Medals = Math::Max(Medals, Draw::MeasureString(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author)).x);
 
             float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
             float tagsSize = 0.0;
@@ -44,5 +47,6 @@ class MapColumns {
         Url = 0.0f;
         Uid = 0.0f;
         Tags = 0.0f;
+        Medals = MIN_MEDALS;
     }
 }

@@ -50,6 +50,17 @@ namespace UI {
         UI::MedalsToolTip(map);
 
         UI::TableNextColumn();
+        string icon = UI::GetTimeIcon(map, map.Pb);
+        string time = UI::FormatTime(map.Pb, map.GameMode);
+        UI::Text(icon + time);
+
+        UI::TableNextColumn();
+        if (map.HasPb && !map.IsPbSecret) {
+            int medal = map.HasWarrior ? map.WarriorScore : map.AuthorScore;
+            UI::Text(UI::FormatDelta(medal, map.Pb, map.GameMode));
+        }
+
+        UI::TableNextColumn();
 
         UI::BeginDisabled(TM::IsLoadingMap());
 

@@ -166,6 +166,30 @@ class Map {
         }
     }
 
+    bool get_HasPb() {
+        if (this.GameMode == GameMode::Platform) {
+            return this.Pb > -1;
+        }
+
+        return this.Pb > 0;
+    }
+
+    int get_Pb() {
+        if (PB_UIDS.Exists(this.Uid)) {
+            return int(PB_UIDS[this.Uid]);
+        }
+
+        return -1;
+    }
+
+    bool get_IsPbSecret() {
+        if (!HasPb) {
+            return false;
+        }
+
+        return uint(Pb) == uint(-1);
+    }
+
     bool get_HasWarrior() {
         if (this.GameMode != GameMode::Race) {
             return false;
@@ -210,6 +234,7 @@ class Map {
             json["GoldScore"] = this.GoldScore;
             json["SilverScore"] = this.SilverScore;
             json["BronzeScore"] = this.BronzeScore;
+            json["Pb"] = this.Pb; // not used but in case it's needed in the future
 
             Json::Value tagsArray = Json::Array();
 

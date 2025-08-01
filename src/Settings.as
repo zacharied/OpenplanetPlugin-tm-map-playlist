@@ -53,6 +53,12 @@ bool S_MapTags = false;
 bool S_MapMedals = true;
 
 [Setting hidden]
+bool S_MapPb = false;
+
+[Setting hidden]
+bool S_MapDelta = false;
+
+[Setting hidden]
 bool S_MapButtons = true;
 
 [Setting hidden]
@@ -152,6 +158,8 @@ void RenderDisplaySettings() {
         S_MapGamemode = false;
         S_MapTags = false;
         S_MapMedals = true;
+        S_MapPb = false;
+        S_MapDelta = false;
         S_MapButtons = true;
 
         S_PlaylistName = true;
@@ -175,6 +183,8 @@ void RenderDisplaySettings() {
     S_MapTags = UI::Checkbox("TMX Tags##Map", S_MapTags);
     S_MapGamemode = UI::Checkbox("Mode##Map", S_MapGamemode);
     S_MapMedals = UI::Checkbox("Medals##Map", S_MapMedals);
+    S_MapPb = UI::Checkbox("PB##Map", S_MapPb);
+    S_MapDelta = UI::Checkbox("Delta##Map", S_MapDelta);
     S_MapButtons = UI::Checkbox("Buttons##Map", S_MapButtons);
 
     UI::PushFontSize(21);
@@ -229,6 +239,11 @@ void RenderDevSettings() {
     if (UI::OrangeButton(Icons::Refresh + " Reload TOTDs")) {
         TOTD_MONTHS.RemoveRange(0, TOTD_MONTHS.Length);
         startnew(TM::GetTOTDMonths);
+    }
+
+    if (UI::OrangeButton(Icons::Refresh + " Reload PBs")) {
+        PB_UIDS.DeleteAll();
+        startnew(TM::GetAccountPbs);
     }
 
     UI::PushFontSize(21);
