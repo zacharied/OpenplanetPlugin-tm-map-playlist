@@ -46,7 +46,11 @@ namespace UI {
         }
 
         UI::TableNextColumn();
-        UI::Text(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
+        if (map.HasWarrior) {
+            UI::Text(UI::FormatMedal(map.WarriorScore, map.GameMode, Medals::Warrior));
+        } else {
+            UI::Text(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
+        }
         UI::MedalsToolTip(map);
 
         UI::TableNextColumn();
