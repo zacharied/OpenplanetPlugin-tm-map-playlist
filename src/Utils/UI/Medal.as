@@ -83,6 +83,8 @@ namespace UI {
             default:
                 if (time < 1) {
                     return "-:--.---";
+                } else if (uint(time) == uint(-1)) {
+                    return "SECRET";
                 }
 
                 return Time::Format(time);
