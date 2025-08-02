@@ -238,11 +238,11 @@ void RenderDevSettings() {
     }
 
     UI::PushFontSize(21);
-    UI::SeparatorText("Lists");
+    UI::SeparatorText("Data");
     UI::PopFontSize();
 
     S_SkipLoad = UI::Checkbox("Skip loading data", S_SkipLoad);
-    UI::SettingDescription("Skip loading seasonal campaigns, weekly shorts, favorites, and TOTDs.");
+    UI::SettingDescription("Skip loading seasonal campaigns, weekly shorts, favorites, and TOTDs.\n\nPBs will still be loaded");
 
     if (UI::OrangeButton(Icons::Refresh + " Reload Seasonal Campaigns")) {
         SEASONAL_CAMPAIGNS.RemoveRange(0, SEASONAL_CAMPAIGNS.Length);
@@ -263,6 +263,8 @@ void RenderDevSettings() {
         TOTD_MONTHS.RemoveRange(0, TOTD_MONTHS.Length);
         startnew(TM::GetTOTDMonths);
     }
+
+    UI::NewLine();
 
     if (UI::OrangeButton(Icons::Refresh + " Reload PBs")) {
         PB_UIDS.DeleteAll();
