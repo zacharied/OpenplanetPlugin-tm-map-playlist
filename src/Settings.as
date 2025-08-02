@@ -38,7 +38,7 @@ bool S_MapName = true;
 bool S_MapAuthor = true;
 
 [Setting hidden]
-bool S_MapUrl = true;
+bool S_MapUrl = false;
 
 [Setting hidden]
 bool S_MapUid = false;
@@ -47,16 +47,16 @@ bool S_MapUid = false;
 bool S_MapGamemode = false;
 
 [Setting hidden]
-bool S_MapTags = false;
+bool S_MapTags = true;
 
 [Setting hidden]
 bool S_MapMedals = true;
 
 [Setting hidden]
-bool S_MapPb = false;
+bool S_MapPb = true;
 
 [Setting hidden]
-bool S_MapDelta = false;
+bool S_MapDelta = true;
 
 [Setting hidden]
 bool S_MapButtons = true;
@@ -153,13 +153,13 @@ void RenderDisplaySettings() {
 
         S_MapName = true;
         S_MapAuthor = true;
-        S_MapUrl = true;
+        S_MapUrl = false;
         S_MapUid = false;
         S_MapGamemode = false;
-        S_MapTags = false;
+        S_MapTags = true;
         S_MapMedals = true;
-        S_MapPb = false;
-        S_MapDelta = false;
+        S_MapPb = true;
+        S_MapDelta = true;
         S_MapButtons = true;
 
         S_PlaylistName = true;
