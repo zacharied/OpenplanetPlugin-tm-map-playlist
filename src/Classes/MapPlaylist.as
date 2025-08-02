@@ -158,6 +158,7 @@ class MapPlaylist {
         Json::Value json = Json::Object();
         json["Name"] = this.Name;
         json["Maps"] = Json::Array();
+        json["Tags"] = Json::Array(); // not used yet
         json["Timestamp"] = this.CreatedAt;
 
         try {
