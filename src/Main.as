@@ -7,9 +7,10 @@ void Main() {
     }
 
 #if !DEPENDENCY_WARRIORMEDALS
-    // if plugin was uninstalled, reset setting
-    if (S_GoalMedal > Medals::Author) {
+    // if plugin was uninstalled, reset settings
+    if (S_GoalMedal > Medals::Author || S_MainMedal > Medals::Author) {
         S_GoalMedal = Medals::Author;
+        S_MainMedal = Medals::Author;
     }
 #endif
 

@@ -159,7 +159,11 @@ class Map {
                 return this.AuthorScore;
 #if DEPENDENCY_WARRIORMEDALS
             case Medals::Warrior:
-                return this.WarriorScore;
+                if (this.HasWarrior) {
+                    return this.WarriorScore;
+                } else {
+                    return this.AuthorScore;
+                }
 #endif
             default:
                 return this.AuthorScore;

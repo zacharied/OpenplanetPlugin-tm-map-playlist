@@ -32,6 +32,9 @@ bool S_ColoredNames = true;
 bool S_ColoredTags = true;
 
 [Setting hidden]
+Medals S_MainMedal = Medals::Author;
+
+[Setting hidden]
 bool S_MapName = true;
 
 [Setting hidden]
@@ -125,7 +128,7 @@ void RenderPlaylistSettings() {
     S_SwitchOnMedal = UI::Checkbox("Auto switch on medal", S_SwitchOnMedal);
     string medalText = "When enabled, the plugin will automatically switch to the next map after reaching the selected medal.";
 #if DEPENDENCY_WARRIORMEDALS
-    medalText += "\n\nIf a map doesn't have a Warrior time, it will default to Author instead.";
+    medalText += "\n\nIf a map doesn't have a Warrior time, it will default to the Author medal instead.";
 #endif
     medalText += "\n\nNOTE: Doesn't work in the editor or in maps from unknown sources.";
 
@@ -150,6 +153,8 @@ void RenderDisplaySettings() {
     if (UI::Button("Reset to default")) {
         S_ColoredNames = true;
         S_ColoredTags = true;
+
+        S_MainMedal = Medals::Author;
 
         S_MapName = true;
         S_MapAuthor = true;
@@ -186,6 +191,24 @@ void RenderDisplaySettings() {
     S_MapPb = UI::Checkbox("PB##Map", S_MapPb);
     S_MapDelta = UI::Checkbox("Delta##Map", S_MapDelta);
     S_MapButtons = UI::Checkbox("Buttons##Map", S_MapButtons);
+
+    UI::NewLine();
+
+    UI::SetNextItemWidth(145);
+    if (UI::BeginCombo("Main medal", tostring(S_MainMedal))) {
+        for (int i = 0; i < Medals::Last; i++) {
+            if (UI::Selectable(tostring(Medals(i)), S_MainMedal == Medals(i))) {
+                S_MainMedal = Medals(i);
+            }
+        }
+        UI::EndCombo();
+    }
+
+    string settingText = "The medal shown in the Medals column and used to calculate the delta to your PB.";
+#if DEPENDENCY_WARRIORMEDALS
+    settingText += "\n\nIf a map doesn't have a Warrior time, it will default to the Author medal instead.";
+#endif
+    UI::SettingDescription(settingText);
 
     UI::PushFontSize(21);
     UI::SeparatorText("Playlists");
