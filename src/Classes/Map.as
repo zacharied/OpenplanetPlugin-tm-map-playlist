@@ -55,7 +55,7 @@ class Map {
             this.Url = path;
             this.GbxName = Text::OpenplanetFormatCodes(map.MapName);
             this.Name = Text::StripFormatCodes(map.MapName);
-            this.Uid = map.Id.GetName();
+            this.Uid = map.IdName;
             this.MapType = CleanMapType(map.MapType);
             this.Author = map.AuthorNickName;
             this.AuthorScore = map.TMObjective_AuthorTime;

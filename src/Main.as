@@ -85,8 +85,8 @@ void MainLoop() {
             continue;
         }
 
-        if (app.RootMap.Id.GetName() != currentUid) {
-            currentUid = app.RootMap.Id.GetName();
+        if (app.RootMap.IdName != currentUid) {
+            currentUid = app.RootMap.IdName;
             notified = false;
         }
 
@@ -139,7 +139,7 @@ void PbLoop() {
 
         auto userId = app.UserManagerScript.Users[0].Id;
         auto map = app.RootMap;
-        string mapUid = map.Id.GetName();
+        string mapUid = map.IdName;
 
         bool isStunt = map.MapType == "TrackMania\\TM_Stunt";
         bool isPlatform = map.MapType == "TrackMania\\TM_Platform";
