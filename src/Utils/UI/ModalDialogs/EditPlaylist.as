@@ -22,6 +22,22 @@ class EditPlaylist: ModalDialog {
         UI::SetNextItemWidth(225);
         this.m_playlistName = UI::InputText("##PlaylistName", this.m_playlistName);
 
+        bool nameExists = false;
+
+        if (this.m_playlistName != "" && this.m_playlistName != this.oldName) {
+            for (uint i = 0; i < savedPlaylists.Length; i++) {
+                MapPlaylist@ list = savedPlaylists[i];
+                if (list.Name == this.m_playlistName) {
+                    nameExists = true;
+                    break;
+                }
+            }
+
+            if (nameExists) {
+                Controls::FrameWarning(Icons::ExclamationTriangle + " A playlist with that name already exists!");
+            }
+        }
+
         vec2 region = UI::GetContentRegionAvail();
 
         if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI_SCALE)))) {
@@ -80,7 +96,7 @@ class EditPlaylist: ModalDialog {
         }
         UI::EndChild();
 
-        UI::BeginDisabled(this.m_playlistName == "" || this.oldList.IsEmpty());
+        UI::BeginDisabled(this.m_playlistName == "" || nameExists || this.oldList.IsEmpty());
 
         UI::BottomRightButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
