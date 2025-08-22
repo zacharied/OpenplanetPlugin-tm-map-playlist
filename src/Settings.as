@@ -86,6 +86,8 @@ bool S_SkipLoad = false;
 
 [SettingsTab name="General" order="1" icon="Wrench"]
 void RenderGeneralSettings() {
+    UI::BeginChild("GeneralSettings");
+
     if (UI::Button("Reset to default")) {
         S_HideWithOP = true;
         S_HideWithGameUI = true;
@@ -94,10 +96,13 @@ void RenderGeneralSettings() {
     S_HideWithOP = UI::Checkbox("Show/Hide with Openplanet overlay", S_HideWithOP);
     S_HideWithGameUI = UI::Checkbox("Show/Hide with game UI", S_HideWithGameUI);
 
+    UI::EndChild();
 }
 
 [SettingsTab name="Playlist" order="2" icon="List"]
 void RenderPlaylistSettings() {
+    UI::BeginChild("PlaylistSettings");
+
     if (UI::Button("Reset to default")) {
         S_Editor = false;
         S_Loop = false;
@@ -146,10 +151,14 @@ void RenderPlaylistSettings() {
             UI::EndCombo();
         }
     }
+
+    UI::EndChild();
 }
 
 [SettingsTab name="Display" order="3" icon="Eye"]
 void RenderDisplaySettings() {
+    UI::BeginChild("DisplaySettings");
+
     if (UI::Button("Reset to default")) {
         S_ColoredNames = true;
         S_ColoredTags = true;
@@ -218,10 +227,14 @@ void RenderDisplaySettings() {
     S_PlaylistMapCount = UI::Checkbox("Map Count##Playlist", S_PlaylistMapCount);
     S_PlaylistDate = UI::Checkbox("Created at##Playlist", S_PlaylistDate);
     S_PlaylistButtons = UI::Checkbox("Buttons##Playlist", S_PlaylistButtons);
+
+    UI::EndChild();
 }
 
 [SettingsTab name="Dev" order="4" icon="Code"]
 void RenderDevSettings() {
+    UI::BeginChild("DevSettings");
+
     if (UI::Button("Reset to default")) {
         S_LogLevel = LogLevel::Info;
         S_SkipLoad = false;
@@ -279,5 +292,5 @@ void RenderDevSettings() {
         Cache::ClearMapCache();
     }
 
-
+    UI::EndChild();
 }

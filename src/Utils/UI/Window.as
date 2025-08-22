@@ -18,6 +18,7 @@ namespace UI {
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
         if (UI::BeginTabItem("Maps")) {
+            UI::BeginChild("MapsChild");
             UI::RenderSources();
 
             UI::SameLine();
@@ -85,10 +86,14 @@ namespace UI {
 
             UI::PopTableVars();
 
+            UI::EndChild();
+
             UI::EndTabItem();
         }
 
         if (UI::BeginTabItem("Playlists")) {
+            UI::BeginChild("PlaylistsChild");
+
             UI::BeginDisabled(playlist.IsEmpty());
 
             if (UI::GreenButton(Icons::Plus + " New")) {
@@ -127,10 +132,14 @@ namespace UI {
                 UI::EndTable();
             }
             UI::PopTableVars();
+
+            UI::EndChild();
+
             UI::EndTabItem();
         }
 
         if (UI::BeginTabItem("Settings")) {
+            UI::BeginChild("SettingsChild");
             UI::BeginTabBar("SettingsTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
             if (UI::BeginTabItem(Icons::Wrench + " General")) {
@@ -154,6 +163,9 @@ namespace UI {
             }
 
             UI::EndTabBar();
+
+            UI::EndChild();
+
             UI::EndTabItem();
         }
 
