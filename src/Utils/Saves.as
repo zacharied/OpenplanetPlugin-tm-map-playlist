@@ -21,11 +21,15 @@ namespace Saves {
     void EditPlaylist(const string &in oldName, MapPlaylist save) {
         _Logging::Info("Editing playlist \"" + oldName + "\".");
 
-        DeletePlaylist(oldName);
-        savedPlaylists.InsertLast(save);
+        for (uint i = 0; i < savedPlaylists.Length; i++) {
+            MapPlaylist@ list = savedPlaylists[i];
+            if (list.Name == oldName) {
+                savedPlaylists[i].Maps = save.Maps;
+                break;
+            }
+        }
 
         UpdateFile();
-        SortPlaylists();
     }
 
     void DeletePlaylist(const string &in name) {
