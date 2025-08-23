@@ -34,7 +34,10 @@ namespace TM {
                 app.ManiaTitleControlScriptAPI.EditMap(map.Url, "", "");
             } else {
                 string gameMode;
-                TM::ModesFromMapType.Get(map.MapType, gameMode);
+
+                if (!TM::ModesFromMapType.Get(map.MapType, gameMode)) {
+                    _Logging::Warn("Unknown map type \"" + map.MapType + "\" from map \"" + map.Name + "\". Map might fail to load!", true);
+                }
 
                 app.ManiaTitleControlScriptAPI.PlayMap(map.Url, gameMode, "");
             }
