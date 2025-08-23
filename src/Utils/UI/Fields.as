@@ -15,6 +15,9 @@ namespace UI {
                 if (UI::Selectable(tostring(Source(i)).Replace("_", " "), m_source == Source(i))) {
                     m_source = Source(i);
                     m_field = "";
+                    m_clubId = 0;
+                    m_campaignId = 0;
+                    @m_campaign = null;
                 }
 
                 UI::PopID();
@@ -125,7 +128,6 @@ namespace UI {
 
         if (UI::Button("Select...") && m_campaign !is null) {
             Renderables::Add(SelectMaps(m_campaign));
-            @m_campaign = null;
         }
 
         UI::SameLine();
@@ -157,8 +159,6 @@ namespace UI {
 
         if (UI::Button("Select...##SelectMapsButton")) {
             startnew(CoroutineFuncUserdata(playlist.SelectCampaignMapsAsync), ids);
-            m_clubId = 0;
-            m_campaignId = 0;
         }
 
         UI::SameLine();
