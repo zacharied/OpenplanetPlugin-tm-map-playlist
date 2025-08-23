@@ -188,10 +188,10 @@ class MapPlaylist {
                 startnew(CoroutineFuncUserdataString(this.AddFromUid), field);
                 break;
             case Source::File:
-                startnew(CoroutineFuncUserdataString(this.AddFromFile), field.Replace("/", "\\"));
+                startnew(CoroutineFuncUserdataString(this.AddFromFile), CleanPath(field));
                 break;
             case Source::Folder:
-                startnew(CoroutineFuncUserdataString(this.AddFolder), field.Replace("/", "\\"));
+                startnew(CoroutineFuncUserdataString(this.AddFolder), CleanPath(field));
                 break;
             case Source::URL:
             default:

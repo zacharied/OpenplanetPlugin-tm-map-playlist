@@ -11,3 +11,7 @@ string Pluralize(const string &in word, int count, const string &in suffix = "s"
 
     return word + suffix;
 }
+
+string CleanPath(const string &in path) {
+    return path.Replace("/", "\\").Replace("\"", "");
+}
