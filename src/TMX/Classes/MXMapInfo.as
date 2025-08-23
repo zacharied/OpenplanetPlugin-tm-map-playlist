@@ -43,6 +43,8 @@ class MXMapInfo {
             Json::Value@ tag = json["Tags"][i];
             this.Tags.InsertLast(TmxTag(tag));
         }
+
+        this.Tags.Sort(function(a, b) { return a.Name < b.Name; });
     }
 
     string get_DownloadURL() {
