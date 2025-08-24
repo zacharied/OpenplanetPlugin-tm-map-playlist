@@ -73,11 +73,11 @@ namespace TM {
 
         CTrackMania@ app = cast<CTrackMania>(GetApp());
 
-        if (app.RootMap is null || app.RootMap.MapInfo.MapUid == "") {
+        if (app.RootMap is null || app.RootMap.IdName == "") {
             return false;
         }
 
-        return app.RootMap.MapInfo.MapUid.ToLower() == playlist.currentMap.Uid.ToLower();
+        return app.RootMap.IdName.ToLower() == playlist.currentMap.Uid.ToLower();
     }
 
     void ClosePauseMenu() {
