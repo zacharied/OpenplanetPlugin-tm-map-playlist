@@ -424,7 +424,7 @@ class MapPlaylist {
         } else if (Regex::IsMatch(str, "\\w{25,27}", regexFlags)) {
             this.AddFromUid(str);
         } else {
-            _Logging::Warn("Unknown URL received, map load might fail.");
+            _Logging::Warn("Unknown URL received, most features might fail to work properly.", true);
             this.AddMap(Map(str));
         }
     }
