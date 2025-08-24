@@ -1,6 +1,6 @@
 class SelectMaps: ModalDialog {
     array<Map@>@ m_maps;
-    uint m_selectedCount;
+    array<Map@> m_selectedMaps;
 
     SelectMaps(Campaign@ campaign) {
         super(campaign.Name + "###SelectMaps");
@@ -8,7 +8,7 @@ class SelectMaps: ModalDialog {
 
         @this.m_maps = campaign.MapList;
         campaign.LoadMapData();
-        this.m_selectedCount = campaign.Length;
+        this.m_selectedMaps = this.m_maps;
     }
 
     SelectMaps(array<Map@> maps) {
@@ -16,7 +16,7 @@ class SelectMaps: ModalDialog {
         this.m_size = vec2(700, 500);
 
         @this.m_maps = maps;
-        this.m_selectedCount = this.m_maps.Length;
+        this.m_selectedMaps = this.m_maps;
     }
 
     SelectMaps(MXMappackInfo@ mappack) {
@@ -24,30 +24,42 @@ class SelectMaps: ModalDialog {
         this.m_size = vec2(700, 500);
 
         @this.m_maps = mappack.Maps;
-        this.m_selectedCount = this.m_maps.Length;
+        this.m_selectedMaps = this.m_maps;
     }
 
     void Clear() {
-        for (uint i = 0; i < this.m_maps.Length; i++) {
-            Map@ map = this.m_maps[i];
-            map.Selected = false;
-        }
-        this.m_selectedCount = 0;
+        this.m_selectedMaps.RemoveRange(0, this.m_selectedMaps.Length);
     }
 
     void SelectAll() {
-        for (uint i = 0; i < this.m_maps.Length; i++) {
-            Map@ map = this.m_maps[i];
-            map.Selected = true;
+        this.m_selectedMaps = this.m_maps;
+    }
+
+    void SelectMap(Map@ map) {
+        if (!IsSelected(map)) {
+            this.m_selectedMaps.InsertLast(map);
         }
-        m_selectedCount = this.m_maps.Length;
+    }
+
+    void UnselectedMap(Map@ map) {
+        if (IsSelected(map)) {
+            this.m_selectedMaps.RemoveAt(this.m_selectedMaps.FindByRef(map));
+        }
+    }
+
+    bool IsSelected(Map@ map) {
+        return this.m_selectedMaps.FindByRef(map) > -1;
+    }
+
+    int get_SelectedCount() {
+        return this.m_selectedMaps.Length;
     }
 
     void AddToPlaylist() {
         for (uint i = 0; i < this.m_maps.Length; i++) {
             Map@ map = this.m_maps[i];
 
-            if (map.Selected) {
+            if (IsSelected(map)) {
                 playlist.AddMap(map);
             }
         }
@@ -58,15 +70,23 @@ class SelectMaps: ModalDialog {
         float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
 
         if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI_SCALE)))) {
+            UI::BeginDisabled(this.SelectedCount == this.m_maps.Length);
+
             if (UI::Button("Select all")) {
                 this.SelectAll();
             }
 
+            UI::EndDisabled();
+
             UI::SameLine();
+
+            UI::BeginDisabled(this.SelectedCount == 0);
 
             if (UI::Button("Deselect all")) {
                 this.Clear();
             }
+
+            UI::EndDisabled();
 
             UI::PushTableVars();
 
@@ -87,21 +107,20 @@ class SelectMaps: ModalDialog {
                         UI::TableNextColumn();
 
                         Map@ map = this.m_maps[i];
+                        bool selected = this.IsSelected(map);
 
-                        if (UI::Checkbox("##Selected" + i, map.Selected)) {
-                            if (!map.Selected) {
-                                map.Selected = true;
-                                this.m_selectedCount++;
+                        if (UI::Checkbox("##Selected" + i, selected)) {
+                            if (!selected) {
+                                this.SelectMap(map);
                             }
-                        } else if (map.Selected) {
-                            map.Selected = false;
-                            this.m_selectedCount--;
+                        } else if (selected) {
+                            this.UnselectedMap(map);
                         }
 
                         UI::TableNextColumn();
                         UI::AlignTextToFramePadding();
 
-                        UI::BeginDisabled(!map.Selected);
+                        UI::BeginDisabled(!selected);
 
                         UI::Text(map.Name);
 
@@ -124,7 +143,7 @@ class SelectMaps: ModalDialog {
         }
         UI::EndChild();
 
-        string buttonStr = "Add " + this.m_selectedCount + Pluralize(" map", this.m_selectedCount);
+        string buttonStr = "Add " + this.SelectedCount + Pluralize(" map", this.SelectedCount);
 
         region = UI::GetContentRegionAvail();
         vec2 pos = UI::GetCursorPos();
@@ -132,10 +151,10 @@ class SelectMaps: ModalDialog {
         float newPos = Math::Max(region.x - dimensions.x - itemSpacing, 0.0);
         UI::SetCursorPosX(pos.x + newPos);
 
-        UI::BeginDisabled(this.m_selectedCount == 0);
+        UI::BeginDisabled(this.SelectedCount == 0);
 
         if (UI::GreenButton(buttonStr)) {
-            AddToPlaylist();
+            this.AddToPlaylist();
             this.Close();
         }
 

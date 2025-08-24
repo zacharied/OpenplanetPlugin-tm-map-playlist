@@ -13,7 +13,6 @@ class Map {
 
     // Used in campaigns
     int Position = -1;
-    bool Selected = true;
 
     Map() { }
 
