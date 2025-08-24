@@ -58,6 +58,9 @@ class MapPlaylist {
         try {
             if (this.currentMap is null) {
                 startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
+            } else if (this.Maps.Length == 1) {
+                // No need to load the same map
+                return;
             } else {
                 int index = Maps.FindByRef(this.currentMap);
 
