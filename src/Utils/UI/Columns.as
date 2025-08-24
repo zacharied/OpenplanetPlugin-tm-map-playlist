@@ -16,7 +16,14 @@ class MapColumns {
             return;
         }
 
+        uint start = Time::Now;
+
         for (uint i = 0; i < maps.Length; i++) {
+            if (Time::Now > start + MAX_FRAME_TIME) {
+                start = Time::Now;
+                yield();
+            }
+
             Map@ map = maps[i];
 
             Name = Math::Max(Name, Draw::MeasureString(map.Name).x);

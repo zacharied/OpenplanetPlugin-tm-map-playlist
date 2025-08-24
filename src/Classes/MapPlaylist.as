@@ -443,7 +443,14 @@ class MapPlaylist {
                 return;
             }
 
+            uint start = Time::Now;
+
             for (uint i = 0; i < files.Length; i++) {
+                if (Time::Now > start + MAX_FRAME_TIME) {
+                    start = Time::Now;
+                    yield();
+                }
+
                 if (!files[i].ToLower().EndsWith(".map.gbx")) continue;
                 this.AddFromFile(files[i].Replace("/", "\\"));
             }
