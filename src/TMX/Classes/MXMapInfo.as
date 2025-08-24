@@ -44,7 +44,10 @@ class MXMapInfo {
             this.Tags.InsertLast(TmxTag(tag));
         }
 
-        this.Tags.Sort(function(a, b) { return a.Name < b.Name; });
+        // Calling .Sort for maps without tags causes an out of bounds exception
+        if (Tags.Length > 1) {
+            this.Tags.Sort(function(a, b) { return a.Name < b.Name; });
+        }
     }
 
     string get_DownloadURL() {
