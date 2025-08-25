@@ -3,7 +3,7 @@ namespace UI {
         UI::TableNextRow();
         UI::TableNextColumn();
 
-        if (playlist.currentMap !is null && playlist.currentMap == map) {
+        if (TM::InCurrentMap() && playlist.currentMap == map) {
             // highlight current map
             UI::TableSetBgColor(UI::TableBgTarget::RowBg0, vec4(0.2, 0.55, 0.15, 0.2));
         }

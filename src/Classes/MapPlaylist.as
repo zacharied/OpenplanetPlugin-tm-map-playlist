@@ -92,15 +92,7 @@ class MapPlaylist {
             }
 
             if (this.currentMap !is null && this.currentMap == map) {
-                if (index == int(this.Maps.Length - 1)) {
-                    if (S_Loop && this.Maps.Length > 1) {
-                        @this.currentMap = this.Maps[0];
-                    } else {
-                        @this.currentMap = null;
-                    }
-                } else {
-                    @this.currentMap = this.Maps[index + 1];
-                }
+                @this.currentMap = null;
             }
 
             this.Maps.RemoveAt(index);
