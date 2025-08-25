@@ -30,7 +30,7 @@ class MapColumns {
             Author = Math::Max(Author, Draw::MeasureString(map.Author).x);
             Url = Math::Max(Url, Draw::MeasureString(map.Url).x);
             Uid = Math::Max(Uid, Draw::MeasureString(map.Uid).x);
-            Medals = Math::Max(Medals, Draw::MeasureString(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author)).x);
+            Medals = Math::Max(Medals, Draw::MeasureString(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author)).x + 8);
 
             float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
             float tagsSize = 0.0;
