@@ -1,5 +1,5 @@
 namespace UI {
-    void RenderMap(Map@ map, int i) {
+    void RenderMapRow(Map@ map, int i) {
         UI::TableNextRow();
         UI::TableNextColumn();
 
@@ -108,7 +108,7 @@ namespace UI {
         UI::SetItemTooltip("Remove map");
     }
 
-    void RenderPlaylist(MapPlaylist@ list, int i) {
+    void RenderPlaylistRow(MapPlaylist@ list, int i) {
         UI::TableNextRow();
         UI::TableNextColumn();
 

@@ -77,7 +77,7 @@ namespace UI {
                     for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, playlist.Length); i++) {
                         UI::PushID("PlaylistMap"+i);
                         Map@ map = playlist[i];
-                        UI::RenderMap(map, i);
+                        UI::RenderMapRow(map, i);
                         UI::PopID();
                     }
                 }
@@ -125,7 +125,7 @@ namespace UI {
                     for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, savedPlaylists.Length); i++) {
                         UI::PushID("Playlist"+i);
                         MapPlaylist@ list = savedPlaylists[i];
-                        UI::RenderPlaylist(list, i);
+                        UI::RenderPlaylistRow(list, i);
                         UI::PopID();
                     }
                 }
