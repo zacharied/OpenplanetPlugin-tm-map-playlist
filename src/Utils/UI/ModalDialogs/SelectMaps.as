@@ -41,7 +41,7 @@ class SelectMaps: ModalDialog {
         }
     }
 
-    void UnselectedMap(Map@ map) {
+    void UnselectMap(Map@ map) {
         if (IsSelected(map)) {
             this.m_selectedMaps.RemoveAt(this.m_selectedMaps.FindByRef(map));
         }
@@ -114,7 +114,7 @@ class SelectMaps: ModalDialog {
                                 this.SelectMap(map);
                             }
                         } else if (selected) {
-                            this.UnselectedMap(map);
+                            this.UnselectMap(map);
                         }
 
                         UI::TableNextColumn();
