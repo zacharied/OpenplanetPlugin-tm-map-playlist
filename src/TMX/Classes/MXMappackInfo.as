@@ -13,8 +13,8 @@ class MXMappackInfo {
     }
 
     void GetMaps() {
-        if (this.MapCount > 200) {
-            _Logging::Warn("Mappack has more than 200 maps. Please wait while maps are fetched.", true);
+        if (this.MapCount > 1000) {
+            _Logging::Warn("Mappack has more than 1000 maps. Please wait while maps are fetched.", true);
         }
 
         array<MXMapInfo@> mxMaps = TMX::GetMappackMaps(this.ID);

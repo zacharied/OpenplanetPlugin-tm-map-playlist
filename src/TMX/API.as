@@ -2,7 +2,7 @@ namespace TMX {
     array<TmxTag@> Tags;
 
     MXMapInfo@ GetMap(int mapId) {
-        string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&id=" + mapId;
+        string reqUrl = "https://trackmania.exchange/api/maps?count=1000&fields=" + MAP_FIELDS + "&id=" + mapId;
 
         try {
             Json::Value json = API::GetAsync(reqUrl);
@@ -56,7 +56,7 @@ namespace TMX {
         int lastId = 0;
 
         while (moreMaps) {
-            string reqUrl = "https://trackmania.exchange/api/maps?count=100&fields=" + MAP_FIELDS + "&mappackid=" + mappackId;
+            string reqUrl = "https://trackmania.exchange/api/maps?count=1000&fields=" + MAP_FIELDS + "&mappackid=" + mappackId;
             if (moreMaps && lastId != 0) reqUrl += "&after=" + lastId;
 
             try {
