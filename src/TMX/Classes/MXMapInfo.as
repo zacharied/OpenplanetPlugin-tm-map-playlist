@@ -45,7 +45,7 @@ class MXMapInfo {
         }
 
         // Calling .Sort for maps without tags causes an out of bounds exception
-        if (Tags.Length > 1) {
+        if (this.Tags.Length > 1) {
             this.Tags.Sort(function(a, b) { return a.Name < b.Name; });
         }
     }

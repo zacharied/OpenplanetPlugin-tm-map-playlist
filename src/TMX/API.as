@@ -82,7 +82,7 @@ namespace TMX {
                     MXMapInfo@ info = MXMapInfo(items[i]);
                     maps.InsertLast(info);
 
-                    if (moreMaps && i == items.Length -1) {
+                    if (moreMaps && i == items.Length - 1) {
                         lastId = info.MapId;
                     }
                 }

@@ -125,9 +125,15 @@ class Map {
     }
 
     bool opEquals(Map@ other) {
+        if (other is null) {
+            return false;
+        }
+
         if (this.Uid != "" && other.Uid != "") {
             return this.Uid == other.Uid;
-        } else if (this.Url != "" && other.Url != "") {
+        }
+        
+        if (this.Url != "" && other.Url != "") {
             return this.Url == other.Url;
         }
 
@@ -137,9 +143,13 @@ class Map {
     GameMode get_GameMode() {
         if (this.MapType == "TM_Stunt") {
             return GameMode::Stunt;
-        } else if (this.MapType == "TM_Platform") {
+        }
+        
+        if (this.MapType == "TM_Platform") {
             return GameMode::Platform;
-        } else if (this.MapType == "TM_Royal") {
+        }
+
+        if (this.MapType == "TM_Royal") {
             return GameMode::Royal;
         }
 

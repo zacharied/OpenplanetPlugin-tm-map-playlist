@@ -36,7 +36,7 @@ class TOTDMonth : Campaign {
         return this.Month > other.Month;
     }
 
-    bool OpEquals(TOTDMonth@ other) {
-        return this.Year == other.Year && this.Month == other.Month;
+    bool opEquals(TOTDMonth@ other) {
+        return other !is null && this.Year == other.Year && this.Month == other.Month;
     }
 }

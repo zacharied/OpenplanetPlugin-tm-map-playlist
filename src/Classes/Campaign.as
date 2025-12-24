@@ -84,7 +84,7 @@ class Campaign {
         return this.Id > other.Id;
     }
 
-    bool OpEquals(Campaign@ other) {
-        return this.Id == other.Id;
+    bool opEquals(Campaign@ other) {
+        return other !is null && this.Id == other.Id;
     }
 }

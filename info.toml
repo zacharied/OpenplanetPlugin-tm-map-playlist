@@ -2,8 +2,9 @@
 name     = "Map Playlist"
 author   = "Fort-TM"
 category = "Utilities"
-version  = "0.1"
+version  = "1.0"
 
 [script]
 dependencies = [ "NadeoServices", "Controls" ]
 optional_dependencies = [ "WarriorMedals" ]
+timeout = 10000
