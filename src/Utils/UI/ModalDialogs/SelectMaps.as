@@ -69,7 +69,7 @@ class SelectMaps: ModalDialog {
         vec2 region = UI::GetContentRegionAvail();
         float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
 
-        if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI_SCALE)))) {
+        if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI::GetScale())))) {
             UI::BeginDisabled(this.SelectedCount == this.m_maps.Length);
 
             if (UI::Button("Select all")) {
@@ -95,7 +95,7 @@ class SelectMaps: ModalDialog {
                 UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed, 30);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
                 UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
+                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI::GetScale());
                 UI::TableHeadersRow();
 
                 UI::ListClipper clipper(this.m_maps.Length);

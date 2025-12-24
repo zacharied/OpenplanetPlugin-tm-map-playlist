@@ -4,7 +4,6 @@ const string USER_FOLDER            = IO::FromUserGameFolder("");
 const string PLUGIN_NAME            = Meta::ExecutingPlugin().Name;
 const string PLUGIN_ICON            = Icons::List;
 const string FULL_NAME              = PLUGIN_ICON + " " + PLUGIN_NAME;
-const float UI_SCALE                = UI::GetScale();
 const int MAX_FRAME_TIME            = 50;
 
 array<MapPlaylist@> savedPlaylists  = array<MapPlaylist@>();

@@ -34,7 +34,7 @@ class AddPlaylist: ModalDialog {
 
         vec2 region = UI::GetContentRegionAvail();
 
-        if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI_SCALE)))) {
+        if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI::GetScale())))) {
             UI::PushStyleVar(UI::StyleVar::IndentSpacing, 5);
             UI::PushStyleColor(UI::Col::HeaderHovered, vec4(0.3f, 0.3f, 0.3f, 0.8f));
 
@@ -45,7 +45,7 @@ class AddPlaylist: ModalDialog {
                     UI::TableSetupScrollFreeze(0, 1);
                     UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
                     UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Author);
-                    UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI_SCALE);
+                    UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI::GetScale());
                     UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed);
                     UI::TableHeadersRow();
 

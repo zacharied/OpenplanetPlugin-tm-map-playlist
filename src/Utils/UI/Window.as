@@ -53,11 +53,11 @@ namespace UI {
                 UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Author);
                 UI::TableSetupColumn("URL", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Url);
                 UI::TableSetupColumn("UID", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Uid);
-                UI::TableSetupColumn("Mode", UI::TableColumnFlags::WidthFixed, 60 * UI_SCALE);
+                UI::TableSetupColumn("Mode", UI::TableColumnFlags::WidthFixed, 60 * UI::GetScale());
                 UI::TableSetupColumn("Tags", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Tags);
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Medals);
-                UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 110 * UI_SCALE);
-                UI::TableSetupColumn("Delta", UI::TableColumnFlags::WidthFixed, 90 * UI_SCALE);
+                UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 110 * UI::GetScale());
+                UI::TableSetupColumn("Delta", UI::TableColumnFlags::WidthFixed, 90 * UI::GetScale());
                 UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed);
                 UI::TableHeadersRow();
 

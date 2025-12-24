@@ -13,7 +13,7 @@ class DeletePlaylist: ModalDialog {
         UI::TextWrapped("Are you sure you want to delete the playlist \"" + this.m_playlist.Name + "\"?");
 
         vec2 region = UI::GetContentRegionAvail();
-        UI::VPadding(region.y - 40 * UI_SCALE);
+        UI::VPadding(region.y - 40 * UI::GetScale());
 
         float width = UI::MeasureButton(Icons::TrashO + " Delete").x;
         float width2 = UI::MeasureButton("Cancel").x;
