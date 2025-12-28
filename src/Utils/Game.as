@@ -561,26 +561,99 @@ namespace TM {
         return score;
     }
 
-    dictionary newPbs;
+    uint lastRequest = 0;
+    array<Map@> queue;
+    uint PB_COOLDOWN = 3000;
 
-    void GetAccountPbs() {
+    void GetPb(ref@ mapRef) {
+        Map@ map = cast<Map>(mapRef);
+
+        if (map is null || map.Uid == "" || map.GameMode == GameMode::Royal || map.HasPb) {
+            return;
+        }
+
+        uint now = Time::Now;
+        lastRequest = now;
+        queue.InsertLast(map);
+
+        sleep(PB_COOLDOWN);
+
+        if (lastRequest > now) {
+            // Another request
+            return;
+        }
+
+        array<Map@> mapList = queue;
+        queue.RemoveRange(0, queue.Length);
+        QueueMapPbs(mapList);
+    }
+
+    void QueueMapPbs(array<Map@> maps) {
+        array<Map@> validMaps;
+
+        for (uint i = 0; i < maps.Length; i++) {
+            if (maps[i].Uid == "" || maps[i].GameMode == GameMode::Royal || maps[i].HasPb) {
+                continue;
+            }
+
+            validMaps.InsertLast(maps[i]);
+        }
+
+        if (validMaps.IsEmpty()) {
+            return;
+        }
+
+        GetMapIds(validMaps);
+
+        array<string> raceIds;
+        array<string> stuntIds;
+        array<string> platformIds;
+
+        for (uint i = 0; i < validMaps.Length; i++) {
+            Map@ map = validMaps[i];
+
+            string mapId = Cache::GetMapId(map.Uid);
+
+            if (mapId == "") {
+                continue;
+            }
+
+            switch (map.GameMode) {
+                case GameMode::Race:
+                    raceIds.InsertLast(mapId);
+                    break;
+                case GameMode::Stunt:
+                    stuntIds.InsertLast(mapId);
+                    break;
+                case GameMode::Platform:
+                    platformIds.InsertLast(mapId);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (!raceIds.IsEmpty()) GetPbs(raceIds, GameMode::Race);
+        if (!stuntIds.IsEmpty()) GetPbs(stuntIds, GameMode::Stunt);
+        if (!platformIds.IsEmpty()) GetPbs(platformIds, GameMode::Platform);
+    }
+
+    void GetPbs(array<string> ids, GameMode mode) {
         while (!NadeoServices::IsAuthenticated("NadeoServices")) {
             yield();
         }
 
         string userId = NadeoServices::GetAccountID();
-        uint offset = 0;
-        bool stunt = true;
-        bool platform = true;
+        array<array<string>> idChunks = Chunks(ids, 200);
 
-        while (true) {
-            string url = NadeoServices::BaseURLCore() + "/v2/accounts/" + userId + "/mapRecords?offset=" + offset;
+        string modeName = "TimeAttack";
 
-            if (stunt) {
-                url += "&gameMode=Stunt";
-            } else if (platform) {
-                url += "&gameMode=Platform";
-            }
+        if (mode == GameMode::Stunt || mode == GameMode::Platform) {
+            modeName = tostring(mode);
+        }
+
+        for (uint c = 0; c < idChunks.Length; c++) {
+            string url = NadeoServices::BaseURLCore() + "/v2/accounts/" + userId + "/mapRecords?mapIdList=" + string::Join(idChunks[c], ",") + "&gameMode=" + modeName;
 
             _Logging::Debug("Account PBs API request: " + url);
 
@@ -601,108 +674,60 @@ namespace TM {
                 return;
             }
 
-            string modeStr = stunt ? "Stunt" : platform ? "Platform" : "Race";
-            _Logging::Debug("Found " + json.Length + " " + modeStr + " records");
+            _Logging::Debug("Found " + json.Length + " " + modeName + " records");
 
             for (uint i = 0; i < json.Length; i++) {
                 Json::Value@ record = json[i];
 
                 string mapId = record["mapId"];
-                string mode = record["gameMode"];
+                string gamemode = record["gameMode"];
 
                 int score;
 
-                if (mode == "Stunt") {
+                if (gamemode == "Stunt") {
                     score = record["recordScore"]["score"];
-                } else if (mode == "Platform") {
+                } else if (gamemode == "Platform") {
                     score = record["recordScore"]["respawnCount"];
                 } else {
                     score = record["recordScore"]["time"];
                 }
 
-                if (score >= 0 && !newPbs.Exists(mapId)) {
-                    newPbs.Set(mapId, score);
+                string mapUid = Cache::GetMapUid(mapId);
+
+                if (mapUid != "" && score >= 0 && !PB_UIDS.Exists(mapUid)) {
+                    PB_UIDS.Set(mapUid, score);
                 }
             }
 
-            if (stunt) {
-                stunt = false;
+            if (c != idChunks.Length - 1) {
                 sleep(1000);
-                continue;
             }
-
-            if (platform) {
-                platform = false;
-                sleep(1000);
-                continue;
-            }
-
-            // records endpoint returns 1000 records per request
-            if (json.Length < 1000) {
-                break;
-            }
-
-            offset += 1000;
-
-            sleep(1000);
         }
-
-        GetMapUids();
     }
 
-    void GetMapUids() {
-        while (!NadeoServices::IsAuthenticated("NadeoServices")) {
-            yield();
+    void GetMapIds(array<Map@> maps) {
+        array<string> uids;
+
+        for (uint i = 0; i < maps.Length; i++) {
+            if (maps[i].Uid == "" || Cache::GetMapId(maps[i].Uid) != "") {
+                continue;
+            }
+
+            uids.InsertLast(maps[i].Uid);
         }
 
-        array<string> mapIds = newPbs.GetKeys();
-        uint index = 0;
+        if (uids.IsEmpty()) {
+            return;
+        }
 
-        while (index < mapIds.Length) {
-            array<string> idlist;
+        array<array<string>> uidChunks = Chunks(uids, 275);
 
-            for (uint i = index; i < mapIds.Length; i++) {
-                idlist.InsertLast(mapIds[i]);
+        for (uint c = 0; c < uidChunks.Length; c++) {
+            auto idMaps = GetMultipleMapsFromUids(uidChunks[c]);
 
-                if (idlist.Length >= 200) {
-                    break;
-                }
+            for (uint m = 0; m < idMaps.Length; m++) {
+                Cache::SetMapId(idMaps[m].Uid, idMaps[m].Id);
             }
-
-            string url = NadeoServices::BaseURLCore() + "/maps/?mapIdList=" + string::Join(idlist, ",");
-
-            _Logging::Debug("Map Info API request: " + url);
-
-            auto req = NadeoServices::Get("NadeoServices", url);
-            req.Start();
-
-            while (!req.Finished()) {
-                yield();
-            }
-
-            int resCode = req.ResponseCode();
-            Json::Value@ json = req.Json();
-
-            _Logging::Trace("[GetMapUids] Response code: " + resCode);
-
-            if (resCode >= 400 || json.GetType() != Json::Type::Array) {
-                _Logging::Error("Failed to get map IDs from Nadeo Services");
-                return;
-            }
-
-            for (uint i = 0; i < json.Length; i++) {
-                Json::Value@ map = json[i];
-
-                string mapId = map["mapId"];
-                string mapUid = map["mapUid"];
-
-                if (newPbs.Exists(mapId)) {
-                    PB_UIDS.Set(mapUid, int(newPbs[mapId]));
-                }
-            }
-
-            index += idlist.Length;
-            sleep(1000);
         }
     }
 }

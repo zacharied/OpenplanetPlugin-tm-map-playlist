@@ -223,6 +223,7 @@ class MapPlaylist {
         this.Maps.InsertLast(map);
         this.columnWidths.Update(this.Maps);
         this.Dirty = true;
+        startnew(TM::GetPb, map);
     }
 
     void AddCampaign(ref@ campRef) {

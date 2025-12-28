@@ -15,13 +15,13 @@ void Main() {
 #endif
 
     Saves::LoadPlaylists();
+    Cache::LoadIdCache();
 
     NadeoServices::AddAudience("NadeoLiveServices");
     NadeoServices::AddAudience("NadeoServices");
 
-    while (!NadeoServices::IsAuthenticated("NadeoLiveServices") || !NadeoServices::IsAuthenticated("NadeoServices")) {
-        yield();
-    }
+    startnew(MainLoop);
+    startnew(PbLoop);
 
     if (!S_SkipLoad) {
         TM::GetWeeklyShorts();
@@ -29,12 +29,10 @@ void Main() {
         TM::GetFavorites();
         TM::GetTOTDMonths();
     }
-
-    startnew(TM::GetAccountPbs);
-
-    startnew(MainLoop);
-    startnew(PbLoop);
 }
+
+void OnDisabled()  { Cache::StoreMapIds(); }
+void OnDestroyed() { Cache::StoreMapIds(); }
 
 [Setting hidden]
 bool showMainWindow = true;

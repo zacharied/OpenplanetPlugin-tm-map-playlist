@@ -282,13 +282,6 @@ void RenderDevSettings() {
         startnew(TM::GetTOTDMonths);
     }
 
-    UI::NewLine();
-
-    if (UI::OrangeButton(Icons::Refresh + " Reload PBs")) {
-        PB_UIDS.DeleteAll();
-        startnew(TM::GetAccountPbs);
-    }
-
     UI::PushFontSize(21);
     UI::SeparatorText("Cache");
     UI::PopFontSize();

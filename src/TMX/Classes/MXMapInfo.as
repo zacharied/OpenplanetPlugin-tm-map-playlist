@@ -2,6 +2,7 @@ class MXMapInfo {
     string Name = "Unknown";
     string GbxMapName;
     string MapUid;
+    string OnlineMapId;
     string MapType;
     string Author = "Unknown";
     int MapId;
@@ -17,6 +18,10 @@ class MXMapInfo {
         this.Name = json["Name"];
         this.MapUid = json["MapUid"];
         this.MapId = json["MapId"];
+
+        if (json["OnlineMapId"].GetType() != Json::Type::Null) {
+            this.OnlineMapId = json["OnlineMapId"];
+        }
 
         if (json["GbxMapName"].GetType() != Json::Type::Null) {
             this.GbxMapName = json["GbxMapName"];

@@ -43,6 +43,7 @@ class Map {
                 Cache::SetName(map.AuthorAccountId, map.AuthorDisplayName);
             }
 
+            Cache::SetMapId(map.Uid, map.Id);
             Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from Nadeo Services: " + getExceptionInfo(), true);
@@ -89,6 +90,7 @@ class Map {
             this.Tags = mapInfo.Tags;
             this.ThumbnailUrl = mapInfo.ThumbnailUrl;
 
+            Cache::SetMapId(mapInfo.MapUid, mapInfo.OnlineMapId);
             Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from ManiaExchange: " + getExceptionInfo(), true);
