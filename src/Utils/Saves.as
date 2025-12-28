@@ -25,6 +25,7 @@ namespace Saves {
             MapPlaylist@ list = savedPlaylists[i];
             if (list.Name == oldName) {
                 savedPlaylists[i].Maps = save.Maps;
+                savedPlaylists[i].Name = save.Name;
                 break;
             }
         }
