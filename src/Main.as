@@ -24,6 +24,10 @@ void Main() {
     startnew(PbLoop);
 
     if (!S_SkipLoad) {
+        while (!showMainWindow) {
+            yield();
+        }
+
         TM::GetWeeklyShorts();
         TM::GetSeasonalCampaigns();
         TM::GetFavorites();
