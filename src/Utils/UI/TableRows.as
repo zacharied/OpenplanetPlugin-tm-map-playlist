@@ -57,8 +57,8 @@ namespace UI {
         if (S_MainMedal == Medals::Warrior && !map.HasWarrior) {
             UI::Text(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
         } else {
-            int medal = map.GetMedal(S_MainMedal);
-            UI::Text(UI::FormatMedal(medal, map.GameMode, S_MainMedal));
+            int medalScore = map.GetMedalScore(S_MainMedal);
+            UI::Text(UI::FormatMedal(medalScore, map.GameMode, S_MainMedal));
         }
         UI::MedalsToolTip(map);
 
@@ -69,8 +69,8 @@ namespace UI {
 
         UI::TableNextColumn();
         if (map.HasPb && !map.IsPbSecret) {
-            int medal = map.GetMedal(S_MainMedal);
-            UI::Text(UI::FormatDelta(medal, map.Pb, map.GameMode));
+            int medalScore = map.GetMedalScore(S_MainMedal);
+            UI::Text(UI::FormatDelta(medalScore, map.Pb, map.GameMode));
         }
 
         UI::TableNextColumn();

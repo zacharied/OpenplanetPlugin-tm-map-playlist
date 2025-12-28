@@ -3,7 +3,7 @@ class DeletePlaylist: ModalDialog {
 
     DeletePlaylist(MapPlaylist@ list) {
         @this.m_playlist = list;
-        super("Delete Playlist###DeletePlaylist");
+        super(Icons::TrashO + " Delete Playlist###DeletePlaylist");
         this.m_size = vec2(400, 150);
     }
 

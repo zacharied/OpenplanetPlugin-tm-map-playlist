@@ -160,7 +160,7 @@ class Map {
         return GameMode::Race;
     }
 
-    int GetMedal(Medals medal) {
+    int GetMedalScore(Medals medal) {
         switch (medal) {
             case Medals::Bronze:
                 return this.BronzeScore;

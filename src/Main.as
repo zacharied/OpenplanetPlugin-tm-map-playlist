@@ -99,14 +99,14 @@ void MainLoop() {
             }
 
             bool inverse = playlist.currentMap.GameMode == GameMode::Stunt;
-            int goal = playlist.currentMap.GetMedal(S_GoalMedal);
+            int goal = playlist.currentMap.GetMedalScore(S_GoalMedal);
 
             bool fallback = false;
 
 #if DEPENDENCY_WARRIORMEDALS
             if (S_GoalMedal == Medals::Warrior && !playlist.currentMap.HasWarrior) {
                 fallback = true;
-                goal = playlist.currentMap.GetMedal(Medals::Author);
+                goal = playlist.currentMap.GetMedalScore(Medals::Author);
             }
 #endif
 

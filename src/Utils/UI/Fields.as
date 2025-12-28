@@ -82,18 +82,24 @@ namespace UI {
     void RenderDropdown() {
         array<Campaign@> campaigns = {};
 
-        if (m_source == Source::Weekly_Shorts) {
-            for (uint i = 0; i < WEEKLY_SHORTS.Length; i++) {
-                campaigns.InsertLast(WEEKLY_SHORTS[i]);
-            }
-        } else if (m_source == Source::Seasonal_Campaign) {
-            for (uint i = 0; i < SEASONAL_CAMPAIGNS.Length; i++) {
-                campaigns.InsertLast(SEASONAL_CAMPAIGNS[i]);
-            }
-        } else if (m_source == Source::TOTD_Month) {
-            for (uint i = 0; i < TOTD_MONTHS.Length; i++) {
-                campaigns.InsertLast(TOTD_MONTHS[i]);
-            }
+        switch (m_source) {
+            case Source::Weekly_Shorts:
+                for (uint i = 0; i < WEEKLY_SHORTS.Length; i++) {
+                    campaigns.InsertLast(WEEKLY_SHORTS[i]);
+                }
+                break;
+            case Source::Seasonal_Campaign:
+                for (uint i = 0; i < SEASONAL_CAMPAIGNS.Length; i++) {
+                    campaigns.InsertLast(SEASONAL_CAMPAIGNS[i]);
+                }
+                break;
+            case Source::TOTD_Month:
+                for (uint i = 0; i < TOTD_MONTHS.Length; i++) {
+                    campaigns.InsertLast(TOTD_MONTHS[i]);
+                }
+                break;
+            default:
+                break;
         }
 
         UI::BeginDisabled(campaigns.IsEmpty());

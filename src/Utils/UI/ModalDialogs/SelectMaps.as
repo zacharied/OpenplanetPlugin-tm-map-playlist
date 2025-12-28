@@ -12,7 +12,7 @@ class SelectMaps: ModalDialog {
     }
 
     SelectMaps(array<Map@> maps) {
-        super("Maps" + "###SelectMaps");
+        super("Maps###SelectMaps");
         this.m_size = vec2(700, 500);
 
         @this.m_maps = maps;
@@ -51,7 +51,7 @@ class SelectMaps: ModalDialog {
         return this.m_selectedMaps.FindByRef(map) > -1;
     }
 
-    int get_SelectedCount() {
+    uint get_SelectedCount() {
         return this.m_selectedMaps.Length;
     }
 
