@@ -17,6 +17,7 @@ class AddPlaylist: ModalDialog {
         this.m_playlistName = UI::InputText("##PlaylistName", this.m_playlistName);
 
         bool nameExists = false;
+        bool tooLong = this.m_playlistName.Length > 50;
 
         if (this.m_playlistName != "") {
             for (uint i = 0; i < savedPlaylists.Length; i++) {
@@ -30,6 +31,10 @@ class AddPlaylist: ModalDialog {
             if (nameExists) {
                 Controls::FrameWarning(Icons::ExclamationTriangle + " A playlist with that name already exists!");
             }
+        }
+
+        if (tooLong) {
+            Controls::FrameWarning(Icons::ExclamationTriangle + " Playlist name is too long! (Max 50 characters)");
         }
 
         vec2 region = UI::GetContentRegionAvail();
@@ -90,7 +95,7 @@ class AddPlaylist: ModalDialog {
         }
         UI::EndChild();
 
-        UI::BeginDisabled(this.m_playlistName == "" || nameExists);
+        UI::BeginDisabled(this.m_playlistName == "" || nameExists || tooLong);
 
         UI::BottomRightButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
