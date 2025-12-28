@@ -32,6 +32,9 @@ bool S_ColoredNames = true;
 bool S_ColoredTags = true;
 
 [Setting hidden]
+bool S_MapThumbnail = true;
+
+[Setting hidden]
 Medals S_MainMedal = Medals::Author;
 
 [Setting hidden]
@@ -162,6 +165,7 @@ void RenderDisplaySettings() {
     if (UI::Button("Reset to default")) {
         S_ColoredNames = true;
         S_ColoredTags = true;
+        S_MapThumbnail = true;
 
         S_MainMedal = Medals::Author;
 
@@ -185,6 +189,7 @@ void RenderDisplaySettings() {
     S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
     S_ColoredTags = UI::Checkbox("Use TMX colors for map tags", S_ColoredTags);
     UI::SettingDescription("When disabled, map tags will use the default gray background color instead of the colors provided by TMX");
+    S_MapThumbnail = UI::Checkbox("Display map thumbnail when hovering its name", S_MapThumbnail);
 
     UI::PushFontSize(21);
     UI::SeparatorText("Maps");

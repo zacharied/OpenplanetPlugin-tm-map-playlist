@@ -5,6 +5,7 @@ class Map {
     string MapType;
     string Author = "Unknown";
     string Url;
+    string ThumbnailUrl;
     int AuthorScore = -1;
     int GoldScore = -1;
     int SilverScore = -1;
@@ -30,6 +31,7 @@ class Map {
             this.GoldScore = map.GoldScore;
             this.SilverScore = map.SilverScore;
             this.BronzeScore = map.BronzeScore;
+            this.ThumbnailUrl = map.ThumbnailUrl;
 
             string displayName = Cache::GetName(map.AuthorAccountId);
 
@@ -84,6 +86,7 @@ class Map {
             this.SilverScore = mapInfo.SilverScore;
             this.BronzeScore = mapInfo.BronzeScore;
             this.Tags = mapInfo.Tags;
+            this.ThumbnailUrl = mapInfo.ThumbnailUrl;
 
             Cache::SetMap(this);
         } catch {
@@ -107,6 +110,7 @@ class Map {
             this.GoldScore = json["GoldScore"];
             this.SilverScore = json["SilverScore"];
             this.BronzeScore = json["BronzeScore"];
+            this.ThumbnailUrl = json["ThumbnailUrl"];
 
             for (uint i = 0; i < json["Tags"].Length; i++) {
                 Json::Value@ tag = json["Tags"][i];
@@ -248,6 +252,7 @@ class Map {
             json["SilverScore"] = this.SilverScore;
             json["BronzeScore"] = this.BronzeScore;
             json["Pb"] = this.Pb; // not used but in case it's needed in the future
+            json["ThumbnailUrl"] = this.ThumbnailUrl;
 
             Json::Value tagsArray = Json::Array();
 

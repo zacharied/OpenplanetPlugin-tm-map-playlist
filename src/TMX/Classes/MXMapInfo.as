@@ -53,4 +53,8 @@ class MXMapInfo {
     string get_DownloadURL() {
         return "http://trackmania.exchange/mapgbx/" + this.MapId;
     }
+
+    string get_ThumbnailUrl() {
+        return "http://trackmania.exchange/mapimage/" + this.MapId + "/1?hq=true";
+    }
 }
