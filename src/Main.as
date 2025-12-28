@@ -41,9 +41,24 @@ void OnDestroyed() { Cache::StoreMapIds(); }
 [Setting hidden]
 bool showMainWindow = true;
 
+[Setting hidden]
+bool showTimer = false;
+
 void RenderMenu() {
-    if (HAS_PERMISSIONS && UI::MenuItem(FULL_NAME, "", showMainWindow)) {
-        showMainWindow = !showMainWindow;
+    if (!HAS_PERMISSIONS) {
+        return;
+    }
+
+    if (UI::BeginMenu(FULL_NAME)) {
+        if (UI::MenuItem(Icons::WindowMaximize + " Main Window", "", showMainWindow)) {
+            showMainWindow = !showMainWindow;
+        }
+
+        if (UI::MenuItem(Icons::ClockO + " Display timer", "", showTimer)) {
+            showTimer = !showTimer;
+        }
+
+        UI::EndMenu();
     }
 }
 
@@ -53,8 +68,13 @@ void Render() {
     }
 
     UI::RenderMainWindow();
+    Timer::Render();
 
     Renderables::Render();
+}
+
+void Update(float dt) {
+    Timer::Update();
 }
 
 bool held = false;

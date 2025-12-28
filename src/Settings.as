@@ -18,6 +18,12 @@ bool S_Editor = false;
 bool S_Loop = false;
 
 [Setting hidden]
+bool S_Timer = false;
+
+[Setting hidden]
+int S_TimeLimit = 300;
+
+[Setting hidden]
 bool S_SwitchOnMedal = false;
 
 [Setting hidden]
@@ -110,6 +116,8 @@ void RenderPlaylistSettings() {
         S_Editor = false;
         S_Loop = false;
         S_SwitchKey = VirtualKey(0);
+        S_Timer = false;
+        S_TimeLimit = 300;
         S_SwitchOnMedal = false;
         S_GoalMedal = Medals::Author;
     }
@@ -132,6 +140,14 @@ void RenderPlaylistSettings() {
 
     S_Loop = UI::Checkbox("Loop playlist", S_Loop);
     UI::SettingDescription("When enabled, the playlist will start again after reaching the last map.");
+
+    S_Timer = UI::Checkbox("Time limit", S_Timer);
+    UI::SettingDescription("Automatically switch to the next map after the timer is up.");
+
+    if (S_Timer) {
+        UI::SetNextItemWidth(150);
+        S_TimeLimit = UI::InputInt("Time limit per map (in seconds)", S_TimeLimit, 0);
+    }
 
     S_SwitchOnMedal = UI::Checkbox("Auto switch on medal", S_SwitchOnMedal);
     string medalText = "When enabled, the plugin will automatically switch to the next map after reaching the selected medal.";
