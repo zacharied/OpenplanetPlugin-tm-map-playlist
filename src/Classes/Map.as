@@ -11,6 +11,7 @@ class Map {
     int SilverScore = -1;
     int BronzeScore = -1;
     array<TmxTag@> Tags;
+    int Index = -1;
 
     // Used in campaigns
     int Position = -1;
@@ -110,6 +111,7 @@ class Map {
             this.GoldScore = json["GoldScore"];
             this.SilverScore = json["SilverScore"];
             this.BronzeScore = json["BronzeScore"];
+            this.Index = json["Index"];
             this.ThumbnailUrl = json["ThumbnailUrl"];
 
             for (uint i = 0; i < json["Tags"].Length; i++) {
@@ -252,6 +254,7 @@ class Map {
             json["SilverScore"] = this.SilverScore;
             json["BronzeScore"] = this.BronzeScore;
             json["Pb"] = this.Pb; // not used but in case it's needed in the future
+            json["Index"] = this.Index;
             json["ThumbnailUrl"] = this.ThumbnailUrl;
 
             Json::Value tagsArray = Json::Array();

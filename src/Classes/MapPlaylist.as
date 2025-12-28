@@ -4,6 +4,7 @@ class MapPlaylist {
     string Name;
     int CreatedAt;
     MapColumns@ columnWidths = MapColumns();
+    bool Dirty; // For sorting
 
     MapPlaylist() { }
 
@@ -46,6 +47,7 @@ class MapPlaylist {
         this.Maps.RemoveRange(0, Maps.Length);
         this.columnWidths.Reset();
         @this.currentMap = null;
+        this.Dirty = true;
     }
 
     void PlayMap(Map@ map) {
@@ -95,8 +97,15 @@ class MapPlaylist {
                 @this.currentMap = null;
             }
 
+            for (uint i = 0; i < this.Maps.Length; i++) {
+                if (this.Maps[i].Index > map.Index) {
+                    this.Maps[i].Index--;
+                }
+            }
+
             this.Maps.RemoveAt(index);
             this.columnWidths.Update(this.Maps);
+            this.Dirty = true;
         } catch {
             _Logging::Error("An error occurred while deleting a map: " + getExceptionInfo(), true);
             _Logging::Warn("Failed to delete map \"" + map.toString() + "\"");
@@ -199,7 +208,7 @@ class MapPlaylist {
         startnew(CoroutineFuncUserdata(this.AddCampaign), campaign);
     }
 
-    void AddMap(Map@ map) {
+    void AddMap(Map map) {
         _Logging::Trace("Adding " + map.toString() + " to the playlist");
 
         for (uint i = 0; i < this.Maps.Length; i++) {
@@ -209,8 +218,11 @@ class MapPlaylist {
             }
         }
 
+        map.Index = this.Maps.Length + 1;
+
         this.Maps.InsertLast(map);
         this.columnWidths.Update(this.Maps);
+        this.Dirty = true;
     }
 
     void AddCampaign(ref@ campRef) {

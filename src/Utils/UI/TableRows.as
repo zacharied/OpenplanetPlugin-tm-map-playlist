@@ -1,5 +1,5 @@
 namespace UI {
-    void RenderMapRow(Map@ map, int i) {
+    void RenderMapRow(Map@ map, uint position) {
         UI::TableNextRow();
         UI::TableNextColumn();
 
@@ -9,7 +9,7 @@ namespace UI {
         }
 
         UI::AlignTextToFramePadding();
-        UI::Text(tostring(i + 1));
+        UI::Text(tostring(map.Index));
 
         UI::TableNextColumn();
         UI::Text(S_ColoredNames ? map.GbxName : map.Name);
@@ -85,7 +85,7 @@ namespace UI {
 
         UI::SameLine();
 
-        UI::BeginDisabled(i == 0);
+        UI::BeginDisabled(position == 0);
 
         if (UI::Button(Icons::ArrowUp)) {
             playlist.ShiftMap(map);
@@ -97,7 +97,7 @@ namespace UI {
 
         UI::SameLine();
 
-        UI::BeginDisabled(i == int(playlist.Length - 1));
+        UI::BeginDisabled(position == playlist.Length - 1);
 
         if (UI::Button(Icons::ArrowDown)) {
             playlist.ShiftMap(map, true);

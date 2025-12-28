@@ -45,7 +45,7 @@ namespace UI {
             UI::EndDisabled();
 
             UI::PushTableVars();
-            if (UI::BeginTable("Maps", 11, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable)) {
+            if (UI::BeginTable("Maps", 11, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable | UI::TableFlags::Sortable)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
@@ -58,7 +58,7 @@ namespace UI {
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Medals);
                 UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 110 * UI::GetScale());
                 UI::TableSetupColumn("Delta", UI::TableColumnFlags::WidthFixed, 90 * UI::GetScale());
-                UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed);
+                UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed | UI::TableColumnFlags::NoSort);
                 UI::TableHeadersRow();
 
                 UI::TableSetColumnEnabled(1, S_MapName);
@@ -71,6 +71,12 @@ namespace UI {
                 UI::TableSetColumnEnabled(8, S_MapPb);
                 UI::TableSetColumnEnabled(9, S_MapDelta);
                 UI::TableSetColumnEnabled(10, S_MapButtons);
+
+                auto specs = UI::TableGetSortSpecs();
+
+                if (specs !is null && (specs.Dirty || playlist.Dirty)) {
+                    SortMapPlaylist(specs);
+                }
 
                 UI::ListClipper clipper(playlist.Length);
                 while (clipper.Step()) {
