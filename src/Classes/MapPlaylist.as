@@ -374,7 +374,7 @@ class MapPlaylist {
                 this.AddMappack(id[1]);
             }
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.io\\/.*?\\/\\w{25,27}\\/?$", regexFlags)) {
-            array<string> uid = Regex::Search(str, "(\\w{25,27})");
+            array<string> uid = Regex::Search(str, "(\\w{25,27})\\/?$");
 
             if (!uid.IsEmpty()) {
                 this.AddFromUid(uid[1]);
