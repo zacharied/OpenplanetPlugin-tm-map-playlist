@@ -60,20 +60,23 @@ class MapPlaylist {
         try {
             if (this.currentMap is null) {
                 startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
-            } else if (this.Maps.Length == 1) {
+                return;
+            }
+            
+            if (this.Maps.Length == 1) {
                 // No need to load the same map
                 return;
-            } else {
-                int index = Maps.FindByRef(this.currentMap);
+            }
 
-                if (index == int(this.Maps.Length - 1)) {
-                    // reached last item
-                    if (S_Loop) {
-                        startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
-                    }
-                } else {
-                    startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[index + 1]);
+            int index = Maps.FindByRef(this.currentMap);
+
+            if (index == int(this.Maps.Length - 1)) {
+                // reached last item
+                if (S_Loop) {
+                    startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
                 }
+            } else {
+                startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[index + 1]);
             }
         } catch {
             _Logging::Error("An error occurred while switching maps: " + getExceptionInfo(), true);
@@ -283,7 +286,9 @@ class MapPlaylist {
             if (mappack is null) {
                 _Logging::Warn("Failed to add mappack to playlist! Mappack doesn't exist or is private.", true);
                 return;
-            } else if (mappack.MapCount == 0) {
+            }
+            
+            if (mappack.MapCount == 0) {
                 _Logging::Warn("Failed to add mappack to playlist! Mappack is empty.", true);
                 return;
             }
@@ -307,7 +312,9 @@ class MapPlaylist {
             if (!IO::FileExists(path)) {
                 _Logging::Warn("Failed to find file in provided path. Make sure to use an absolute path!", true);
                 return;
-            } else if (!path.ToLower().EndsWith(".map.gbx")) {
+            }
+            
+            if (!path.ToLower().EndsWith(".map.gbx")) {
                 _Logging::Warn("The path \"" + path + "\" doesn't correspond to a GBX map file!", true);
                 return;
             }
@@ -533,7 +540,9 @@ class MapPlaylist {
         if (mappack is null) {
             _Logging::Warn("Failed to add mappack to playlist! Mappack doesn't exist or is private.", true);
             return;
-        } else if (mappack.MapCount == 0) {
+        } 
+        
+        if (mappack.MapCount == 0) {
             _Logging::Warn("Failed to add mappack to playlist! Mappack is empty.", true);
             return;
         }

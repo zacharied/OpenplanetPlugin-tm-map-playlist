@@ -51,9 +51,11 @@ int SortTags(Map@ a, Map@ b) {
     if (a.Tags.IsEmpty() && b.Tags.IsEmpty()) {
         return SortString(a.Name, b.Name);
     }
+
     if (a.Tags.IsEmpty()) {
         return -1;
     }
+
     if (b.Tags.IsEmpty()) {
         return 1;
     }
@@ -64,6 +66,7 @@ int SortTags(Map@ a, Map@ b) {
         if (a.Tags.Length <= i) {
             return -1;
         }
+
         if (b.Tags.Length <= i) {
             return 1;
         }
@@ -104,6 +107,7 @@ int SortDelta(Map@ a, Map@ b) {
 void MapQuickSort(Map@[]@ arr, MapSort@ f, bool descending, int left = 0, int right = -1) {
     if (right < 0) right = arr.Length - 1;
     if (arr.Length == 0) return;
+
     int i = left;
     int j = right;
     Map@ pivot = arr[(left + right) / 2];

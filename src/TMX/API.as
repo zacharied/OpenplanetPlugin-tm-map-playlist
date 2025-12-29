@@ -12,7 +12,9 @@ namespace TMX {
                 _Logging::Debug(Json::Write(json));
 
                 return null;
-            } else if (json["Results"].Length == 0) {
+            }
+            
+            if (json["Results"].Length == 0) {
                 _Logging::Error("Failed to find a map with ID #" + mapId + ". Map might be private or deleted.", true);
                 return null;
             }
@@ -35,7 +37,9 @@ namespace TMX {
                 _Logging::Debug(Json::Write(json));
 
                 return null;
-            } else if (json["Results"].Length == 0) {
+            }
+            
+            if (json["Results"].Length == 0) {
                 _Logging::Error("Failed to find a mappack with ID #" + mappackId + ". Mappack might not exist.");
                 return null;
             }
@@ -67,7 +71,9 @@ namespace TMX {
                     _Logging::Debug(Json::Write(json));
 
                     return maps;
-                } else if (json["Results"].Length == 0) {
+                } 
+
+                if (json["Results"].Length == 0) {
                     if (maps.IsEmpty()) {
                         _Logging::Error("Found 0 maps for mappack ID #" + mappackId + ". Mappack might not exist or is empty", true);
                     }
