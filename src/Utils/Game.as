@@ -129,6 +129,81 @@ namespace TM {
         return map;
     }
 
+    CGameCtnChallenge@ GetMapFromPath(const string &in path) {
+        if (!IO::FileExists(path)) {
+            _Logging::Warn("Failed to find file in provided path. Make sure to use an absolute path!", true);
+            return null;
+        }
+        
+        if (!path.ToLower().EndsWith(".map.gbx")) {
+            _Logging::Warn("The path \"" + path + "\" doesn't correspond to a GBX map file!", true);
+            return null;
+        }
+
+        const string fileName = Path::GetFileName(path);
+
+        CGameCtnChallenge@ cmap;
+
+        if (path.StartsWith(USER_FOLDER)) {
+            // No need to copy file
+            _Logging::Debug("Map file \"" + fileName + "\" is in user folder. Skipping copy...");
+
+            string folder = Path::GetDirectoryName(path.Replace(USER_FOLDER, ""));
+
+            if (folder == "") {
+                return null;
+            } else if (folder.EndsWith("\\")) {
+                folder = folder.SubStr(0, folder.Length - 1);
+            }
+
+            @cmap = TM::GetMapFromFid(fileName, folder);
+        } else {
+            // copy
+            _Logging::Debug("Map file " + fileName + " isn't in user folder. Copying...");
+
+            if (!IO::FolderExists(TEMP_MAP_FOLDER)) {
+                IO::CreateFolder(TEMP_MAP_FOLDER);
+            }
+            
+            string newPath = TEMP_MAP_FOLDER + fileName;
+
+            IO::Copy(path, newPath);
+            @cmap = TM::GetMapFromFid(fileName);
+            IO::Delete(newPath);
+        }
+
+        return cmap;
+    }
+
+    array<Map@> GetMapsFromFolder(const string &in path) {
+        array<Map@> maps;
+
+        if (!IO::FolderExists(path)) {
+            _Logging::Warn("Failed to find folder in provided path. Make sure to use an absolute path!", true);
+            return maps;
+        }
+
+        array<string> files = IO::IndexFolder(path, false);
+
+        uint start = Time::Now;
+
+        for (uint i = 0; i < files.Length; i++) {
+            if (Time::Now > start + MAX_FRAME_TIME) {
+                start = Time::Now;
+                yield();
+            }
+
+            if (!files[i].ToLower().EndsWith(".map.gbx")) continue;
+            CGameCtnChallenge@ pathMap = GetMapFromPath(files[i].Replace("/", "\\"));
+
+            if (pathMap !is null) {
+                maps.InsertLast(Map(pathMap, files[i]));
+            }
+        }
+
+        return maps;
+    }
+
     Map@ GetMapFromUid(const string &in mapUid) {
         _Logging::Debug("Getting map from UID " + mapUid);
 

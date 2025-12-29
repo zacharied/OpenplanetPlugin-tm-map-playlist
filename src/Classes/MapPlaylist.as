@@ -309,49 +309,9 @@ class MapPlaylist {
 
     void AddFromFile(const string &in path) {
         try {
-            if (!IO::FileExists(path)) {
-                _Logging::Warn("Failed to find file in provided path. Make sure to use an absolute path!", true);
-                return;
-            }
-            
-            if (!path.ToLower().EndsWith(".map.gbx")) {
-                _Logging::Warn("The path \"" + path + "\" doesn't correspond to a GBX map file!", true);
-                return;
-            }
-
             _Logging::Debug("Adding map from file path " + path);
 
-            const string fileName = Path::GetFileName(path);
-
-            CGameCtnChallenge@ cmap;
-
-            if (path.StartsWith(USER_FOLDER)) {
-                // No need to copy file
-                _Logging::Debug("Map file \"" + fileName + "\" is in user folder. Skipping copy...");
-
-                string folder = Path::GetDirectoryName(path.Replace(USER_FOLDER, ""));
-
-                if (folder == "") {
-                    return;
-                } else if (folder.EndsWith("\\")) {
-                    folder = folder.SubStr(0, folder.Length - 1);
-                }
-
-                @cmap = TM::GetMapFromFid(fileName, folder);
-            } else {
-                // copy
-                _Logging::Debug("Map file " + fileName + " isn't in user folder. Copying...");
-
-                if (!IO::FolderExists(TEMP_MAP_FOLDER)) {
-                    IO::CreateFolder(TEMP_MAP_FOLDER);
-                }
-                
-                string newPath = TEMP_MAP_FOLDER + fileName;
-
-                IO::Copy(path, newPath);
-                @cmap = TM::GetMapFromFid(fileName);
-                IO::Delete(newPath);
-            }
+            CGameCtnChallenge@ cmap = TM::GetMapFromPath(path);
 
             if (cmap !is null) {
                 this.AddMap(Map(cmap, path));
@@ -448,24 +408,36 @@ class MapPlaylist {
                 return;
             }
 
-            array<string> files = IO::IndexFolder(path, false);
+            array<Map@> folderMaps = TM::GetMapsFromFolder(path);
 
-            if (files.IsEmpty()) {
-                _Logging::Warn("Failed to find any files in the provided folder!", true);
+            if (folderMaps.IsEmpty()) {
+                _Logging::Warn("Failed to find any maps in the provided folder!", true);
                 return;
             }
 
-            uint start = Time::Now;
-
-            for (uint i = 0; i < files.Length; i++) {
-                if (Time::Now > start + MAX_FRAME_TIME) {
-                    start = Time::Now;
-                    yield();
-                }
-
-                if (!files[i].ToLower().EndsWith(".map.gbx")) continue;
-                this.AddFromFile(files[i].Replace("/", "\\"));
+            for (uint i = 0; i < folderMaps.Length; i++) {
+                this.AddMap(folderMaps[i]);
             }
+        } catch {
+            _Logging::Error("An error occurred while adding maps from folder in path \"" + path + "\": " + getExceptionInfo(), true);
+        }
+    }
+
+    void SelectFolderAsync(const string &in path) {
+        try {
+            if (!IO::FolderExists(path)) {
+                _Logging::Warn("Failed to find folder in provided path. Make sure to use an absolute path!", true);
+                return;
+            }
+
+            array<Map@> folderMaps = TM::GetMapsFromFolder(path);
+
+            if (folderMaps.IsEmpty()) {
+                _Logging::Warn("Failed to find any maps in the provided folder!", true);
+                return;
+            }
+
+            Renderables::Add(SelectMaps(folderMaps));
         } catch {
             _Logging::Error("An error occurred while adding maps from folder in path \"" + path + "\": " + getExceptionInfo(), true);
         }

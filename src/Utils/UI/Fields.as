@@ -64,8 +64,11 @@ namespace UI {
 
         UI::BeginDisabled(m_field.Length == 0);
 
-        if (m_source == TMX_Mappack_ID && UI::Button("Select...##SelectMappackButton")) {
+        if (m_source == Source::TMX_Mappack_ID && UI::Button("Select...##SelectMappackButton")) {
             startnew(CoroutineFuncUserdataInt64(playlist.SelectMappackAsync), Text::ParseInt(m_field));
+            m_field = "";
+        } else if (m_source == Source::Folder && UI::Button("Select...##SelectFolderButton")) {
+            startnew(CoroutineFuncUserdataString(playlist.SelectFolderAsync), CleanPath(m_field));
             m_field = "";
         }
 
