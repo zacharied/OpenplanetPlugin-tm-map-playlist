@@ -11,10 +11,7 @@ class MapColumns {
     float Medals = MIN_MEDALS;
 
     void Update(array<Map@> maps) {
-        if (maps.IsEmpty()) {
-            Reset();
-            return;
-        }
+        Reset();
 
         uint start = Time::Now;
 

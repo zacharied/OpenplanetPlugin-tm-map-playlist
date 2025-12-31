@@ -69,7 +69,7 @@ namespace UI
         vec2 text = Draw::MeasureString(label);
         vec2 padding = UI::GetStyleVarVec2(UI::StyleVar::FramePadding);
 
-        return text + padding;
+        return text + padding * 2;
     }
 
     void SettingDescription(const string &in text) {

@@ -1,6 +1,6 @@
 namespace Timer {
-    int timer = 0;
-    int lastUpdate = 0;
+    uint timer = 0;
+    uint lastUpdate = 0;
     bool paused = false;
     string lastMap = "";
 
@@ -66,7 +66,7 @@ namespace Timer {
             Reset();
             paused = false;
         } else if (!paused && TM::InCurrentMap()) {
-            int delta = Time::Now - lastUpdate;
+            uint delta = Time::Now - lastUpdate;
             timer += delta;
 
             if (timer >= TimeLimit) {

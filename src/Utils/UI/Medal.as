@@ -136,7 +136,7 @@ namespace UI {
                 } else if (delta < 0) {
                     return RED_COLOR + "+" + Time::Format(Math::Abs(delta));
                 } else {
-                    return GREY_COLOR + "-:--.---";
+                    return GREY_COLOR + "+" + Time::Format(delta);
                 }
         }
     }
