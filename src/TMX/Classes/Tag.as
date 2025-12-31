@@ -37,4 +37,8 @@ class TmxTag {
             Controls::Tag("\\$s" + this.Name, DEFAULT_COLOR);
         }
     }
+
+    bool opEquals(TmxTag@ b) {
+        return this.ID == b.ID;
+    }
 }

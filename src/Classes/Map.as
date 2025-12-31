@@ -148,6 +148,27 @@ class Map {
         return false;
     }
 
+    bool HasTag(TmxTag@ tag) {
+        return this.Tags.Find(tag) > -1;
+    }
+
+    void AddTag(TmxTag@ tag) {
+        if (!this.HasTag(tag)) {
+            this.Tags.InsertLast(tag);
+
+            if (this.Tags.Length > 1) {
+                this.Tags.Sort(function(a, b) { return a.Name < b.Name; });
+            }
+        }
+    }
+
+    void RemoveTag(TmxTag@ tag) {
+        if (this.HasTag(tag)) {
+            int tagIndex = this.Tags.Find(tag);
+            this.Tags.RemoveAt(tagIndex);
+        }
+    }
+
     GameMode get_GameMode() {
         if (this.MapType == "TM_Stunt") {
             return GameMode::Stunt;
