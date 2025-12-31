@@ -643,7 +643,7 @@ namespace TM {
     void GetPb(ref@ mapRef) {
         Map@ map = cast<Map>(mapRef);
 
-        if (map is null || map.Uid == "" || map.GameMode == GameMode::Royal || map.HasPb) {
+        if (map is null || map.Uid == "" || queue.Find(map) > -1 || map.GameMode == GameMode::Royal || map.HasPb) {
             return;
         }
 

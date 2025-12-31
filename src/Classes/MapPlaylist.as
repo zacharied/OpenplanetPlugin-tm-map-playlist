@@ -50,6 +50,12 @@ class MapPlaylist {
         this.Dirty = true;
     }
 
+    void GetPlaylistPbs() {
+        foreach(Map@ map : this.Maps) {
+            startnew(TM::GetPb, map);
+        }
+    }
+
     void PlayMap(Map@ map) {
         startnew(CoroutineFuncUserdata(TM::LoadMap), map);
     }
@@ -226,7 +232,11 @@ class MapPlaylist {
         this.Maps.InsertLast(map);
         this.columnWidths.Update(this.Maps);
         this.Dirty = true;
-        startnew(TM::GetPb, map);
+
+        // only fetch PB if it's from the current playlist
+        if (this is playlist) {
+            startnew(TM::GetPb, map);
+        }
     }
 
     void AddCampaign(ref@ campRef) {
