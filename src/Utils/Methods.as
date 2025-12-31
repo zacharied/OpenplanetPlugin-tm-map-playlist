@@ -40,6 +40,22 @@ array<array<string>> Chunks(array<string> arr, uint maxLength) {
     return arrayChunks;
 }
 
+string GetComboText(array<bool> values) {
+    uint count = 0;
+
+    for (uint i = 0; i < values.Length; i++) {
+        if (values[i]) {
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        return "Select...";
+    }
+
+    return tostring(count) + " selected";
+}
+
 // don't use this if your JSON is not an object containing strings!
 dictionary JsonToDict(const Json::Value@ json) {
     if (json.GetType() != Json::Type::Object) {

@@ -120,23 +120,22 @@ void RenderPlaylistSettings() {
         S_TimeLimit = 300;
         S_SwitchOnMedal = false;
         S_GoalMedal = Medals::Author;
+        _Hotkeys::StopListeningForKey();
     }
 
-    UI::SetNextItemWidth(175);
-    if (UI::BeginCombo("Switch Map Hotkey", S_SwitchKey == VirtualKey(0) ? "None" : tostring(S_SwitchKey))) {
-        for (int i = 0; i <= 254; i++) {
-            if (tostring(VirtualKey(i)) == tostring(i)) continue;
-
-            if (UI::Selectable(tostring(VirtualKey(i)), S_SwitchKey == VirtualKey(i))) {
-                S_SwitchKey = VirtualKey(i);
-            }
-        }
-        UI::EndCombo();
-    }
+    _Hotkeys::RenderHotkeyCombo("Switch Map Hotkey", S_SwitchKey);
     UI::SettingDescription("Hotkey to switch to the next map.");
 
+    UI::SameLine();
+
+    if (_Hotkeys::ListeningForSwitchKey) {
+        UI::Text("Press a key");
+    } else if (UI::GreyButton("Detect##Switch")) {
+        _Hotkeys::ListeningForSwitchKey = true;
+    }
+
     S_Editor = UI::Checkbox("Load in editor", S_Editor);
-    UI::SettingDescription("If enabled, maps will be loaded in the editor.");
+    UI::SettingDescription("When enabled, maps will be loaded in the editor.");
 
     S_Loop = UI::Checkbox("Loop playlist", S_Loop);
     UI::SettingDescription("When enabled, the playlist will start again after reaching the last map.");
@@ -202,27 +201,34 @@ void RenderDisplaySettings() {
         S_PlaylistButtons = true;
     }
 
-    S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
-    S_ColoredTags = UI::Checkbox("Use TMX colors for map tags", S_ColoredTags);
-    UI::SettingDescription("When disabled, map tags will use the default gray background color instead of the colors provided by TMX");
-    S_MapThumbnail = UI::Checkbox("Display map thumbnail when hovering its name", S_MapThumbnail);
+    S_ColoredTags = UI::Checkbox("Use TMX colors for tags", S_ColoredTags);
+    UI::SettingDescription("When disabled, tags will use the default gray background color instead of the colors provided by TMX");
 
     UI::PushFontSize(21);
     UI::SeparatorText("Maps");
     UI::PopFontSize();
 
-    S_MapName = UI::Checkbox("Name##Map", S_MapName);
-    S_MapAuthor = UI::Checkbox("Author##Map", S_MapAuthor);
-    S_MapUrl = UI::Checkbox("URL##Map", S_MapUrl);
-    S_MapUid = UI::Checkbox("UID##Map", S_MapUid);
-    S_MapTags = UI::Checkbox("TMX Tags##Map", S_MapTags);
-    S_MapGamemode = UI::Checkbox("Mode##Map", S_MapGamemode);
-    S_MapMedals = UI::Checkbox("Medals##Map", S_MapMedals);
-    S_MapPb = UI::Checkbox("PB##Map", S_MapPb);
-    S_MapDelta = UI::Checkbox("Delta##Map", S_MapDelta);
-    S_MapButtons = UI::Checkbox("Buttons##Map", S_MapButtons);
+    S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
+    S_MapThumbnail = UI::Checkbox("Display thumbnail when hovering a map name", S_MapThumbnail);
 
-    UI::NewLine();
+    array<bool> mapValues = { S_MapName, S_MapAuthor, S_MapUrl, S_MapUid, S_MapTags, S_MapGamemode, S_MapMedals, S_MapPb, S_MapDelta, S_MapButtons };
+    string mapComboText = GetComboText(mapValues);
+
+    UI::SetNextItemWidth(145);
+    if (UI::BeginCombo("Displayed columns##Map", mapComboText)) {
+        S_MapName = UI::Checkbox("Name##Map", S_MapName);
+        S_MapAuthor = UI::Checkbox("Author##Map", S_MapAuthor);
+        S_MapUrl = UI::Checkbox("URL##Map", S_MapUrl);
+        S_MapUid = UI::Checkbox("UID##Map", S_MapUid);
+        S_MapTags = UI::Checkbox("TMX Tags##Map", S_MapTags);
+        S_MapGamemode = UI::Checkbox("Mode##Map", S_MapGamemode);
+        S_MapMedals = UI::Checkbox("Medals##Map", S_MapMedals);
+        S_MapPb = UI::Checkbox("PB##Map", S_MapPb);
+        S_MapDelta = UI::Checkbox("Delta##Map", S_MapDelta);
+        S_MapButtons = UI::Checkbox("Buttons##Map", S_MapButtons);
+
+        UI::EndCombo();
+    }
 
     UI::SetNextItemWidth(145);
     if (UI::BeginCombo("Main medal", tostring(S_MainMedal))) {
@@ -244,10 +250,18 @@ void RenderDisplaySettings() {
     UI::SeparatorText("Playlists");
     UI::PopFontSize();
 
-    S_PlaylistName = UI::Checkbox("Name##Playlist", S_PlaylistName);
-    S_PlaylistMapCount = UI::Checkbox("Map Count##Playlist", S_PlaylistMapCount);
-    S_PlaylistDate = UI::Checkbox("Created at##Playlist", S_PlaylistDate);
-    S_PlaylistButtons = UI::Checkbox("Buttons##Playlist", S_PlaylistButtons);
+    array<bool> playlistValues = { S_PlaylistName, S_PlaylistMapCount, S_PlaylistDate, S_PlaylistButtons };
+    string playlistComboText = GetComboText(playlistValues);
+
+    UI::SetNextItemWidth(145);
+    if (UI::BeginCombo("Displayed columns##Playlist", playlistComboText)) {
+        S_PlaylistName = UI::Checkbox("Name##Playlist", S_PlaylistName);
+        S_PlaylistMapCount = UI::Checkbox("Map Count##Playlist", S_PlaylistMapCount);
+        S_PlaylistDate = UI::Checkbox("Created at##Playlist", S_PlaylistDate);
+        S_PlaylistButtons = UI::Checkbox("Buttons##Playlist", S_PlaylistButtons);
+
+        UI::EndCombo();
+    }
 
     UI::EndChild();
 }

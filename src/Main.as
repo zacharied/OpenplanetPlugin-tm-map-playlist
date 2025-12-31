@@ -77,16 +77,22 @@ void Update(float dt) {
     Timer::Update();
 }
 
-bool held = false;
+UI::InputBlocking OnKeyPress(bool down, VirtualKey key) {
+    if (!HAS_PERMISSIONS) return UI::InputBlocking::DoNothing;
 
-void OnKeyPress(bool down, VirtualKey key) {
-    if (!HAS_PERMISSIONS || playlist.IsEmpty() || TM::IsLoadingMap()) return;
-
-    if (!held && key == S_SwitchKey) {
-        playlist.NextMap();
+    if (_Hotkeys::ListeningForKey) {
+        _Hotkeys::AssignHotkey(key);
+        return UI::InputBlocking::Block;
     }
 
-    held = down;
+    if (playlist.IsEmpty() || TM::IsLoadingMap()) return UI::InputBlocking::DoNothing;
+
+    if (key == S_SwitchKey) {
+        playlist.NextMap();
+        return UI::InputBlocking::Block;
+    }
+
+    return UI::InputBlocking::DoNothing;
 }
 
 void MainLoop() {
