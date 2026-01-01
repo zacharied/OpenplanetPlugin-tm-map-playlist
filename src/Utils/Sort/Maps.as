@@ -153,6 +153,12 @@ void SortMapPlaylist(UI::TableSortSpecs@ tableSpecs) {
                     continue;
                 }
 
+                // For indexes, we only want to sort it when clicking the column
+                // since otherwise that will undo shuffled / moved playlists
+                if (spec.ColumnIndex == 0 && !tableSpecs.Dirty) {
+                    continue;
+                }
+
                 MapQuickSort(playlist.Maps, mapMethods[spec.ColumnIndex], spec.SortDirection == UI::SortDirection::Descending);
                 break;
         }
