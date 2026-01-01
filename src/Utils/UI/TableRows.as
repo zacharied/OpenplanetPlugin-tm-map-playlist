@@ -49,9 +49,47 @@ namespace UI {
 
         UI::TableNextColumn();
 
+        vec2 cursorPos = UI::GetCursorScreenPos();
+        vec2 cellSize = UI::GetCurrentCellSize();
+
         foreach (TmxTag@ tag : map.Tags) {
             tag.Render();
             UI::SameLine();
+        }
+
+        if (UI::IsMouseBetween(cursorPos, cursorPos + cellSize)) {
+            UI::Text(Icons::Plus);
+
+            if (UI::IsItemClicked()) {
+                UI::OpenPopup("TagsPopup" + map.Index);
+            }
+        }
+
+        UI::SetNextWindowSize(200, 400, UI::Cond::Always);
+        if (UI::BeginPopup("TagsPopup" + map.Index)) {
+            UI::ListClipper clipper(TMX::Tags.Length);
+
+            while (clipper.Step()) {
+                for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                    TmxTag@ tag = TMX::Tags[i];
+                    bool HasTag = map.HasTag(tag);
+
+                    if (UI::Checkbox("##" + tag.Name, HasTag)) {
+                        if (!HasTag) {
+                            map.AddTag(tag);
+                            playlist.OnUpdatedMaps();
+                        }
+                    } else if (HasTag) {
+                        map.RemoveTag(tag);
+                        playlist.OnUpdatedMaps();
+                    }
+
+                    UI::SameLine();
+                    tag.Render();
+                }
+            }
+
+            UI::EndPopup();
         }
 
         UI::TableNextColumn();

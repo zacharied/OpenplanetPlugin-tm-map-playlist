@@ -50,6 +50,11 @@ class MapPlaylist {
         this.Dirty = true;
     }
 
+    void OnUpdatedMaps() {
+        this.columnWidths.Update(this.Maps);
+        this.Dirty = true;
+    }
+
     void GetPlaylistPbs() {
         foreach(Map@ map : this.Maps) {
             startnew(TM::GetPb, map);
@@ -113,8 +118,7 @@ class MapPlaylist {
             }
 
             this.Maps.RemoveAt(index);
-            this.columnWidths.Update(this.Maps);
-            this.Dirty = true;
+            this.OnUpdatedMaps();
         } catch {
             _Logging::Error("An error occurred while deleting a map: " + getExceptionInfo(), true);
             _Logging::Warn("Failed to delete map \"" + map.toString() + "\"");
@@ -229,8 +233,7 @@ class MapPlaylist {
         map.Index = this.Maps.Length + 1;
 
         this.Maps.InsertLast(map);
-        this.columnWidths.Update(this.Maps);
-        this.Dirty = true;
+        this.OnUpdatedMaps();
 
         // only fetch PB if it's from the current playlist
         if (this is playlist) {

@@ -22,6 +22,7 @@ void Main() {
 
     startnew(MainLoop);
     startnew(PbLoop);
+    startnew(TMX::GetTags);
 
     if (!S_SkipLoad) {
         while (!showMainWindow) {

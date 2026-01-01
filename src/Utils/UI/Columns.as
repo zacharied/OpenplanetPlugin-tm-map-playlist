@@ -30,14 +30,13 @@ class MapColumns {
             float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
             float tagsSize = 0.0;
 
-            for (uint t = 0; t < map.Tags.Length; t++) {
-                TmxTag@ tag = map.Tags[t];
-                tagsSize += (UI::MeasureButton(tag.Name).x + 8);
-
-                if (t < map.Tags.Length - 1) {
-                    tagsSize += itemSpacing;
-                }
+            foreach (TmxTag@ tag : map.Tags) {
+                tagsSize += Draw::MeasureString(tag.Name).x + 16;
+                tagsSize += itemSpacing;
             }
+
+            // Button to add or remove tags
+            tagsSize += Draw::MeasureString(Icons::Plus).x;
 
             Tags = Math::Max(Tags, tagsSize);
         }
