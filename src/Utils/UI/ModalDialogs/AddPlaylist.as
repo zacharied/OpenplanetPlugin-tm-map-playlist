@@ -21,8 +21,7 @@ class AddPlaylist: ModalDialog {
 
         if (this.m_playlistName != "") {
             for (uint i = 0; i < savedPlaylists.Length; i++) {
-                MapPlaylist@ list = savedPlaylists[i];
-                if (list.Name == this.m_playlistName) {
+                if (savedPlaylists[i].Name == this.m_playlistName) {
                     nameExists = true;
                     break;
                 }

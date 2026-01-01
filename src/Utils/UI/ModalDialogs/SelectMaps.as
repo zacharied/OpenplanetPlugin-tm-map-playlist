@@ -56,9 +56,7 @@ class SelectMaps: ModalDialog {
     }
 
     void AddToPlaylist() {
-        for (uint i = 0; i < this.m_maps.Length; i++) {
-            Map@ map = this.m_maps[i];
-
+        foreach (Map@ map : this.m_maps) {
             if (IsSelected(map)) {
                 playlist.AddMap(map);
             }

@@ -40,8 +40,7 @@ namespace Cache {
 
         array<string> keys = MapIds.GetKeys();
 
-        for (uint i = 0; i < keys.Length; i++) {
-            string key = keys[i];
+        foreach (string key : keys) {
             MapUids.Set(string(MapIds[key]), key);
         }
     }

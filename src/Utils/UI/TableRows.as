@@ -48,8 +48,9 @@ namespace UI {
         else UI::Text(tostring(map.GameMode));
 
         UI::TableNextColumn();
-        for (uint t = 0; t < map.Tags.Length; t++) {
-            map.Tags[t].Render();
+
+        foreach (TmxTag@ tag : map.Tags) {
+            tag.Render();
             UI::SameLine();
         }
 

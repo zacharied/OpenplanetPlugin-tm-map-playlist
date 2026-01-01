@@ -684,9 +684,7 @@ namespace TM {
         array<string> stuntIds;
         array<string> platformIds;
 
-        for (uint i = 0; i < validMaps.Length; i++) {
-            Map@ map = validMaps[i];
-
+        foreach (Map@ map : validMaps) {
             string mapId = Cache::GetMapId(map.Uid);
 
             if (mapId == "") {

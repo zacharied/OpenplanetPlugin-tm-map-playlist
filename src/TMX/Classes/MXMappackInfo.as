@@ -19,8 +19,7 @@ class MXMappackInfo {
 
         array<MXMapInfo@> mxMaps = TMX::GetMappackMaps(this.ID);
 
-        for (uint i = 0; i < mxMaps.Length; i++) {
-            MXMapInfo@ info = mxMaps[i];
+        foreach (MXMapInfo@ info : mxMaps) {
             this.Maps.InsertLast(Map(info));
         }
     }

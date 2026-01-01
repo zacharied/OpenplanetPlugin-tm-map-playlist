@@ -22,8 +22,7 @@ namespace Saves {
         _Logging::Info("Editing playlist \"" + oldName + "\".");
 
         for (uint i = 0; i < savedPlaylists.Length; i++) {
-            MapPlaylist@ list = savedPlaylists[i];
-            if (list.Name == oldName) {
+            if (savedPlaylists[i].Name == oldName) {
                 savedPlaylists[i].Maps = save.Maps;
                 savedPlaylists[i].Name = save.Name;
                 break;
@@ -37,8 +36,7 @@ namespace Saves {
         _Logging::Info("Deleting playlist \"" + name + "\".");
 
         for (uint i = 0; i < savedPlaylists.Length; i++) {
-            MapPlaylist@ list = savedPlaylists[i];
-            if (list.Name == name) {
+            if (savedPlaylists[i].Name == name) {
                 savedPlaylists.RemoveAt(i);
                 break;
             }
@@ -61,8 +59,7 @@ namespace Saves {
 
         Json::Value@ json = Json::Array();
 
-        for (uint i = 0; i < savedPlaylists.Length; i++) {
-            MapPlaylist@ list = savedPlaylists[i];
+        foreach (MapPlaylist@ list : savedPlaylists) {
             json.Add(list.ToJson());
         }
 

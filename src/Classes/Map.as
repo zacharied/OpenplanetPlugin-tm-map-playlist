@@ -282,8 +282,7 @@ class Map {
 
             Json::Value tagsArray = Json::Array();
 
-            for (uint i = 0; i < this.Tags.Length; i++) {
-                TmxTag@ tag = this.Tags[i];
+            foreach (TmxTag@ tag : this.Tags) {
                 tagsArray.Add(tag.ToJson());
             }
 

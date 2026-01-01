@@ -139,11 +139,7 @@ void SortMapPlaylist(UI::TableSortSpecs@ tableSpecs) {
         return;
     }
 
-    auto specs = tableSpecs.Specs;
-
-    for (uint i = 0; i < specs.Length; i++) {
-        auto spec = specs[i];
-
+    foreach (UI::TableColumnSortSpecs spec : tableSpecs.Specs) {
         if (spec.SortDirection == UI::SortDirection::None) {
             continue;
         }

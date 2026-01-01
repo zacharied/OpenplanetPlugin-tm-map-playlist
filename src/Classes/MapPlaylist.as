@@ -175,8 +175,7 @@ class MapPlaylist {
         json["Timestamp"] = this.CreatedAt;
 
         try {
-            for (uint i = 0; i < this.Maps.Length; i++) {
-                Map@ map = this.Maps[i];
+            foreach (Map@ map : this.Maps) {
                 json["Maps"].Add(map.ToJson());
             }
 
@@ -251,8 +250,7 @@ class MapPlaylist {
         }
 
         for (uint i = 0; i < campaign.MapList.Length; i++) {
-            Map@ map = campaign.MapList[i];
-            this.AddMap(map);
+            this.AddMap(campaign.MapList[i]);
         }
     }
 
@@ -454,9 +452,7 @@ class MapPlaylist {
     }
 
     void AddSeasonalCampaign(int campaignId) {
-        for (uint i = 0; i < SEASONAL_CAMPAIGNS.Length; i++) {
-            Campaign@ season = SEASONAL_CAMPAIGNS[i];
-
+        foreach (Campaign@ season : SEASONAL_CAMPAIGNS) {
             if (campaignId == season.Id) {
                 startnew(CoroutineFuncUserdata(this.AddCampaign), season);
                 return;
@@ -467,9 +463,7 @@ class MapPlaylist {
     }
 
     void AddSeasonalCampaign(const string &in name) {
-        for (uint i = 0; i < SEASONAL_CAMPAIGNS.Length; i++) {
-            Campaign@ season = SEASONAL_CAMPAIGNS[i];
-
+        foreach (Campaign@ season : SEASONAL_CAMPAIGNS) {
             if (name.ToLower() == season.Name.ToLower()) {
                 startnew(CoroutineFuncUserdata(this.AddCampaign), season);
                 return;
@@ -480,9 +474,7 @@ class MapPlaylist {
     }
 
     void AddWeeklyCampaign(int campaignId) {
-        for (uint i = 0; i < WEEKLY_SHORTS.Length; i++) {
-            Campaign@ week = WEEKLY_SHORTS[i];
-
+        foreach (Campaign@ week : WEEKLY_SHORTS) {
             if (campaignId == week.Id) {
                 startnew(CoroutineFuncUserdata(this.AddCampaign), week);
                 return;

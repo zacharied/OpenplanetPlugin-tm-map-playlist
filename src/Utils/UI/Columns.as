@@ -15,13 +15,11 @@ class MapColumns {
 
         uint start = Time::Now;
 
-        for (uint i = 0; i < maps.Length; i++) {
+        foreach (Map@ map : maps) {
             if (Time::Now > start + MAX_FRAME_TIME) {
                 start = Time::Now;
                 yield();
             }
-
-            Map@ map = maps[i];
 
             Name = Math::Max(Name, Draw::MeasureString(map.Name).x);
             Author = Math::Max(Author, Draw::MeasureString(map.Author).x);
@@ -54,3 +52,4 @@ class MapColumns {
         Medals = MIN_MEDALS;
     }
 }
+
