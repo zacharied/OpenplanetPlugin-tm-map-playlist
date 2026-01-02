@@ -1,209 +1,4 @@
 namespace TM {
-    bool loadingMap;
-
-    const uint COOLDOWN = 5000;
-
-    void LoadMap(ref@ mapData) {
-        try {
-            Map@ map = cast<Map>(mapData);
-
-            if (IsLoadingMap()) {
-                // A map is already loading, ignore
-                return;
-            }
-
-            _Logging::Debug("Loading map \"" + map.Name + "\" with map type \"" + map.MapType + "\"");
-
-            if (!Permissions::PlayLocalMap()) {
-                _Logging::Error("Missing permission to play local maps. Club / Standard access is required.", true);
-                return;
-            }
-
-            loadingMap = true;
-
-            ClosePauseMenu();
-
-            CTrackMania@ app = cast<CTrackMania>(GetApp());
-            app.BackToMainMenu();
-
-            while (!app.ManiaTitleControlScriptAPI.IsReady) {
-                yield();
-            }
-
-            if (S_Editor) {
-                app.ManiaTitleControlScriptAPI.EditMap(map.Url, "", "");
-            } else {
-                string gameMode;
-
-                if (!TM::ModesFromMapType.Get(map.MapType, gameMode)) {
-                    _Logging::Warn("Unknown map type \"" + map.MapType + "\" from map \"" + map.Name + "\". Map might fail to load!", true);
-                }
-
-                app.ManiaTitleControlScriptAPI.PlayMap(map.Url, gameMode, "");
-            }
-
-            const uint start = Time::Now;
-
-            while (Time::Now < start + COOLDOWN || IsLoadingScreen()) {
-                yield();
-            }
-
-            loadingMap = false;
-            @playlist.currentMap = map;
-        } catch {
-            _Logging::Error("An error occurred while loading the map", true);
-            loadingMap = false;
-        }
-    }
-
-    bool InMap() {
-        CTrackMania@ app = cast<CTrackMania>(GetApp());
-        return app.RootMap !is null;
-    }
-
-    bool InEditor() {
-        CTrackMania@ app = cast<CTrackMania>(GetApp());
-        return app.Editor !is null;
-    }
-
-    bool InCurrentMap() {
-        if (playlist.currentMap is null) {
-            return false;
-        }
-
-        CTrackMania@ app = cast<CTrackMania>(GetApp());
-
-        if (app.RootMap is null || app.RootMap.IdName == "") {
-            return false;
-        }
-
-        return app.RootMap.IdName.ToLower() == playlist.currentMap.Uid.ToLower();
-    }
-
-    void ClosePauseMenu() {
-        if (IsPauseMenuDisplayed()) {
-            CSmArenaClient@ playground = cast<CSmArenaClient>(GetApp().CurrentPlayground);
-
-            if (playground !is null) {
-                playground.Interface.ManialinkScriptHandler.CloseInGameMenu(CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Resume);
-            }
-        }
-    }
-
-    bool IsPauseMenuDisplayed() {
-        CTrackMania@ app = cast<CTrackMania>(GetApp());
-        return app.ManiaPlanetScriptAPI.ActiveContext_InGameMenuDisplayed;
-    }
-
-    CGameCtnChallenge@ GetMapFromFid(const string &in fileName, const string &in folder = "Maps\\Temp") {
-        _Logging::Debug("Getting map \"" + fileName + "\" from \"" + folder + "\" folder.");
-
-        string mainFolder = folder.Split("\\")[0];
-        CSystemFidsFolder@ mapsFolder = Fids::GetUserFolder(mainFolder);
-        if (mapsFolder is null) {
-            _Logging::Error("Failed to find " + mainFolder + " folder in Documents\\Trackmania.", true);
-            return null;
-        }
-
-        Fids::UpdateTree(mapsFolder);
-
-        CSystemFidFile@ mapFile = Fids::GetUser(folder + "\\" + fileName);
-        if (mapFile is null) {
-            _Logging::Error("Failed to find requested map file.", true);
-            return null;
-        }
-        
-        CMwNod@ nod = Fids::Preload(mapFile);
-        if (nod is null) {
-            _Logging::Error("Failed to preload " + fileName, true);
-            return null;
-        }
-        
-        CGameCtnChallenge@ map = cast<CGameCtnChallenge>(nod);
-        if (map is null) {
-            _Logging::Error("Failed to cast " + fileName + " to its class.", true);
-            _Logging::Warn("Casting map to CGameCtnChallenge failed. File might not be a valid GBX map file");
-            return null;
-        }
-
-        return map;
-    }
-
-    CGameCtnChallenge@ GetMapFromPath(const string &in path) {
-        if (!IO::FileExists(path)) {
-            _Logging::Warn("Failed to find file in provided path. Make sure to use an absolute path!", true);
-            return null;
-        }
-        
-        if (!path.ToLower().EndsWith(".map.gbx")) {
-            _Logging::Warn("The path \"" + path + "\" doesn't correspond to a GBX map file!", true);
-            return null;
-        }
-
-        const string fileName = Path::GetFileName(path);
-
-        CGameCtnChallenge@ cmap;
-
-        if (path.StartsWith(USER_FOLDER)) {
-            // No need to copy file
-            _Logging::Debug("Map file \"" + fileName + "\" is in user folder. Skipping copy...");
-
-            string folder = Path::GetDirectoryName(path.Replace(USER_FOLDER, ""));
-
-            if (folder == "") {
-                return null;
-            } else if (folder.EndsWith("\\")) {
-                folder = folder.SubStr(0, folder.Length - 1);
-            }
-
-            @cmap = TM::GetMapFromFid(fileName, folder);
-        } else {
-            // copy
-            _Logging::Debug("Map file " + fileName + " isn't in user folder. Copying...");
-
-            if (!IO::FolderExists(TEMP_MAP_FOLDER)) {
-                IO::CreateFolder(TEMP_MAP_FOLDER);
-            }
-            
-            string newPath = TEMP_MAP_FOLDER + fileName;
-
-            IO::Copy(path, newPath);
-            @cmap = TM::GetMapFromFid(fileName);
-            IO::Delete(newPath);
-        }
-
-        return cmap;
-    }
-
-    array<Map@> GetMapsFromFolder(const string &in path) {
-        array<Map@> maps;
-
-        if (!IO::FolderExists(path)) {
-            _Logging::Warn("Failed to find folder in provided path. Make sure to use an absolute path!", true);
-            return maps;
-        }
-
-        array<string> files = IO::IndexFolder(path, false);
-
-        uint start = Time::Now;
-
-        for (uint i = 0; i < files.Length; i++) {
-            if (Time::Now > start + MAX_FRAME_TIME) {
-                start = Time::Now;
-                yield();
-            }
-
-            if (!files[i].ToLower().EndsWith(".map.gbx")) continue;
-            CGameCtnChallenge@ pathMap = GetMapFromPath(files[i].Replace("/", "\\"));
-
-            if (pathMap !is null) {
-                maps.InsertLast(Map(pathMap, files[i]));
-            }
-        }
-
-        return maps;
-    }
-
     Map@ GetMapFromUid(const string &in mapUid) {
         _Logging::Debug("Getting map from UID " + mapUid);
 
@@ -259,29 +54,6 @@ namespace TM {
         return res.MapList;
     }
 
-    bool IsLoadingScreen() {
-        CTrackMania@ app = cast<CTrackMania>(GetApp());
-        auto pgCSApi = app.Network.PlaygroundClientScriptAPI;
-
-        if (pgCSApi !is null && pgCSApi.IsLoadingScreen) {
-            return true;
-        }
-
-        auto pg = app.PlaygroundScript;
-        if (pg is null) return false;
-
-        auto uiManager = pg.UIManager;
-        if (uiManager !is null && uiManager.HoldLoadingScreen) {
-            return true;
-        }
-
-        return false;
-    }
-
-    bool IsLoadingMap() {
-        return loadingMap;
-    }
-
     void GetWeeklyShorts() {
         if (!WEEKLY_SHORTS.IsEmpty()) {
             return;
@@ -309,7 +81,9 @@ namespace TM {
         if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaignList")) {
             _Logging::Error("Failed to get weekly shorts weeks from Nadeo Services");
             return;
-        } else if (json["campaignList"].Length == 0) {
+        }
+		
+		if (json["campaignList"].Length == 0) {
             _Logging::Error("Weekly shorts endpoint returned 0 weeks");
             return;
         }
@@ -351,7 +125,9 @@ namespace TM {
         if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaignList")) {
             _Logging::Error("Failed to get seasonal campaigns from Nadeo Services");
             return;
-        } else if (json["campaignList"].Length == 0) {
+        }
+		
+		if (json["campaignList"].Length == 0) {
             _Logging::Error("Seasonal campaigns endpoint returned 0 campaigns");
             return;
         }
@@ -423,7 +199,9 @@ namespace TM {
         if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("monthList")) {
             _Logging::Error("Failed to get TOTD months from Nadeo Services");
             return;
-        } else if (json["monthList"].Length == 0) {
+        }
+		
+		if (json["monthList"].Length == 0) {
             _Logging::Error("TOTD endpoint returned 0 months");
             return;
         }
@@ -480,7 +258,9 @@ namespace TM {
 
             _Logging::Error("Failed to get club campaign: " + string(json[0]), true);
             return null;
-        } else if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaign")) {
+        }
+		
+		if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaign")) {
             _Logging::Error("Failed to get club campaign from Nadeo Services");
             return null;
         }
@@ -547,93 +327,16 @@ namespace TM {
             uint maxPages = json["maxPage"];
 
             if (items < LENGTH || maxPages == currentPage) {
-                // We reached the end
+            	// We reached the end without finding the activity
                 return -1;
             }
 
             if (currentPage < MAX_ATTEMPTS) {
-                // Limit requests to 1 per second
                 sleep(1000);
             }
         }
 
         return -1;
-    }
-
-    array<uint> royalTimes = { 0, 0, 0, 0 };
-
-    int GetFinishScore() {
-        if (!TM::InCurrentMap()) {
-            return -1;
-        }
-
-        auto app = cast<CTrackMania>(GetApp());
-        int score = -1;
-
-        CSmArenaClient@ playground = cast<CSmArenaClient>(app.CurrentPlayground);
-        CSmArenaRulesMode@ script = cast<CSmArenaRulesMode>(app.PlaygroundScript);
-
-        if (playground !is null && script !is null && playground.GameTerminals.Length > 0) {
-            CSmPlayer@ player = cast<CSmPlayer>(playground.GameTerminals[0].ControlledPlayer);
-
-            if (player is null) {
-                return -1;
-            }
-
-            auto seq = playground.GameTerminals[0].UISequence_Current;
-
-            if (seq == SGamePlaygroundUIConfig::EUISequence::Finish || seq == SGamePlaygroundUIConfig::EUISequence::UIInteraction) {
-                CSmScriptPlayer@ playerScriptAPI = cast<CSmScriptPlayer>(player.ScriptAPI);
-                auto ghost = script.Ghost_RetrieveFromPlayer(playerScriptAPI);
-
-                if (ghost !is null) {
-                    switch (playlist.currentMap.GameMode) {
-                        case GameMode::Stunt:
-                            score = ghost.Result.StuntsScore;
-                            break;
-                        case GameMode::Platform:
-                            score = ghost.Result.NbRespawns;
-                            break;
-                        case GameMode::Race:
-                        case GameMode::Royal:
-                        default:
-                            if (ghost.Result.Time > 0 && ghost.Result.Time < uint(-1)) {
-                                score = ghost.Result.Time;
-                            }
-                            break;
-                    }
-
-                    script.DataFileMgr.Ghost_Release(ghost.Id);
-
-                    // from the Random Altered Campaign Challenge plugin https://openplanet.dev/plugin/randomalteredcampaign
-                    // Credit to ArEyeses for the code
-                    if (playlist.currentMap.GameMode == GameMode::Royal) {
-                        uint resIndex = player.CurrentLaunchedRespawnLandmarkIndex;
-
-                        if (resIndex >= 0 && resIndex < playground.Arena.MapLandmarks.Length) {
-                            uint section = playground.Arena.MapLandmarks[resIndex].Order;
-
-                            if (section == 5) {
-                                return royalTimes[0] + royalTimes[1] + royalTimes[2] + royalTimes[3] + score;
-                            }
-
-                            royalTimes[section - 1] = score;
-
-                            // Reset section times from previous runs
-                            for (uint i = section; i < royalTimes.Length; i++) {
-                                royalTimes[i] = 0;
-                            }
-
-                            return -1;
-                        }
-
-                        return -1;
-                    }
-                }
-            }
-        }
-
-        return score;
     }
 
     uint lastRequest = 0;
