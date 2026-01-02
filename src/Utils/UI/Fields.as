@@ -142,7 +142,7 @@ namespace UI {
         UI::SameLine();
 
         if (UI::Button("Add##CampaignButton") && m_campaign !is null) {
-            playlist.Add(m_source, m_campaign);
+            startnew(CoroutineFuncUserdata(playlist.AddCampaign), m_campaign);
             @m_campaign = null;
         }
 

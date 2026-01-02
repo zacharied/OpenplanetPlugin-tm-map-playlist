@@ -216,10 +216,6 @@ class MapPlaylist {
         }
     }
 
-    void Add(Source source, Campaign@ campaign) {
-        startnew(CoroutineFuncUserdata(this.AddCampaign), campaign);
-    }
-
     void AddMap(Map map) {
         _Logging::Trace("Adding " + map.toString() + " to the playlist");
 

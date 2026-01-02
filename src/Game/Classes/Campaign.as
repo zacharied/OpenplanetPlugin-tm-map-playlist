@@ -1,5 +1,3 @@
-array<string>@ campaignUids;
-
 class Campaign {
     int Id;
     string Name;
