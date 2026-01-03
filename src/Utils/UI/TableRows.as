@@ -113,6 +113,17 @@ namespace UI {
         }
 
         UI::TableNextColumn();
+        string sessionIcon = UI::GetTimeIcon(map, map.SessionPb);
+        string sessionTime = UI::FormatTime(map.SessionPb, map.GameMode);
+        UI::Text(sessionIcon + sessionTime);
+
+        UI::TableNextColumn();
+        if (map.HasSessionPb) {
+            int medalScore = map.GetMedalScore(S_MainMedal);
+            UI::Text(UI::FormatDelta(medalScore, map.SessionPb, map.GameMode));
+        }
+
+        UI::TableNextColumn();
 
         UI::BeginDisabled(TM::IsLoadingMap());
 

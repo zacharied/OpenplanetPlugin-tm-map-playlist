@@ -119,15 +119,17 @@ void MainLoop() {
             notified = false;
         }
 
+        int score = TM::GetFinishScore();
+        bool inverse = playlist.currentMap.GameMode == GameMode::Stunt;
+
+        if (score <= -1) {
+            sleep(50);
+            continue;
+        }
+
+        Cache::SetSessionPb(currentUid, score, inverse);
+
         if (S_SwitchOnMedal && !notified) {
-            int score = TM::GetFinishScore();
-
-            if (score <= -1) {
-                sleep(50);
-                continue;
-            }
-
-            bool inverse = playlist.currentMap.GameMode == GameMode::Stunt;
             int goal = playlist.currentMap.GetMedalScore(S_GoalMedal);
 
             bool fallback = false;
@@ -143,12 +145,13 @@ void MainLoop() {
                 string medalName = fallback ? tostring(Medals(S_GoalMedal - 1)) : tostring(S_GoalMedal);
                 UI::ShowNotification(PLUGIN_NAME, "Got the " + medalName + " medal! Loading next map...");
                 notified = true;
+
                 sleep(1000);
                 playlist.NextMap();
-            } else {
-                sleep(1000);
             }
         }
+
+        sleep(1000);
     }
 }
 
@@ -184,15 +187,7 @@ void PbLoop() {
         uint score = scoreMgr.Map_GetRecord_v2(userId, mapUid, "PersonalBest", "", mode, "");
 
         if (score < uint(-1)) {
-            if (!PB_UIDS.Exists(mapUid)) {
-                PB_UIDS.Set(mapUid, score);
-            } else {
-                uint oldPb = uint(PB_UIDS[mapUid]);
-
-                if ((isStunt && score > oldPb) || (!isStunt && score < oldPb)) {
-                    PB_UIDS[mapUid] = score;
-                }
-            }
+            Cache::SetPb(mapUid, score, isStunt);
         }
 
         sleep(500);

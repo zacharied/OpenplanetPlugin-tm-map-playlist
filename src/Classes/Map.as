@@ -217,11 +217,7 @@ class Map {
     }
 
     int get_Pb() {
-        if (PB_UIDS.Exists(this.Uid)) {
-            return int(PB_UIDS[this.Uid]);
-        }
-
-        return -1;
+        return Cache::GetPb(this.Uid);
     }
 
     bool get_IsPbSecret() {
@@ -230,6 +226,18 @@ class Map {
         }
 
         return uint(Pb) == uint(-1);
+    }
+
+    bool get_HasSessionPb() {
+        if (this.GameMode == GameMode::Platform) {
+            return this.SessionPb > -1;
+        }
+
+        return this.SessionPb > 0;
+    }
+
+    int get_SessionPb() {
+        return Cache::GetSessionPb(this.Uid);
     }
 
     bool get_HasWarrior() {

@@ -71,6 +71,12 @@ bool S_MapPb = true;
 bool S_MapDelta = true;
 
 [Setting hidden]
+bool S_MapSessionPb = false;
+
+[Setting hidden]
+bool S_MapSessionDelta = false;
+
+[Setting hidden]
 bool S_MapButtons = true;
 
 [Setting hidden]
@@ -92,6 +98,9 @@ LogLevel S_LogLevel = LogLevel::Info;
 
 [Setting hidden]
 bool S_SkipLoad = false;
+
+
+// --- Tabs rendering ---
 
 [SettingsTab name="General" order="1" icon="Wrench"]
 void RenderGeneralSettings() {
@@ -193,6 +202,8 @@ void RenderDisplaySettings() {
         S_MapMedals = true;
         S_MapPb = true;
         S_MapDelta = true;
+        S_MapSessionPb = false;
+        S_MapSessionDelta = false;
         S_MapButtons = true;
 
         S_PlaylistName = true;
@@ -211,7 +222,7 @@ void RenderDisplaySettings() {
     S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
     S_MapThumbnail = UI::Checkbox("Display thumbnail when hovering a map name", S_MapThumbnail);
 
-    array<bool> mapValues = { S_MapName, S_MapAuthor, S_MapUrl, S_MapUid, S_MapTags, S_MapGamemode, S_MapMedals, S_MapPb, S_MapDelta, S_MapButtons };
+    array<bool> mapValues = { S_MapName, S_MapAuthor, S_MapUrl, S_MapUid, S_MapTags, S_MapGamemode, S_MapMedals, S_MapPb, S_MapDelta, S_MapSessionPb, S_MapSessionDelta, S_MapButtons };
     string mapComboText = GetComboText(mapValues);
 
     UI::SetNextItemWidth(145);
@@ -225,6 +236,8 @@ void RenderDisplaySettings() {
         S_MapMedals = UI::Checkbox("Medals##Map", S_MapMedals);
         S_MapPb = UI::Checkbox("PB##Map", S_MapPb);
         S_MapDelta = UI::Checkbox("Delta##Map", S_MapDelta);
+        S_MapSessionPb = UI::Checkbox("Session PB##Map", S_MapSessionPb);
+        S_MapSessionDelta = UI::Checkbox("Session Delta##Map", S_MapSessionDelta);
         S_MapButtons = UI::Checkbox("Buttons##Map", S_MapButtons);
 
         UI::EndCombo();

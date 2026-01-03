@@ -469,10 +469,7 @@ namespace TM {
                 }
 
                 string mapUid = Cache::GetMapUid(mapId);
-
-                if (mapUid != "" && score >= 0 && !PB_UIDS.Exists(mapUid)) {
-                    PB_UIDS.Set(mapUid, score);
-                }
+                Cache::SetPb(mapUid, score, gamemode == "Stunt");
             }
 
             if (c != idChunks.Length - 1) {

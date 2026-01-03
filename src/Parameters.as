@@ -10,8 +10,6 @@ const int MAX_FRAME_TIME            = 50;
 array<MapPlaylist@> savedPlaylists  = array<MapPlaylist@>();
 MapPlaylist playlist                = MapPlaylist();
 
-dictionary PB_UIDS;
-
 array<Campaign@> WEEKLY_SHORTS;
 array<Campaign@> SEASONAL_CAMPAIGNS;
 array<Map@> FAVORITES;

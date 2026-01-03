@@ -6,6 +6,8 @@ namespace Cache {
     dictionary Maps;
     dictionary MapIds;
     dictionary MapUids;
+    dictionary Pbs;
+    dictionary SessionPbs;
     Json::Value@ idsJson = Json::FromFile(IDS_LOCATION);
 
     string GetName(const string &in authorId) {
@@ -27,6 +29,60 @@ namespace Cache {
         if (!AuthorNames.Exists(authorId) || string(AuthorNames[authorId]) == "") {
             AuthorNames.Set(authorId, name);
         }
+    }
+
+    int GetPb(const string &in mapUid) {
+        int64 pb = -1;
+        Pbs.Get(mapUid, pb);
+
+        return pb;
+    }
+
+    void SetPb(const string &in mapUid, int pb, bool stunt = false) {
+        if (mapUid == "" || pb == -1) {
+            return;
+        }
+
+        int oldPb = GetPb(mapUid);
+
+        if (oldPb > -1) {
+            if (stunt && pb <= oldPb) { 
+                return; 
+            }
+
+            if (!stunt && pb >= oldPb) {
+                return;
+            }
+        }
+
+        Pbs.Set(mapUid, pb);
+    }
+
+    int GetSessionPb(const string &in mapUid) {
+        int64 pb = -1;
+        SessionPbs.Get(mapUid, pb);
+
+        return pb;
+    }
+
+    void SetSessionPb(const string &in mapUid, int pb, bool stunt = false) {
+        if (mapUid == "" || pb == -1) {
+            return;
+        }
+
+        int oldPb = GetSessionPb(mapUid);
+
+        if (oldPb > -1) {
+            if (stunt && pb <= oldPb) { 
+                return; 
+            }
+
+            if (!stunt && pb >= oldPb) {
+                return;
+            }
+        }
+
+        SessionPbs.Set(mapUid, pb);
     }
 
     void LoadIdCache() {
