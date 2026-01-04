@@ -132,17 +132,14 @@ void MainLoop() {
         if (S_SwitchOnMedal && !notified) {
             int goal = playlist.currentMap.GetMedalScore(S_GoalMedal);
 
-            bool fallback = false;
+            if ((inverse && score >= goal) || (!inverse && score <= goal)) {
+                string medalName = tostring(S_GoalMedal);
 
 #if DEPENDENCY_WARRIORMEDALS
-            if (S_GoalMedal == Medals::Warrior && !playlist.currentMap.HasWarrior) {
-                fallback = true;
-                goal = playlist.currentMap.GetMedalScore(Medals::Author);
-            }
+                if (S_GoalMedal == Medals::Warrior && !playlist.currentMap.HasWarrior) {
+                    medalName = tostring(Medals(Medals::Warrior - 1));
+                }
 #endif
-
-            if ((inverse && score >= goal) || (!inverse && score <= goal)) {
-                string medalName = fallback ? tostring(Medals(S_GoalMedal - 1)) : tostring(S_GoalMedal);
                 UI::ShowNotification(PLUGIN_NAME, "Got the " + medalName + " medal! Loading next map...");
                 notified = true;
 
