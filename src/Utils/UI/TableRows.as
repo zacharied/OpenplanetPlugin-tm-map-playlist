@@ -60,6 +60,10 @@ namespace UI {
         if (UI::IsMouseBetween(cursorPos, cursorPos + cellSize)) {
             UI::Text(Icons::Plus);
 
+            if (UI::IsItemHovered()) {
+                UI::SetMouseCursor(UI::MouseCursor::Hand);
+            }
+            
             if (UI::IsItemClicked()) {
                 UI::OpenPopup("TagsPopup" + map.Index);
             }
