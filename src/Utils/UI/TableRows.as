@@ -1,4 +1,6 @@
 namespace UI {
+    string mapTagSearch;
+
     void RenderMapRow(Map@ map, uint position) {
         UI::TableNextRow();
         UI::TableNextColumn();
@@ -71,26 +73,34 @@ namespace UI {
 
         UI::SetNextWindowSize(200, 400, UI::Cond::Always);
         if (UI::BeginPopup("TagsPopup" + map.Index)) {
-            UI::ListClipper clipper(TMX::Tags.Length);
+            if (UI::IsWindowAppearing()) {
+                mapTagSearch = "";
+            }
 
-            while (clipper.Step()) {
-                for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                    TmxTag@ tag = TMX::Tags[i];
-                    bool HasTag = map.HasTag(tag);
+            UI::SetNextItemWidth(160);
+            mapTagSearch = UI::InputText("##MapTagSearch", mapTagSearch);
 
-                    if (UI::Checkbox("##" + tag.Name, HasTag)) {
-                        if (!HasTag) {
-                            map.AddTag(tag);
-                            playlist.OnUpdatedMaps();
-                        }
-                    } else if (HasTag) {
-                        map.RemoveTag(tag);
+            UI::Separator();
+
+            foreach (TmxTag@ tag : TMX::Tags) {
+                if (!tag.Name.ToLower().Contains(mapTagSearch)) {
+                    continue;
+                }
+
+                bool HasTag = map.HasTag(tag);
+
+                if (UI::Checkbox("##" + tag.Name, HasTag)) {
+                    if (!HasTag) {
+                        map.AddTag(tag);
                         playlist.OnUpdatedMaps();
                     }
-
-                    UI::SameLine();
-                    tag.Render();
+                } else if (HasTag) {
+                    map.RemoveTag(tag);
+                    playlist.OnUpdatedMaps();
                 }
+
+                UI::SameLine();
+                tag.Render();
             }
 
             UI::EndPopup();
