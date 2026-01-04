@@ -8,6 +8,7 @@ namespace Cache {
     dictionary MapUids;
     dictionary Pbs;
     dictionary SessionPbs;
+    dictionary ThumbnailUrls;
     Json::Value@ idsJson = Json::FromFile(IDS_LOCATION);
 
     string GetName(const string &in authorId) {
@@ -28,6 +29,24 @@ namespace Cache {
     void SetName(const string &in name, const string &in authorId) {
         if (!AuthorNames.Exists(authorId) || string(AuthorNames[authorId]) == "") {
             AuthorNames.Set(authorId, name);
+        }
+    }
+
+    string GetThumbnailUrl(const string &in mapUid) {
+        string thumbUrl = "";
+        ThumbnailUrls.Get(mapUid, thumbUrl);
+
+        return thumbUrl;
+    }
+
+    void SetThumbnailUrl(const string &in mapUid, const string &in url) {
+        if (mapUid == "" || url == "") {
+            return;
+        }
+
+        // Prioritize TMX thumbnails
+        if (!ThumbnailUrls.Exists(mapUid) || url.Contains("exchange")) {
+            ThumbnailUrls.Set(mapUid, url);
         }
     }
 

@@ -500,6 +500,7 @@ namespace TM {
 
             for (uint m = 0; m < idMaps.Length; m++) {
                 Cache::SetMapId(idMaps[m].Uid, idMaps[m].Id);
+                Cache::SetThumbnailUrl(idMaps[m].Uid, idMaps[m].ThumbnailUrl);
             }
         }
     }

@@ -5,7 +5,6 @@ class Map {
     string MapType;
     string Author = "Unknown";
     string Url;
-    string ThumbnailUrl;
     int AuthorScore = -1;
     int GoldScore = -1;
     int SilverScore = -1;
@@ -32,7 +31,6 @@ class Map {
             this.GoldScore = map.GoldScore;
             this.SilverScore = map.SilverScore;
             this.BronzeScore = map.BronzeScore;
-            this.ThumbnailUrl = map.ThumbnailUrl;
 
             string displayName = Cache::GetName(map.AuthorAccountId);
 
@@ -44,6 +42,7 @@ class Map {
             }
 
             Cache::SetMapId(map.Uid, map.Id);
+            Cache::SetThumbnailUrl(map.Uid, map.ThumbnailUrl);
             Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from Nadeo Services: " + getExceptionInfo(), true);
@@ -88,9 +87,9 @@ class Map {
             this.SilverScore = mapInfo.SilverScore;
             this.BronzeScore = mapInfo.BronzeScore;
             this.Tags = mapInfo.Tags;
-            this.ThumbnailUrl = mapInfo.ThumbnailUrl;
 
             Cache::SetMapId(mapInfo.MapUid, mapInfo.OnlineMapId);
+            Cache::SetThumbnailUrl(mapInfo.MapUid, mapInfo.ThumbnailUrl);
             Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from ManiaExchange: " + getExceptionInfo(), true);
@@ -114,7 +113,6 @@ class Map {
             this.SilverScore = json["SilverScore"];
             this.BronzeScore = json["BronzeScore"];
             this.Index = json["Index"];
-            this.ThumbnailUrl = json["ThumbnailUrl"];
 
             for (uint i = 0; i < json["Tags"].Length; i++) {
                 Json::Value@ tag = json["Tags"][i];
@@ -208,6 +206,10 @@ class Map {
         }
     }
 
+    string get_ThumbnailUrl() {
+        return Cache::GetThumbnailUrl(this.Uid);
+    }
+
     bool get_HasPb() {
         if (this.GameMode == GameMode::Platform) {
             return this.Pb > -1;
@@ -286,7 +288,6 @@ class Map {
             json["BronzeScore"] = this.BronzeScore;
             json["Pb"] = this.Pb; // not used but in case it's needed in the future
             json["Index"] = this.Index;
-            json["ThumbnailUrl"] = this.ThumbnailUrl;
 
             Json::Value tagsArray = Json::Array();
 
