@@ -104,6 +104,7 @@ int SortDelta(Map@ a, Map@ b) {
     return Math::Clamp(aDelta - bDelta, -1, 1);
 }
 
+// Original code from Better TOTD by Xertrov
 void MapQuickSort(Map@[]@ arr, MapSort@ f, bool descending, int left = 0, int right = -1) {
     if (right < 0) right = arr.Length - 1;
     if (arr.Length == 0) return;

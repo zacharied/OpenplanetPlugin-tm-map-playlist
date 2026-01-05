@@ -13,7 +13,7 @@ namespace Timer {
             UI::PushFontSize(21);
 
             UI::AlignTextToFramePadding();
-            UI::Text(Time::Format(Math::Max(TimeLimit - timer, 0)));
+            UI::Text(Time::Format(Math::Max(TimeLimit - timer, 0), false));
     
             UI::SameLine();
 

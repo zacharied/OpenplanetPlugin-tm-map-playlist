@@ -43,7 +43,7 @@ namespace Saves {
         }
 
         UpdateFile();
-        SortPlaylists();
+        SortSavedPlaylists();
     }
 
     void CreateFile() {
@@ -83,10 +83,10 @@ namespace Saves {
             savedPlaylists.InsertLast(list);
         }
 
-        SortPlaylists();
+        SortSavedPlaylists();
     }
 
-    void SortPlaylists() {
+    void SortSavedPlaylists() {
         if (savedPlaylists.Length > 1) {
             savedPlaylists.Sort(function(a, b) { 
                 return a.CreatedAt < b.CreatedAt;

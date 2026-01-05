@@ -180,12 +180,12 @@ namespace UI {
         UI::SetItemTooltip("Remove map");
     }
 
-    void RenderPlaylistRow(MapPlaylist@ list, int i) {
+    void RenderPlaylistRow(MapPlaylist@ list, int position) {
         UI::TableNextRow();
         UI::TableNextColumn();
 
         UI::AlignTextToFramePadding();
-        UI::Text(tostring(i + 1));
+        UI::Text(tostring(position + 1));
 
         UI::TableNextColumn();
         UI::Text(list.Name);

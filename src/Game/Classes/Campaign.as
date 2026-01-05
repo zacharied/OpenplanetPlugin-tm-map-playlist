@@ -54,6 +54,7 @@ class Campaign {
     void GetMaps() {
         auto maps = TM::GetMultipleMapsFromUids(this.MapUids);
 
+        // Position is needed because anonymous functions can't access MapUids directly
         for (uint i = 0; i < maps.Length; i++) {
             Map@ map = Map(maps[i]);
             map.Position = this.MapUids.Find(map.Uid);

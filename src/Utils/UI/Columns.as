@@ -1,13 +1,14 @@
 const float MIN_AUTHOR = 90;
 const float MIN_NAME = 120;
 const float MIN_MEDALS = 60;
+const float MIN_TAGS = 40;
 
 class MapColumns {
     float Name = MIN_NAME;
     float Author = MIN_AUTHOR;
     float Url;
     float Uid;
-    float Tags;
+    float Tags = MIN_TAGS;
     float Medals = MIN_MEDALS;
 
     void Update(array<Map@> maps) {
@@ -47,7 +48,7 @@ class MapColumns {
         Author = MIN_AUTHOR;
         Url = 0.0f;
         Uid = 0.0f;
-        Tags = 0.0f;
+        Tags = MIN_TAGS;
         Medals = MIN_MEDALS;
     }
 }
