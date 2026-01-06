@@ -39,7 +39,7 @@ class EditPlaylist: ModalDialog {
         }
 
         if (tooLong) {
-            Controls::FrameWarning(Icons::ExclamationTriangle + " Playlist name is too long! (Max 50 characters)");
+            Controls::FrameWarning(Icons::ExclamationTriangle + " Playlist name is too long! (Max. 50 characters)");
         }
 
         vec2 region = UI::GetContentRegionAvail();

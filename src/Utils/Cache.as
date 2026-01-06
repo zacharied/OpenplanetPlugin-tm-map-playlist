@@ -109,7 +109,7 @@ namespace Cache {
             return;
         }
 
-        _Logging::Debug("Loading map UIDs and IDs caches from JSON.");
+        _Logging::Trace("[LoadIdCache] Loading map UIDs and IDs caches from JSON.");
 
         MapIds = JsonToDict(idsJson);
 
@@ -125,7 +125,7 @@ namespace Cache {
             return;
         }
 
-        _Logging::Debug("Storing map UIDs and IDs caches in JSON.");
+        _Logging::Trace("[StoreMapIds] Storing map UIDs and IDs caches in JSON.");
         Json::ToFile(IDS_LOCATION, MapIds.ToJson(), true);
     }
 
@@ -171,7 +171,7 @@ namespace Cache {
     }
 
     void ClearMapCache() {
-        _Logging::Debug("Clearing map cache with " + Maps.GetSize() + " maps.");
+        _Logging::Trace("[ClearMapCache] Clearing map cache with " + Maps.GetSize() + " maps.");
 
         Maps.DeleteAll();
     }

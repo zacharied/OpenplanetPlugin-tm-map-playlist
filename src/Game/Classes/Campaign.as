@@ -34,7 +34,7 @@ class Campaign {
     }
 
     uint get_Length() {
-        if (!this._Loaded) {
+        if (!this.LoadedData) {
             return this.MapUids.Length;
         }
 

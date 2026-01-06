@@ -59,8 +59,8 @@ string GetComboText(array<bool> values) {
 // don't use this if your JSON is not an object containing strings!
 dictionary JsonToDict(const Json::Value@ json) {
     if (json.GetType() != Json::Type::Object) {
-        _Logging::Error("Failed to convert JSON to dictionary: JSON is not an object");
-        _Logging::Debug(Json::Write(json));
+        _Logging::Error("[JsonToDict] Failed to convert JSON to dictionary: JSON is not an object.");
+        _Logging::Debug("[JsonToDict] JSON: " + Json::Write(json));
         return {};
     }
 
@@ -71,8 +71,8 @@ dictionary JsonToDict(const Json::Value@ json) {
         const Json::Value@ value = json[keys[i]];
 
         if (value.GetType() != Json::Type::String) {
-            _Logging::Error("Unexpected value type when converting JSON to dictionary");
-            _Logging::Debug("JSON value: " + tostring(value.GetType()));
+            _Logging::Error("[JsonToDict] Unexpected value type when converting JSON to dictionary.");
+            _Logging::Debug("[JsonToDict] JSON value: " + tostring(value.GetType()));
             continue;
         }
 

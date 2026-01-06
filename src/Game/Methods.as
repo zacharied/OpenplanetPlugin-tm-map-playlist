@@ -1,7 +1,7 @@
 namespace TM {
     bool loadingMap;
 
-    const uint COOLDOWN = 5000;
+    const uint COOLDOWN = 2500;
 
     void LoadMap(ref@ mapData) {
         try {
@@ -12,7 +12,7 @@ namespace TM {
                 return;
             }
 
-            _Logging::Debug("Loading map \"" + map.Name + "\" with map type \"" + map.MapType + "\"");
+            _Logging::Debug("[LoadMap] Loading map \"" + map.Name + "\" with map type \"" + map.MapType + "\"");
 
             if (!Permissions::PlayLocalMap()) {
                 _Logging::Error("Missing permission to play local maps. Club / Standard access is required.", true);
@@ -36,7 +36,7 @@ namespace TM {
                 string gameMode;
 
                 if (!TM::ModesFromMapType.Get(map.MapType, gameMode)) {
-                    _Logging::Warn("Unknown map type \"" + map.MapType + "\" from map \"" + map.Name + "\". Map might fail to load!", true);
+                    _Logging::Warn("[LoadMap] Unknown map type \"" + map.MapType + "\" from map \"" + map.Name + "\". Map might fail to load!", true);
                 }
 
                 app.ManiaTitleControlScriptAPI.PlayMap(map.Url, gameMode, "");
@@ -51,7 +51,7 @@ namespace TM {
             loadingMap = false;
             @playlist.currentMap = map;
         } catch {
-            _Logging::Error("An error occurred while loading the map", true);
+            _Logging::Error("[LoadMap] An error occurred while loading the map", true);
             loadingMap = false;
         }
     }

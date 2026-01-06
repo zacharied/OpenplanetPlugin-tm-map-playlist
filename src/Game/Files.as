@@ -1,11 +1,11 @@
 namespace TM {
     CGameCtnChallenge@ GetMapFromFid(const string &in fileName, const string &in folder = "Maps\\Temp") {
-        _Logging::Debug("Getting map \"" + fileName + "\" from \"" + folder + "\" folder.");
+        _Logging::Trace("[GetMapFromFid] Getting map \"" + fileName + "\" from folder \"" + folder + "\".");
 
         string mainFolder = folder.Split("\\")[0];
         CSystemFidsFolder@ mapsFolder = Fids::GetUserFolder(mainFolder);
         if (mapsFolder is null) {
-            _Logging::Error("Failed to find " + mainFolder + " folder in Documents\\Trackmania.", true);
+            _Logging::Error("[GetMapFromFid] Failed to find " + mainFolder + " folder in Documents\\Trackmania.", true);
             return null;
         }
 
@@ -13,20 +13,20 @@ namespace TM {
 
         CSystemFidFile@ mapFile = Fids::GetUser(folder + "\\" + fileName);
         if (mapFile is null) {
-            _Logging::Error("Failed to find requested map file.", true);
+            _Logging::Error("[GetMapFromFid] Failed to find requested map file.", true);
             return null;
         }
         
         CMwNod@ nod = Fids::Preload(mapFile);
         if (nod is null) {
-            _Logging::Error("Failed to preload " + fileName, true);
+            _Logging::Error("[GetMapFromFid] Failed to preload " + fileName, true);
             return null;
         }
         
         CGameCtnChallenge@ map = cast<CGameCtnChallenge>(nod);
         if (map is null) {
-            _Logging::Error("Failed to cast " + fileName + " to its class.", true);
-            _Logging::Warn("Casting map to CGameCtnChallenge failed. File might not be a valid GBX map file");
+            _Logging::Error("[GetMapFromFid] Failed to cast " + fileName + " to its class.", true);
+            _Logging::Warn("[GetMapFromFid] Casting map to CGameCtnChallenge failed. File might not be a valid GBX map file");
             return null;
         }
 
@@ -34,13 +34,15 @@ namespace TM {
     }
 
     CGameCtnChallenge@ GetMapFromPath(const string &in path) {
+        _Logging::Trace("[GetMapFromPath] Getting map from path \"" + path + "\".");
+
         if (!IO::FileExists(path)) {
-            _Logging::Warn("Failed to find file in provided path. Make sure to use an absolute path!", true);
+            _Logging::Warn("[GetMapFromPath] Failed to find file in provided path. Make sure to use an absolute path!", true);
             return null;
         }
         
         if (!path.ToLower().EndsWith(".map.gbx")) {
-            _Logging::Warn("The path \"" + path + "\" doesn't correspond to a GBX map file!", true);
+            _Logging::Warn("[GetMapFromPath] The path \"" + path + "\" doesn't correspond to a GBX map file!", true);
             return null;
         }
 
@@ -48,9 +50,9 @@ namespace TM {
 
         CGameCtnChallenge@ cmap;
 
+        // if map is in user folder, we can get it directly
         if (path.StartsWith(USER_FOLDER)) {
-            // No need to copy file
-            _Logging::Debug("Map file \"" + fileName + "\" is in user folder. Skipping copy...");
+            _Logging::Debug("[GetMapFromPath] Map file \"" + fileName + "\" is in user folder. Skipping copy...");
 
             string folder = Path::GetDirectoryName(path.Replace(USER_FOLDER, ""));
 
@@ -62,8 +64,7 @@ namespace TM {
 
             @cmap = TM::GetMapFromFid(fileName, folder);
         } else {
-            // copy
-            _Logging::Debug("Map file " + fileName + " isn't in user folder. Copying...");
+            _Logging::Debug("[GetMapFromPath] Map file " + fileName + " isn't in user folder. Copying...");
 
             if (!IO::FolderExists(TEMP_MAP_FOLDER)) {
                 IO::CreateFolder(TEMP_MAP_FOLDER);
@@ -80,10 +81,12 @@ namespace TM {
     }
 
     array<Map@> GetMapsFromFolder(const string &in path) {
+        _Logging::Trace("[GetMapsFromFolder] Getting maps from folder \"" + path + "\".");
+
         array<Map@> maps;
 
         if (!IO::FolderExists(path)) {
-            _Logging::Warn("Failed to find folder in provided path. Make sure to use an absolute path!", true);
+            _Logging::Warn("[GetMapsFromFolder] Failed to find folder in provided path. Make sure to use an absolute path!", true);
             return maps;
         }
 

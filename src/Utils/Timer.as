@@ -13,7 +13,7 @@ namespace Timer {
             UI::PushFontSize(21);
 
             UI::AlignTextToFramePadding();
-            UI::Text(Time::Format(Math::Max(TimeLimit - timer, 0), false));
+            UI::Text(Time::Format(TimeLeft, false));
     
             UI::SameLine();
 
@@ -48,6 +48,10 @@ namespace Timer {
 
     uint get_TimeLimit() {
         return S_TimeLimit * 1000;
+    }
+
+    uint get_TimeLeft() {
+        return Math::Max(TimeLimit - timer, 0);
     }
     
     void Update() {

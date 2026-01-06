@@ -4,7 +4,7 @@ namespace API {
         ret.Method = Net::HttpMethod::Get;
         ret.Url = url;
 
-        _Logging::Debug("Starting HTTP request: " + url);
+        _Logging::Debug("[API::Get] Starting HTTP request: " + url);
 
         ret.Start();
         return ret;
@@ -18,7 +18,7 @@ namespace API {
         }
 
         auto json = req.Json();
-        _Logging::Debug("HTTP request result: " + Json::Write(json, true));
+        _Logging::Debug("[API::GetAsync] HTTP request result: " + Json::Write(json, true));
 
         return req.Json();
     }

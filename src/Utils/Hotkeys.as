@@ -48,6 +48,8 @@ namespace _Hotkeys {
             return;
         }
 
+        _Logging::Trace("[RemoveHotkey] Removing hotkey " + tostring(key));
+
         if (S_SwitchKey == key) {
             S_SwitchKey = VirtualKey(0);
         }
@@ -57,6 +59,8 @@ namespace _Hotkeys {
         if (!ListeningForKey) {
             return;
         }
+
+        _Logging::Trace("[AssignHotkey] Assigning hotkey " + tostring(key));
 
         RemoveHotkey(key);
 

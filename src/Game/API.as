@@ -1,6 +1,6 @@
 namespace TM {
     Map@ GetMapFromUid(const string &in mapUid) {
-        _Logging::Debug("Getting map from UID " + mapUid);
+        _Logging::Debug("[GetMapFromUid] Getting map from UID \"" + mapUid + "\".");
 
         Map@ cachedMap = Cache::GetMap(mapUid);
 
@@ -16,20 +16,20 @@ namespace TM {
         WaitAndClearTaskLater(res, menu.DataFileMgr);
 
         if (!res.HasSucceeded || res.HasFailed) {
-            _Logging::Error("Failed to find a map with UID " + mapUid, true);
-            _Logging::Error("Failed to get file URL from UID: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            _Logging::Error("[GetMapFromUid] Failed to find a map with UID " + mapUid, true);
+            _Logging::Error("[GetMapFromUid] Failed to get file URL from UID: Error " + res.ErrorCode + " - " + res.ErrorDescription);
             return null;
         }
 
         Map@ map = Map(res.Map);
-        _Logging::Info("Found URL " + map.Url + " from UID " + mapUid);
+        _Logging::Info("[GetMapFromUid] Found URL " + map.Url + " from UID " + mapUid);
 
         return map;
     }
 
     MwFastBuffer<CNadeoServicesMap@> GetMultipleMapsFromUids(array<string> uids) {
-        _Logging::Debug("Getting " + uids.Length + " maps from UID.");
-        _Logging::Debug("UIDs: " + string::Join(uids, ", "));
+        _Logging::Trace("[GetMultipleMapsFromUids] Getting " + uids.Length + " maps from UID.");
+        _Logging::Debug("[GetMultipleMapsFromUids] UIDs: " + string::Join(uids, ", "));
 
         MwFastBuffer<wstring> bufferUids;
 
@@ -45,12 +45,12 @@ namespace TM {
         WaitAndClearTaskLater(res, menu.DataFileMgr);
 
         if (!res.HasSucceeded || res.HasFailed) {
-            _Logging::Error("Failed to get maps from UIDs", true);
-            _Logging::Error("Failed to get maps from UIDs: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            _Logging::Error("[GetMultipleMapsFromUids] Failed to get maps from UIDs", true);
+            _Logging::Error("[GetMultipleMapsFromUids] Failed to get maps from UIDs: Error " + res.ErrorCode + " - " + res.ErrorDescription);
             return MwFastBuffer<CNadeoServicesMap@>();
         }
 
-        _Logging::Info("Found " + res.MapList.Length + " maps from " + uids.Length + " UIDs.");
+        _Logging::Info("[GetMultipleMapsFromUids] Found " + res.MapList.Length + " maps from " + uids.Length + " UIDs.");
         return res.MapList;
     }
 
@@ -62,6 +62,8 @@ namespace TM {
         while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
             yield();
         }
+
+        _Logging::Trace("[GetWeeklyShorts] Fetching weekly shorts.");
 
         string url = NadeoServices::BaseURLLive() + "/api/campaign/weekly-shorts?length=500&offset=0";
 
@@ -75,16 +77,16 @@ namespace TM {
         int resCode = req.ResponseCode();
         Json::Value@ json = req.Json();
 
-        _Logging::Trace("[GetWeeklyShorts] Response code: " + resCode);
-        _Logging::Trace("[GetWeeklyShorts] JSON: " + Json::Write(json, true));
+        _Logging::Debug("[GetWeeklyShorts] Response code: " + resCode);
+        _Logging::Debug("[GetWeeklyShorts] JSON: " + Json::Write(json, true));
 
         if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaignList")) {
-            _Logging::Error("Failed to get weekly shorts weeks from Nadeo Services");
+            _Logging::Error("[GetWeeklyShorts] Failed to get weekly shorts weeks from Nadeo Services");
             return;
         }
 		
 		if (json["campaignList"].Length == 0) {
-            _Logging::Error("Weekly shorts endpoint returned 0 weeks");
+            _Logging::Error("[GetWeeklyShorts] Weekly shorts endpoint returned 0 weeks");
             return;
         }
 
@@ -95,7 +97,7 @@ namespace TM {
             WEEKLY_SHORTS.InsertLast(week);
         }
 
-        _Logging::Debug("Loaded " + weeks.Length + " weekly shorts weeks.");
+        _Logging::Debug("[GetWeeklyShorts] Loaded " + weeks.Length + " weekly shorts weeks.");
     }
 
     void GetSeasonalCampaigns() {
@@ -106,6 +108,8 @@ namespace TM {
         while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
             yield();
         }
+
+        _Logging::Trace("[GetSeasonalCampaigns] Fetching seasonal campaigns.");
 
         string url = NadeoServices::BaseURLLive() + "/api/campaign/official?length=500&offset=0";
 
@@ -119,16 +123,16 @@ namespace TM {
         int resCode = req.ResponseCode();
         Json::Value@ json = req.Json();
 
-        _Logging::Trace("[GetSeasonalCampaigns] Response code: " + resCode);
-        _Logging::Trace("[GetSeasonalCampaigns] JSON: " + Json::Write(json, true));
+        _Logging::Debug("[GetSeasonalCampaigns] Response code: " + resCode);
+        _Logging::Debug("[GetSeasonalCampaigns] JSON: " + Json::Write(json, true));
 
         if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaignList")) {
-            _Logging::Error("Failed to get seasonal campaigns from Nadeo Services");
+            _Logging::Error("[GetSeasonalCampaigns] Failed to get seasonal campaigns from Nadeo Services.");
             return;
         }
 		
 		if (json["campaignList"].Length == 0) {
-            _Logging::Error("Seasonal campaigns endpoint returned 0 campaigns");
+            _Logging::Error("[GetSeasonalCampaigns] Seasonal campaigns endpoint returned 0 campaigns.");
             return;
         }
 
@@ -139,13 +143,15 @@ namespace TM {
             SEASONAL_CAMPAIGNS.InsertLast(season);
         }
 
-        _Logging::Debug("Loaded " + campaigns.Length + " seasonal campaigns.");
+        _Logging::Debug("[GetSeasonalCampaigns] Loaded " + campaigns.Length + " seasonal campaigns.");
     }
 
     void GetFavorites() {
         if (!FAVORITES.IsEmpty()) {
             return;
         }
+
+        _Logging::Trace("[GetFavorites] Fetching favorites.");
 
         auto app = cast<CGameManiaPlanet>(GetApp());
         auto menu = app.MenuManager.MenuCustom_CurrentManiaApp;
@@ -155,12 +161,12 @@ namespace TM {
         WaitAndClearTaskLater(res, menu.DataFileMgr);
 
         if (!res.HasSucceeded || res.HasFailed) {
-            _Logging::Error("Failed to get favorite maps", true);
-            _Logging::Error("Failed to get favorite maps: Error " + res.ErrorCode + " - " + res.ErrorDescription);
+            _Logging::Error("[GetFavorites] Failed to get favorite maps", true);
+            _Logging::Error("[GetFavorites] Failed to get favorite maps: Error " + res.ErrorCode + " - " + res.ErrorDescription);
             return;
         }
 
-        _Logging::Info("Found " + res.MapList.Length + " maps in favorites.");
+        _Logging::Info("[GetFavorites] Found " + res.MapList.Length + " maps in favorites.");
 
         MwFastBuffer<CNadeoServicesMap@> favoriteMaps = res.MapList;
 
@@ -169,7 +175,7 @@ namespace TM {
             FAVORITES.InsertLast(map);
         }
 
-        _Logging::Debug("Loaded " + favoriteMaps.Length + " favorites.");
+        _Logging::Debug("[GetFavorites] Loaded " + favoriteMaps.Length + " favorites.");
     }
 
     void GetTOTDMonths() {
@@ -180,6 +186,8 @@ namespace TM {
         while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
             yield();
         }
+
+        _Logging::Trace("[GetTOTDMonths] Fetching TOTD months.");
 
         string url = NadeoServices::BaseURLLive() + "/api/token/campaign/month?offset=0&length=250";
 
@@ -193,16 +201,16 @@ namespace TM {
         int resCode = req.ResponseCode();
         Json::Value@ json = req.Json();
 
-        _Logging::Trace("[GetTOTDMonths] Response code: " + resCode);
+        _Logging::Debug("[GetTOTDMonths] Response code: " + resCode);
         //_Logging::Trace("[GetTOTDMonths] JSON: " + Json::Write(json, true));
 
         if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("monthList")) {
-            _Logging::Error("Failed to get TOTD months from Nadeo Services");
+            _Logging::Error("[GetTOTDMonths] Failed to get TOTD months from Nadeo Services");
             return;
         }
 		
 		if (json["monthList"].Length == 0) {
-            _Logging::Error("TOTD endpoint returned 0 months");
+            _Logging::Error("[GetTOTDMonths] TOTD endpoint returned 0 months.");
             return;
         }
 
@@ -220,7 +228,7 @@ namespace TM {
             TOTD_MONTHS.InsertLast(month);
         }
 
-        _Logging::Debug("Loaded " + TOTD_MONTHS.Length + " TOTD months.");
+        _Logging::Debug("[GetTOTDMonths] Loaded " + TOTD_MONTHS.Length + " TOTD months.");
     }
 
     Campaign@ GetClubCampaign(int clubId, int campaignId) {
@@ -233,9 +241,11 @@ namespace TM {
             yield();
         }
 
+        _Logging::Trace("[GetClubCampaign] Getting campaign #" + campaignId + " from club #" + clubId);
+
         string url = NadeoServices::BaseURLLive() + "/api/token/club/" + clubId + "/campaign/" + campaignId;
 
-        _Logging::Debug("Club campaign API request: " + url);
+        _Logging::Debug("[GetClubCampaign] Club campaign API request: " + url);
 
         auto req = NadeoServices::Get("NadeoLiveServices", url);
         req.Start();
@@ -247,27 +257,27 @@ namespace TM {
         int resCode = req.ResponseCode();
         Json::Value@ json = req.Json();
 
-        _Logging::Trace("[GetClubCampaign] Response code: " + resCode);
-        _Logging::Trace("[GetClubCampaign] JSON: " + Json::Write(json, true));
+        _Logging::Debug("[GetClubCampaign] Response code: " + resCode);
+        _Logging::Debug("[GetClubCampaign] JSON: " + Json::Write(json, true));
 
         if (json.GetType() == Json::Type::Array) {
             if (json[0] == "activity:error-notFound") {
-                _Logging::Error("Failed to get club campaign: A club or campaign with that ID doesn't exist!", true);
+                _Logging::Error("[GetClubCampaign] Failed to get club campaign: A club or campaign with that ID doesn't exist!", true);
                 return null;
             }
 
-            _Logging::Error("Failed to get club campaign: " + string(json[0]), true);
+            _Logging::Error("[GetClubCampaign] Failed to get club campaign: " + string(json[0]), true);
             return null;
         }
 		
 		if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaign")) {
-            _Logging::Error("Failed to get club campaign from Nadeo Services");
+            _Logging::Error("[GetClubCampaign] Failed to get club campaign from Nadeo Services");
             return null;
         }
 
         Json::Value@ data = json["campaign"];
 
-        _Logging::Info("Found club campaign " + string(data["name"]) + " from the club " + string(json["clubName"]));
+        _Logging::Info("[GetClubCampaign] Found club campaign " + string(data["name"]) + " from the club " + string(json["clubName"]));
 
         return Campaign(data);
     }
@@ -285,13 +295,15 @@ namespace TM {
             yield();
         }
 
+        _Logging::Trace("[GetCampaignIdFromActivity] Searching campaign #" + activityId + " in club #" + clubId);
+
         for (uint i = 0; i < MAX_ATTEMPTS; i++) {
             uint offset = LENGTH * i;
             uint currentPage = i + 1;
 
             string url = NadeoServices::BaseURLLive() + "/api/token/club/" + clubId + "/activity?length=" + LENGTH + "&offset=" + offset + "&active=true";
 
-            _Logging::Debug("Club activities API request: " + url);
+            _Logging::Debug("[GetCampaignIdFromActivity] Club activities API request: " + url);
 
             auto req = NadeoServices::Get("NadeoLiveServices", url);
             req.Start();
@@ -303,10 +315,10 @@ namespace TM {
             int resCode = req.ResponseCode();
             Json::Value@ json = req.Json();
 
-            _Logging::Trace("[GetCampaignIdFromActivity] Response code: " + resCode);
+            _Logging::Debug("[GetCampaignIdFromActivity] Response code: " + resCode);
 
             if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("activityList")) {
-                _Logging::Error("Failed to get club campaign ID from Nadeo Services");
+                _Logging::Error("[GetCampaignIdFromActivity] Failed to get club campaign ID from Nadeo Services");
                 return -1;
             }
 
@@ -428,10 +440,12 @@ namespace TM {
             modeName = tostring(mode);
         }
 
+        _Logging::Trace("[GetPbs] Getting PBs for " + ids.Length + " " + modeName + " maps.");
+
         for (uint c = 0; c < idChunks.Length; c++) {
             string url = NadeoServices::BaseURLCore() + "/v2/accounts/" + userId + "/mapRecords?mapIdList=" + string::Join(idChunks[c], ",") + "&gameMode=" + modeName;
 
-            _Logging::Debug("Account PBs API request: " + url);
+            _Logging::Debug("[GetPbs] Account PBs API request: " + url);
 
             auto req = NadeoServices::Get("NadeoServices", url);
             req.Start();
@@ -443,14 +457,14 @@ namespace TM {
             int resCode = req.ResponseCode();
             Json::Value@ json = req.Json();
 
-            _Logging::Trace("[GetAccountPbs] Response code: " + resCode);
+            _Logging::Debug("[GetPbs] Response code: " + resCode);
 
             if (resCode >= 400 || json.GetType() != Json::Type::Array) {
-                _Logging::Error("Failed to get account PBs from Nadeo Services");
+                _Logging::Error("[GetPbs] Failed to get account PBs from Nadeo Services.");
                 return;
             }
 
-            _Logging::Debug("Found " + json.Length + " " + modeName + " records");
+            _Logging::Debug("[GetPbs] Found " + json.Length + " " + modeName + " records.");
 
             for (uint i = 0; i < json.Length; i++) {
                 Json::Value@ record = json[i];
@@ -479,6 +493,8 @@ namespace TM {
     }
 
     void GetMapIds(array<Map@> maps) {
+        _Logging::Trace("[GetMapIds] Getting map IDs for " + maps.Length + " maps.");
+
         array<string> uids;
 
         for (uint i = 0; i < maps.Length; i++) {
@@ -497,6 +513,8 @@ namespace TM {
 
         for (uint c = 0; c < uidChunks.Length; c++) {
             auto idMaps = GetMultipleMapsFromUids(uidChunks[c]);
+
+            _Logging::Debug("[GetMapIds] Found " + idMaps.Length + " map IDs from " + uidChunks[c].Length + " UIDs.");
 
             for (uint m = 0; m < idMaps.Length; m++) {
                 Cache::SetMapId(idMaps[m].Uid, idMaps[m].Id);

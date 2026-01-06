@@ -2,12 +2,12 @@ namespace Saves {
     const string SAVE_LOCATION = IO::FromStorageFolder("playlists.json");
 
     void SavePlaylist(MapPlaylist save) {
-        _Logging::Info("Saving playlist \"" + save.Name + "\" to file.");
+        _Logging::Info("[SavePlaylist] Saving playlist \"" + save.Name + "\" to file.");
 
         for (uint i = 0; i < savedPlaylists.Length; i++) {
             MapPlaylist@ list = savedPlaylists[i];
             if (list.Name == save.Name) {
-                _Logging::Warn("Trying to add playlist \"" + save.Name + "\" when one with that name already exists!");
+                _Logging::Warn("[SavePlaylist] Trying to add playlist \"" + save.Name + "\" when one with that name already exists!");
                 return;
             }
         }
@@ -19,7 +19,7 @@ namespace Saves {
     }
 
     void EditPlaylist(const string &in oldName, MapPlaylist save) {
-        _Logging::Info("Editing playlist \"" + oldName + "\".");
+        _Logging::Info("[EditPlaylist] Editing playlist \"" + oldName + "\".");
 
         for (uint i = 0; i < savedPlaylists.Length; i++) {
             if (savedPlaylists[i].Name == oldName) {
@@ -33,7 +33,7 @@ namespace Saves {
     }
 
     void DeletePlaylist(const string &in name) {
-        _Logging::Info("Deleting playlist \"" + name + "\".");
+        _Logging::Info("[DeletePlaylist] Deleting playlist \"" + name + "\".");
 
         for (uint i = 0; i < savedPlaylists.Length; i++) {
             if (savedPlaylists[i].Name == name) {
@@ -47,7 +47,7 @@ namespace Saves {
     }
 
     void CreateFile() {
-        _Logging::Trace("Creating playlists file.");
+        _Logging::Trace("[CreateFile] Creating playlists file.");
 
         Json::Value@ json = Json::Array();
 
@@ -55,7 +55,7 @@ namespace Saves {
     }
 
     void UpdateFile() {
-        _Logging::Trace("Updating playlists file.");
+        _Logging::Trace("[UpdateFile] Updating playlists file.");
 
         Json::Value@ json = Json::Array();
 
@@ -74,7 +74,7 @@ namespace Saves {
             return;
         }
 
-        _Logging::Trace("Loading playlists file.");
+        _Logging::Trace("[LoadPlaylists] Loading playlists file.");
 
         Json::Value@ json = Json::FromFile(SAVE_LOCATION);
 

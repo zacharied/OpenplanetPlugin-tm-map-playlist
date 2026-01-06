@@ -7,7 +7,7 @@ class CachedImage {
     bool m_unsupportedFormat = false;
 
     void DownloadFromURLAsync() {
-        _Logging::Debug("Loading texture: " + m_url);
+        _Logging::Debug("[DownloadFromURLAsync] Loading texture: " + m_url);
         auto req = API::Get(m_url);
 
         while (!req.Finished()) {
@@ -31,7 +31,7 @@ class CachedImage {
             }
 
             if (webpReq.ResponseCode() != 200) {
-                _Logging::Error("WEBP conversion failed. Error " + webpReq.ResponseCode());
+                _Logging::Error("[DownloadFromURLAsync] WEBP conversion failed. Error " + webpReq.ResponseCode());
                 m_unsupportedFormat = true;
                 m_error = true;
                 return;
