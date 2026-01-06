@@ -15,21 +15,25 @@ class Campaign {
     Campaign() { }
 
     Campaign(Json::Value@ json) {
-        _Logging::Debug("Loading campaign information: " + Json::Write(json, true));
+        try {
+            _Logging::Debug("Loading campaign information: " + Json::Write(json, true));
 
-        this.Id = json["id"];
-        this.Name = json["name"];
-        this.SeasonUid = json["seasonUid"];
-        this.ClubId = json["clubId"];
-        this.StartTimestamp = json["startTimestamp"];
-        this.EndTimestamp = json["endTimestamp"];
-        this.Year = json["year"];
-        this.Week = json["week"];
-        this.Day = json["day"];
+            this.Id = json["id"];
+            this.Name = json["name"];
+            this.SeasonUid = json["seasonUid"];
+            this.ClubId = json["clubId"];
+            this.StartTimestamp = json["startTimestamp"];
+            this.EndTimestamp = json["endTimestamp"];
+            this.Year = json["year"];
+            this.Week = json["week"];
+            this.Day = json["day"];
 
-        for (uint i = 0; i < json["playlist"].Length; i++) {
-            Json::Value@ map = json["playlist"][i];
-            this.MapUids.InsertLast(string(map["mapUid"]));
+            for (uint i = 0; i < json["playlist"].Length; i++) {
+                Json::Value@ map = json["playlist"][i];
+                this.MapUids.InsertLast(string(map["mapUid"]));
+            }
+        } catch {
+            _Logging::Error("An error occurred while parsing the campaign info from Nadeo Services: " + getExceptionInfo(), true);
         }
     }
 

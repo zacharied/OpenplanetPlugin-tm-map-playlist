@@ -5,16 +5,20 @@ class TOTDMonth : Campaign {
     int Month;
 
     TOTDMonth(Json::Value@ json) {
-        _Logging::Debug("Loading TOTD month information: " + Json::Write(json, true));
+        try {
+            _Logging::Debug("Loading TOTD month information: " + Json::Write(json, true));
 
-        this.Year = json["year"];
-        this.Month = json["month"];
-        this.LastDay = json["lastDay"];
-        this.Name = monthStrings[this.Month - 1] + " " + this.Year;
+            this.Year = json["year"];
+            this.Month = json["month"];
+            this.LastDay = json["lastDay"];
+            this.Name = monthStrings[this.Month - 1] + " " + this.Year;
 
-        for (uint i = 0; i < json["days"].Length; i++) {
-            Json::Value@ map = json["days"][i];
-            this.MapUids.InsertLast(string(map["mapUid"]));
+            for (uint i = 0; i < json["days"].Length; i++) {
+                Json::Value@ map = json["days"][i];
+                this.MapUids.InsertLast(string(map["mapUid"]));
+            }
+        } catch {
+            _Logging::Error("An error occurred while parsing the TOTD month info from Nadeo Services: " + getExceptionInfo(), true);
         }
     }
 

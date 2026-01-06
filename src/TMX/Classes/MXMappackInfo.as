@@ -6,10 +6,16 @@ class MXMappackInfo {
     array<Map@> Maps;
 
     MXMappackInfo(Json::Value@ json) {
-        this.ID = json["MappackId"];
-        this.Name = json["Name"];
-        this.MapCount = json["MapCount"];
-        this.Owner = json["Owner"]["Name"];
+        try {
+            _Logging::Trace("Loading mappack info from TMX: " + Json::Write(json, true));
+
+            this.ID = json["MappackId"];
+            this.Name = json["Name"];
+            this.MapCount = json["MapCount"];
+            this.Owner = json["Owner"]["Name"];
+        } catch {
+            _Logging::Error("An error occurred while parsing the mappack info from TMX: " + getExceptionInfo(), true);
+        }
     }
 
     void GetMaps() {

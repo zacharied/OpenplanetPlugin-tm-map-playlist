@@ -6,15 +6,19 @@ class TmxTag {
     string Color;
 
     TmxTag(Json::Value@ json) {
-        // Tags endpoint and map/mappack endpoints use different keys
-        if (json.HasKey("TagId")) {
-            this.ID = json["TagId"];
-        } else {
-            this.ID = json["ID"];
-        }
+        try {
+            // Tags endpoint and map/mappack endpoints use different keys
+            if (json.HasKey("TagId")) {
+                this.ID = json["TagId"];
+            } else {
+                this.ID = json["ID"];
+            }
 
-        this.Name = json["Name"];
-        this.Color = json["Color"];
+            this.Name = json["Name"];
+            this.Color = json["Color"];
+        } catch {
+            _Logging::Error("An error occurred while parsing the tag info from TMX: " + getExceptionInfo());
+        }
     }
 
     Json::Value@ ToJson() {
