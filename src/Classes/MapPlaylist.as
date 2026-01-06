@@ -351,10 +351,13 @@ class MapPlaylist {
 
             CGameCtnChallenge@ cmap = TM::GetMapFromPath(path);
 
-            if (cmap !is null) {
-                this.AddMap(Map(cmap, path));
-                _Logging::Info("Added map file to the playlist!");
+            if (cmap is null) {
+                _Logging::Warn("Failed to get map from provided path.", true);
+                return;
             }
+
+            this.AddMap(Map(cmap, path));
+            _Logging::Info("Added map file to the playlist!");
         } catch {
             _Logging::Error("An error occurred while adding a map from path \"" + path + "\": " + getExceptionInfo(), true);
         }
@@ -404,7 +407,7 @@ class MapPlaylist {
                 } else if (Text::TryParseInt(matches[1], clubId)) {
                     this.AddClubCampaign(clubId, campaignId);
                 } else {
-                    _Logging::Error("Failed to add campaign from Trackmania.io link");
+                    _Logging::Error("Failed to add campaign from Trackmania.io link", true);
                 }
             }
         } else if (Regex::Contains(str, "https?:\\/\\/(www\\.)?trackmania\\.com\\/clubs\\/\\d{1,6}\\/campaigns\\/\\d{1,6}\\/?$", regexFlags)) {

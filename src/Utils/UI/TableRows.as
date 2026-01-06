@@ -82,7 +82,7 @@ namespace UI {
 
             UI::Separator();
 
-            foreach (TMX::Tag@ tag : TMX::Tags) {
+            foreach (TMX::Tag@ tag : TMX::AllTags) {
                 if (!tag.Name.ToLower().Contains(tagSearch)) {
                     continue;
                 }
@@ -225,7 +225,7 @@ namespace UI {
 
             UI::Separator();
 
-            foreach (TMX::Tag@ tag : TMX::Tags) {
+            foreach (TMX::Tag@ tag : TMX::AllTags) {
                 if (!tag.Name.ToLower().Contains(tagSearch)) {
                     continue;
                 }

@@ -1,5 +1,5 @@
 namespace TMX {
-    array<TMX::Tag@> Tags;
+    array<TMX::Tag@> AllTags;
 
     TMX::MapInfo@ GetMap(int mapId) {
         string reqUrl = "https://trackmania.exchange/api/maps?count=1000&fields=" + MAP_FIELDS + "&id=" + mapId;
@@ -129,10 +129,10 @@ namespace TMX {
             
             for (uint i = 0; i < json.Length; i++) {
                 TMX::Tag@ tag = TMX::Tag(json[i]);
-                Tags.InsertLast(tag);
+                AllTags.InsertLast(tag);
             }
 
-            Tags.Sort(function(a, b) { return a.Name < b.Name; });
+            AllTags.Sort(function(a, b) { return a.Name < b.Name; });
         } catch {
             _Logging::Error("[GetTags] An error occurred while fetching the tags from TMX: " + getExceptionInfo(), true);
             return;
