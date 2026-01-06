@@ -79,7 +79,7 @@ namespace UI {
                 auto specs = UI::TableGetSortSpecs();
 
                 if (specs !is null && (specs.Dirty || playlist.Dirty)) {
-                    SortMapPlaylist(specs);
+                    Sort::SortMapPlaylist(specs);
                 }
 
                 UI::ListClipper clipper(playlist.Length);
