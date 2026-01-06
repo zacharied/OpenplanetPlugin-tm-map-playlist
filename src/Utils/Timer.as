@@ -55,11 +55,8 @@ namespace Timer {
     }
     
     void Update() {
-        if(!S_Timer || playlist.currentMap is null) {
-            return;
-        }
-
-        if (TM::IsLoadingMap() || TM::InEditor() || !TM::InCurrentMap()) {
+        if (!S_Timer || TM::IsLoadingMap() || TM::InEditor() || !TM::InCurrentMap() || TM::IsPauseMenuDisplayed()) {
+            lastUpdate = Time::Now;
             return;
         }
 
