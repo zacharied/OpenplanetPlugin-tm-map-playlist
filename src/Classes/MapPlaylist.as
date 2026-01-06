@@ -3,6 +3,7 @@ class MapPlaylist {
     Map@ currentMap;
     string Name;
     int CreatedAt;
+    array<TMX::Tag@> Tags;
     MapColumns@ columnWidths = MapColumns();
     bool Dirty; // For sorting
 
@@ -26,6 +27,11 @@ class MapPlaylist {
             this.AddMap(Map(map));
         }
 
+        for (uint i = 0; i < json["Tags"].Length; i++) {
+            Json::Value@ tag = json["Tags"][i];
+            this.Tags.InsertLast(TMX::Tag(tag));
+        }
+
         _Logging::Info("Succesfully loaded playlist \"" + this.Name + "\" from JSON");
     }
 
@@ -39,6 +45,27 @@ class MapPlaylist {
 
     bool IsEmpty() {
         return this.Maps.IsEmpty();
+    }
+
+    bool HasTag(TMX::Tag@ tag) {
+        return this.Tags.Find(tag) > -1;
+    }
+
+    void AddTag(TMX::Tag@ tag) {
+        if (!this.HasTag(tag)) {
+            this.Tags.InsertLast(tag);
+
+            if (this.Tags.Length > 1) {
+                this.Tags.Sort(function(a, b) { return a.Name < b.Name; });
+            }
+        }
+    }
+
+    void RemoveTag(TMX::Tag@ tag) {
+        if (this.HasTag(tag)) {
+            int tagIndex = this.Tags.Find(tag);
+            this.Tags.RemoveAt(tagIndex);
+        }
     }
 
     void Clear() {
@@ -175,12 +202,16 @@ class MapPlaylist {
         Json::Value json = Json::Object();
         json["Name"] = this.Name;
         json["Maps"] = Json::Array();
-        json["Tags"] = Json::Array(); // not used yet
+        json["Tags"] = Json::Array();
         json["Timestamp"] = this.CreatedAt;
 
         try {
             foreach (Map@ map : this.Maps) {
                 json["Maps"].Add(map.ToJson());
+            }
+
+            foreach (TMX::Tag@ tag : this.Tags) {
+                json["Tags"].Add(tag.ToJson());
             }
 
             return json;

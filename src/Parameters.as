@@ -7,7 +7,7 @@ const string PLUGIN_ICON            = Icons::List;
 const string FULL_NAME              = PLUGIN_ICON + " " + PLUGIN_NAME;
 const int MAX_FRAME_TIME            = 50;
 
-array<MapPlaylist@> savedPlaylists  = array<MapPlaylist@>();
+PlaylistsManager savedPlaylists     = PlaylistsManager();
 MapPlaylist playlist                = MapPlaylist();
 
 array<TM::Campaign@> WEEKLY_SHORTS;

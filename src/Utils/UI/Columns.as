@@ -53,3 +53,38 @@ class MapColumns {
     }
 }
 
+class PlaylistColumns {
+    float Name = MIN_NAME;
+    float Tags = MIN_TAGS;
+
+    void Update(array<MapPlaylist@> playlists) {
+        Reset();
+
+        uint start = Time::Now;
+
+        foreach (MapPlaylist@ list : playlists) {
+            if (Time::Now > start + MAX_FRAME_TIME) {
+                start = Time::Now;
+                yield();
+            }
+
+            Name = Math::Max(Name, Draw::MeasureString(list.Name).x);
+
+            float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
+            float tagsSize = 0.0;
+
+            foreach (TMX::Tag@ tag : list.Tags) {
+                tagsSize += Draw::MeasureString(tag.Name).x + 16;
+                tagsSize += itemSpacing;
+            }
+
+            tagsSize += Draw::MeasureString(Icons::Plus).x;
+            Tags = Math::Max(Tags, tagsSize);
+        }
+    }
+
+    void Reset() {
+        Name = MIN_NAME;
+        Tags = MIN_TAGS;
+    }
+}

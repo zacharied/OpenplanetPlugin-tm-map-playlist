@@ -36,8 +36,15 @@ void Main() {
     }
 }
 
-void OnDisabled()  { Cache::StoreMapIds(); }
-void OnDestroyed() { Cache::StoreMapIds(); }
+void OnDisabled()  { 
+    Cache::StoreMapIds();
+    Saves::UpdateFile(); 
+}
+
+void OnDestroyed() { 
+    Cache::StoreMapIds();
+    Saves::UpdateFile();
+}
 
 [Setting hidden]
 bool showMainWindow = true;

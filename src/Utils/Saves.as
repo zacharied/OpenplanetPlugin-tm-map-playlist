@@ -14,36 +14,22 @@ namespace Saves {
 
         save.CreatedAt = Time::Stamp;
 
-        savedPlaylists.InsertLast(save);
+        savedPlaylists.Add(save);
         UpdateFile();
     }
 
     void EditPlaylist(const string &in oldName, MapPlaylist save) {
         _Logging::Info("[EditPlaylist] Editing playlist \"" + oldName + "\".");
 
-        for (uint i = 0; i < savedPlaylists.Length; i++) {
-            if (savedPlaylists[i].Name == oldName) {
-                savedPlaylists[i].Maps = save.Maps;
-                savedPlaylists[i].Name = save.Name;
-                break;
-            }
-        }
-
+        savedPlaylists.Edit(oldName, save);
         UpdateFile();
     }
 
     void DeletePlaylist(const string &in name) {
         _Logging::Info("[DeletePlaylist] Deleting playlist \"" + name + "\".");
 
-        for (uint i = 0; i < savedPlaylists.Length; i++) {
-            if (savedPlaylists[i].Name == name) {
-                savedPlaylists.RemoveAt(i);
-                break;
-            }
-        }
-
+        savedPlaylists.Delete(name);
         UpdateFile();
-        SortSavedPlaylists();
     }
 
     void CreateFile() {
@@ -59,8 +45,8 @@ namespace Saves {
 
         Json::Value@ json = Json::Array();
 
-        foreach (MapPlaylist@ list : savedPlaylists) {
-            json.Add(list.ToJson());
+        for (uint i = 0; i < savedPlaylists.Length; i++) {
+            json.Add(savedPlaylists[i].ToJson());
         }
 
         _Logging::Debug(Json::Write(json, true));
@@ -80,17 +66,7 @@ namespace Saves {
 
         for (uint i = 0; i < json.Length; i++) {
             MapPlaylist@ list = MapPlaylist(json[i]);
-            savedPlaylists.InsertLast(list);
-        }
-
-        SortSavedPlaylists();
-    }
-
-    void SortSavedPlaylists() {
-        if (savedPlaylists.Length > 1) {
-            savedPlaylists.Sort(function(a, b) { 
-                return a.CreatedAt < b.CreatedAt;
-            });
+            savedPlaylists.Add(list);
         }
     }
 }

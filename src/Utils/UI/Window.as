@@ -115,20 +115,28 @@ namespace UI {
             UI::EndDisabled();
 
             UI::PushTableVars();
-            if (UI::BeginTable("Playlists", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::Hideable)) {
+            if (UI::BeginTable("Playlists", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable | UI::TableFlags::Sortable)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
-                UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
+                UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed | UI::TableColumnFlags::NoSort, 30);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Map Count", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Created at", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthStretch);
+                UI::TableSetupColumn("Map Count", UI::TableColumnFlags::WidthFixed, 80 * UI::GetScale());
+                UI::TableSetupColumn("Tags", UI::TableColumnFlags::WidthFixed, savedPlaylists.columnWidths.Tags);
+                UI::TableSetupColumn("Created at", UI::TableColumnFlags::WidthFixed);
+                UI::TableSetupColumn("Buttons", UI::TableColumnFlags::WidthFixed | UI::TableColumnFlags::NoSort);
                 UI::TableHeadersRow();
 
                 UI::TableSetColumnEnabled(1, S_PlaylistName);
                 UI::TableSetColumnEnabled(2, S_PlaylistMapCount);
-                UI::TableSetColumnEnabled(3, S_PlaylistDate);
-                UI::TableSetColumnEnabled(4, S_PlaylistButtons);
+                UI::TableSetColumnEnabled(3, S_PlaylistTags);
+                UI::TableSetColumnEnabled(4, S_PlaylistDate);
+                UI::TableSetColumnEnabled(5, S_PlaylistButtons);
+
+                auto specs = UI::TableGetSortSpecs();
+
+                if (specs !is null && (specs.Dirty || savedPlaylists.Dirty)) {
+                    Sort::SortPlaylists(specs);
+                }
 
                 UI::ListClipper clipper(savedPlaylists.Length);
                 while (clipper.Step()) {

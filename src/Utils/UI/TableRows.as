@@ -1,5 +1,5 @@
 namespace UI {
-    string mapTagSearch;
+    string tagSearch;
 
     void RenderMapRow(Map@ map, uint position) {
         UI::TableNextRow();
@@ -74,16 +74,16 @@ namespace UI {
         UI::SetNextWindowSize(200, 400, UI::Cond::Always);
         if (UI::BeginPopup("TagsPopup" + map.Index)) {
             if (UI::IsWindowAppearing()) {
-                mapTagSearch = "";
+                tagSearch = "";
             }
 
             UI::SetNextItemWidth(160);
-            mapTagSearch = UI::InputText("##MapTagSearch", mapTagSearch);
+            tagSearch = UI::InputText("##MapTagSearch", tagSearch);
 
             UI::Separator();
 
             foreach (TMX::Tag@ tag : TMX::Tags) {
-                if (!tag.Name.ToLower().Contains(mapTagSearch)) {
+                if (!tag.Name.ToLower().Contains(tagSearch)) {
                     continue;
                 }
 
@@ -192,6 +192,62 @@ namespace UI {
 
         UI::TableNextColumn();
         UI::Text(tostring(list.Length));
+
+        UI::TableNextColumn();
+        vec2 cursorPos = UI::GetCursorScreenPos();
+        vec2 cellSize = UI::GetCurrentCellSize();
+
+        foreach (TMX::Tag@ tag : list.Tags) {
+            tag.Render();
+            UI::SameLine();
+        }
+
+        if (UI::IsMouseBetween(cursorPos, cursorPos + cellSize)) {
+            UI::Text(Icons::Plus);
+
+            if (UI::IsItemHovered()) {
+                UI::SetMouseCursor(UI::MouseCursor::Hand);
+            }
+
+            if (UI::IsItemClicked()) {
+                UI::OpenPopup("PlaylistTagsPopup" + position);
+            }
+        }
+
+        UI::SetNextWindowSize(200, 400, UI::Cond::Always);
+        if (UI::BeginPopup("PlaylistTagsPopup" + position)) {
+            if (UI::IsWindowAppearing()) {
+                tagSearch = "";
+            }
+
+            UI::SetNextItemWidth(160);
+            tagSearch = UI::InputText("##PlaylistTagSearch", tagSearch);
+
+            UI::Separator();
+
+            foreach (TMX::Tag@ tag : TMX::Tags) {
+                if (!tag.Name.ToLower().Contains(tagSearch)) {
+                    continue;
+                }
+
+                bool HasTag = list.HasTag(tag);
+
+                if (UI::Checkbox("##" + tag.Name, HasTag)) {
+                    if (!HasTag) {
+                        list.AddTag(tag);
+                        savedPlaylists.OnUpdatedPlaylists();
+                    }
+                } else if (HasTag) {
+                    list.RemoveTag(tag);
+                    savedPlaylists.OnUpdatedPlaylists();
+                }
+
+                UI::SameLine();
+                tag.Render();
+            }
+
+            UI::EndPopup();
+        }
 
         UI::TableNextColumn();
         UI::Text(Time::FormatString("%F %T", list.CreatedAt));

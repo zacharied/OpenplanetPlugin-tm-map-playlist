@@ -86,6 +86,9 @@ bool S_PlaylistName = true;
 bool S_PlaylistMapCount = true;
 
 [Setting hidden]
+bool S_PlaylistTags = true;
+
+[Setting hidden]
 bool S_PlaylistDate = true;
 
 [Setting hidden]
@@ -208,6 +211,7 @@ void RenderDisplaySettings() {
 
         S_PlaylistName = true;
         S_PlaylistMapCount = true;
+        S_PlaylistTags = true;
         S_PlaylistDate = true;
         S_PlaylistButtons = true;
     }
@@ -263,13 +267,14 @@ void RenderDisplaySettings() {
     UI::SeparatorText("Playlists");
     UI::PopFontSize();
 
-    array<bool> playlistValues = { S_PlaylistName, S_PlaylistMapCount, S_PlaylistDate, S_PlaylistButtons };
+    array<bool> playlistValues = { S_PlaylistName, S_PlaylistMapCount, S_PlaylistTags, S_PlaylistDate, S_PlaylistButtons };
     string playlistComboText = GetComboText(playlistValues);
 
     UI::SetNextItemWidth(145);
     if (UI::BeginCombo("Displayed columns##Playlist", playlistComboText)) {
         S_PlaylistName = UI::Checkbox("Name##Playlist", S_PlaylistName);
         S_PlaylistMapCount = UI::Checkbox("Map Count##Playlist", S_PlaylistMapCount);
+        S_PlaylistTags = UI::Checkbox("Tags##Playlist", S_PlaylistTags);
         S_PlaylistDate = UI::Checkbox("Created at##Playlist", S_PlaylistDate);
         S_PlaylistButtons = UI::Checkbox("Buttons##Playlist", S_PlaylistButtons);
 
