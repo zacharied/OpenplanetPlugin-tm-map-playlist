@@ -2,7 +2,7 @@ class SelectMaps: ModalDialog {
     array<Map@>@ m_maps;
     array<Map@> m_selectedMaps;
 
-    SelectMaps(Campaign@ campaign) {
+    SelectMaps(TM::Campaign@ campaign) {
         super(campaign.Name + "###SelectMaps");
         this.m_size = vec2(700, 500);
 
@@ -19,7 +19,7 @@ class SelectMaps: ModalDialog {
         this.m_selectedMaps = this.m_maps;
     }
 
-    SelectMaps(MXMappackInfo@ mappack) {
+    SelectMaps(TMX::MappackInfo@ mappack) {
         super(mappack.Name + " Mappack###SelectMaps");
         this.m_size = vec2(700, 500);
 

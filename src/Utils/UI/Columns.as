@@ -31,7 +31,7 @@ class MapColumns {
             float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
             float tagsSize = 0.0;
 
-            foreach (TmxTag@ tag : map.Tags) {
+            foreach (TMX::Tag@ tag : map.Tags) {
                 tagsSize += Draw::MeasureString(tag.Name).x + 16;
                 tagsSize += itemSpacing;
             }

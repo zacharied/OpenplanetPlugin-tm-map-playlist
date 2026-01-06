@@ -1,7 +1,7 @@
 namespace TMX {
-    array<TmxTag@> Tags;
+    array<TMX::Tag@> Tags;
 
-    MXMapInfo@ GetMap(int mapId) {
+    TMX::MapInfo@ GetMap(int mapId) {
         string reqUrl = "https://trackmania.exchange/api/maps?count=1000&fields=" + MAP_FIELDS + "&id=" + mapId;
 
         _Logging::Trace("[GetMap] Fetching TMX map with ID #" + mapId);
@@ -21,14 +21,14 @@ namespace TMX {
                 return null;
             }
 
-            return MXMapInfo(json["Results"][0]);
+            return TMX::MapInfo(json["Results"][0]);
         } catch {
             _Logging::Error("[GetMap] An error occurred while fetching map with ID #" + mapId + " from TMX: " + getExceptionInfo(), true);
             return null;
         }
     }
 
-    MXMappackInfo@ GetMappack(int mappackId) {
+    TMX::MappackInfo@ GetMappack(int mappackId) {
         string reqUrl = "https://trackmania.exchange/api/mappacks?fields=" + MAPPACK_FIELDS + "&id=" + mappackId;
 
         _Logging::Trace("[GetMappack] Fetching TMX mappack with ID #" + mappackId);
@@ -48,7 +48,7 @@ namespace TMX {
                 return null;
             }
 
-            MXMappackInfo@ mappack = MXMappackInfo(json["Results"][0]);
+            TMX::MappackInfo@ mappack = TMX::MappackInfo(json["Results"][0]);
 
             _Logging::Info("[GetMappack] Found mappack \"" + mappack.Name + "\" from ID #" + mappackId + ".");
             return mappack;
@@ -58,8 +58,8 @@ namespace TMX {
         }
     }
 
-    array<MXMapInfo@> GetMappackMaps(int mappackId) {
-        array<MXMapInfo@> maps;
+    array<TMX::MapInfo@> GetMappackMaps(int mappackId) {
+        array<TMX::MapInfo@> maps;
         bool moreMaps = true;
         int lastId = 0;
 
@@ -93,7 +93,7 @@ namespace TMX {
                 moreMaps = json["More"];
 
                 for (uint i = 0; i < items.Length; i++) {
-                    MXMapInfo@ info = MXMapInfo(items[i]);
+                    TMX::MapInfo@ info = TMX::MapInfo(items[i]);
                     maps.InsertLast(info);
 
                     if (moreMaps && i == items.Length - 1) {
@@ -106,7 +106,7 @@ namespace TMX {
                 }
             } catch {
                 _Logging::Error("[GetMappackMaps] An error occurred while fetching the maps from mappack ID #" + mappackId + ": " + getExceptionInfo(), true);
-                return array<MXMapInfo@>();
+                return array<TMX::MapInfo@>();
             }
         }
 
@@ -128,7 +128,7 @@ namespace TMX {
             }
             
             for (uint i = 0; i < json.Length; i++) {
-                TmxTag@ tag = TmxTag(json[i]);
+                TMX::Tag@ tag = TMX::Tag(json[i]);
                 Tags.InsertLast(tag);
             }
 

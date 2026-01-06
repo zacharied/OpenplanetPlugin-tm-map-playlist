@@ -2,7 +2,7 @@ namespace UI {
     Source m_source = Source::TMX_Map_ID;
 
     string m_field = "";
-    Campaign@ m_campaign;
+    TM::Campaign@ m_campaign;
     int m_clubId;
     int m_campaignId;
 
@@ -83,7 +83,7 @@ namespace UI {
     }
 
     void RenderDropdown() {
-        array<Campaign@> campaigns = {};
+        array<TM::Campaign@> campaigns = {};
 
         switch (m_source) {
             case Source::Weekly_Shorts:
@@ -115,7 +115,7 @@ namespace UI {
 
             for (uint i = 0; i < campaigns.Length; i++) {
                 UI::PushID("CampaignsBtn" + i);
-                Campaign@ campaign = campaigns[i];
+                TM::Campaign@ campaign = campaigns[i];
 
                 if (UI::Selectable(campaign.Name, m_campaign !is null && m_campaign.Name == campaign.Name)) {
                     @m_campaign = campaign;

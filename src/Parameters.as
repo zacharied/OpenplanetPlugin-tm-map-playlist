@@ -10,10 +10,10 @@ const int MAX_FRAME_TIME            = 50;
 array<MapPlaylist@> savedPlaylists  = array<MapPlaylist@>();
 MapPlaylist playlist                = MapPlaylist();
 
-array<Campaign@> WEEKLY_SHORTS;
-array<Campaign@> SEASONAL_CAMPAIGNS;
+array<TM::Campaign@> WEEKLY_SHORTS;
+array<TM::Campaign@> SEASONAL_CAMPAIGNS;
 array<Map@> FAVORITES;
-array<TOTDMonth@> TOTD_MONTHS;
+array<TM::TOTDMonth@> TOTD_MONTHS;
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",

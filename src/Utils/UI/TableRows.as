@@ -54,7 +54,7 @@ namespace UI {
         vec2 cursorPos = UI::GetCursorScreenPos();
         vec2 cellSize = UI::GetCurrentCellSize();
 
-        foreach (TmxTag@ tag : map.Tags) {
+        foreach (TMX::Tag@ tag : map.Tags) {
             tag.Render();
             UI::SameLine();
         }
@@ -82,7 +82,7 @@ namespace UI {
 
             UI::Separator();
 
-            foreach (TmxTag@ tag : TMX::Tags) {
+            foreach (TMX::Tag@ tag : TMX::Tags) {
                 if (!tag.Name.ToLower().Contains(mapTagSearch)) {
                     continue;
                 }

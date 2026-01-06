@@ -1,48 +1,50 @@
 const vec4 DEFAULT_COLOR = vec4( 66/255.0f,  66/255.0f,  66/255.0f, 1);
 
-class TmxTag {
-    int ID;
-    string Name;
-    string Color;
+namespace TMX {
+    class Tag {
+        int ID;
+        string Name;
+        string Color;
 
-    TmxTag(Json::Value@ json) {
-        try {
-            // Tags endpoint and map/mappack endpoints use different keys
-            if (json.HasKey("TagId")) {
-                this.ID = json["TagId"];
-            } else {
-                this.ID = json["ID"];
+        Tag(Json::Value@ json) {
+            try {
+                // Tags endpoint and map/mappack endpoints use different keys
+                if (json.HasKey("TagId")) {
+                    this.ID = json["TagId"];
+                } else {
+                    this.ID = json["ID"];
+                }
+
+                this.Name = json["Name"];
+                this.Color = json["Color"];
+            } catch {
+                _Logging::Error("An error occurred while parsing the tag info from TMX: " + getExceptionInfo());
             }
-
-            this.Name = json["Name"];
-            this.Color = json["Color"];
-        } catch {
-            _Logging::Error("An error occurred while parsing the tag info from TMX: " + getExceptionInfo());
         }
-    }
 
-    Json::Value@ ToJson() {
-        Json::Value json = Json::Object();
+        Json::Value@ ToJson() {
+            Json::Value json = Json::Object();
 
-        json["TagId"] = this.ID;
-        json["ID"] = this.ID;
-        json["Name"] = this.Name;
-        json["Color"] = this.Color;
+            json["TagId"] = this.ID;
+            json["ID"] = this.ID;
+            json["Name"] = this.Name;
+            json["Color"] = this.Color;
 
-        return json;
-    }
-
-    void Render() {
-        vec4 color;
-
-        if (S_ColoredTags && Text::TryParseHexColor(this.Color, color)) {
-            Controls::Tag("\\$s" + this.Name, color);
-        } else {
-            Controls::Tag("\\$s" + this.Name, DEFAULT_COLOR);
+            return json;
         }
-    }
 
-    bool opEquals(TmxTag@ b) {
-        return this.ID == b.ID;
+        void Render() {
+            vec4 color;
+
+            if (S_ColoredTags && Text::TryParseHexColor(this.Color, color)) {
+                Controls::Tag("\\$s" + this.Name, color);
+            } else {
+                Controls::Tag("\\$s" + this.Name, DEFAULT_COLOR);
+            }
+        }
+
+        bool opEquals(Tag@ b) {
+            return this.ID == b.ID;
+        }
     }
 }

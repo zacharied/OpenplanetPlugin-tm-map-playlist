@@ -93,7 +93,7 @@ namespace TM {
         Json::Value@ weeks = json["campaignList"];
 
         for (uint i = 0; i < weeks.Length; i++) {
-            Campaign@ week = Campaign(weeks[i]);
+            TM::Campaign@ week = TM::Campaign(weeks[i]);
             WEEKLY_SHORTS.InsertLast(week);
         }
 
@@ -139,7 +139,7 @@ namespace TM {
         Json::Value@ campaigns = json["campaignList"];
 
         for (uint i = 0; i < campaigns.Length; i++) {
-            Campaign@ season = Campaign(campaigns[i]);
+            TM::Campaign@ season = TM::Campaign(campaigns[i]);
             SEASONAL_CAMPAIGNS.InsertLast(season);
         }
 
@@ -224,7 +224,7 @@ namespace TM {
                 continue;
             }
 
-            TOTDMonth@ month = TOTDMonth(monthList[i]);
+            TM::TOTDMonth@ month = TM::TOTDMonth(monthList[i]);
             TOTD_MONTHS.InsertLast(month);
         }
 

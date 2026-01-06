@@ -9,7 +9,7 @@ class Map {
     int GoldScore = -1;
     int SilverScore = -1;
     int BronzeScore = -1;
-    array<TmxTag@> Tags;
+    array<TMX::Tag@> Tags;
     int Index = -1;
 
     // Used in campaigns
@@ -72,7 +72,7 @@ class Map {
     }
 
     // MX
-    Map(MXMapInfo@ mapInfo) {
+    Map(TMX::MapInfo@ mapInfo) {
         _Logging::Trace("Loading map info from MX response");
 
         try {
@@ -116,7 +116,7 @@ class Map {
 
             for (uint i = 0; i < json["Tags"].Length; i++) {
                 Json::Value@ tag = json["Tags"][i];
-                this.Tags.InsertLast(TmxTag(tag));
+                this.Tags.InsertLast(TMX::Tag(tag));
             }
 
             Cache::SetMap(this);
@@ -146,11 +146,11 @@ class Map {
         return false;
     }
 
-    bool HasTag(TmxTag@ tag) {
+    bool HasTag(TMX::Tag@ tag) {
         return this.Tags.Find(tag) > -1;
     }
 
-    void AddTag(TmxTag@ tag) {
+    void AddTag(TMX::Tag@ tag) {
         if (!this.HasTag(tag)) {
             this.Tags.InsertLast(tag);
 
@@ -160,7 +160,7 @@ class Map {
         }
     }
 
-    void RemoveTag(TmxTag@ tag) {
+    void RemoveTag(TMX::Tag@ tag) {
         if (this.HasTag(tag)) {
             int tagIndex = this.Tags.Find(tag);
             this.Tags.RemoveAt(tagIndex);
@@ -291,7 +291,7 @@ class Map {
 
             Json::Value tagsArray = Json::Array();
 
-            foreach (TmxTag@ tag : this.Tags) {
+            foreach (TMX::Tag@ tag : this.Tags) {
                 tagsArray.Add(tag.ToJson());
             }
 

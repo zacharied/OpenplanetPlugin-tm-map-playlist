@@ -238,7 +238,7 @@ class MapPlaylist {
     }
 
     void AddCampaign(ref@ campRef) {
-        Campaign@ campaign = cast<Campaign>(campRef);
+        TM::Campaign@ campaign = cast<TM::Campaign>(campRef);
 
         _Logging::Debug("Adding the " + campaign.Name + " campaign to the playlist");
 
@@ -273,7 +273,7 @@ class MapPlaylist {
         _Logging::Debug("Adding TMX map with ID #" + mapId);
 
         try {
-            MXMapInfo@ info = TMX::GetMap(Text::ParseInt(mapId));
+            TMX::MapInfo@ info = TMX::GetMap(Text::ParseInt(mapId));
 
             if (info !is null) {
                 this.AddMap(Map(info));
@@ -288,7 +288,7 @@ class MapPlaylist {
         _Logging::Debug("Adding TMX mappack with ID #" + id);
 
         try {
-            MXMappackInfo@ mappack = TMX::GetMappack(Text::ParseInt(id));
+            TMX::MappackInfo@ mappack = TMX::GetMappack(Text::ParseInt(id));
 
             if (mappack is null) {
                 _Logging::Warn("Failed to add mappack to playlist! Mappack doesn't exist or is private.", true);
@@ -451,7 +451,7 @@ class MapPlaylist {
     }
 
     void AddSeasonalCampaign(int campaignId) {
-        foreach (Campaign@ season : SEASONAL_CAMPAIGNS) {
+        foreach (TM::Campaign@ season : SEASONAL_CAMPAIGNS) {
             if (campaignId == season.Id) {
                 startnew(CoroutineFuncUserdata(this.AddCampaign), season);
                 return;
@@ -462,7 +462,7 @@ class MapPlaylist {
     }
 
     void AddSeasonalCampaign(const string &in name) {
-        foreach (Campaign@ season : SEASONAL_CAMPAIGNS) {
+        foreach (TM::Campaign@ season : SEASONAL_CAMPAIGNS) {
             if (name.ToLower() == season.Name.ToLower()) {
                 startnew(CoroutineFuncUserdata(this.AddCampaign), season);
                 return;
@@ -473,7 +473,7 @@ class MapPlaylist {
     }
 
     void AddWeeklyCampaign(int campaignId) {
-        foreach (Campaign@ week : WEEKLY_SHORTS) {
+        foreach (TM::Campaign@ week : WEEKLY_SHORTS) {
             if (campaignId == week.Id) {
                 startnew(CoroutineFuncUserdata(this.AddCampaign), week);
                 return;
@@ -484,7 +484,7 @@ class MapPlaylist {
     }
 
     void AddClubCampaign(int clubId, int campaignId, bool selectMaps = false) {
-        Campaign@ campaign = TM::GetClubCampaign(clubId, campaignId);
+        TM::Campaign@ campaign = TM::GetClubCampaign(clubId, campaignId);
 
         if (campaign !is null) {
             if (selectMaps) {
@@ -508,7 +508,7 @@ class MapPlaylist {
     }
 
     void SelectMappackAsync(int64 mappackId) {
-        MXMappackInfo@ mappack = TMX::GetMappack(mappackId);
+        TMX::MappackInfo@ mappack = TMX::GetMappack(mappackId);
 
         if (mappack is null) {
             _Logging::Warn("Failed to add mappack to playlist! Mappack doesn't exist or is private.", true);
