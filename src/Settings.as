@@ -338,5 +338,9 @@ void RenderDevSettings() {
         Cache::ClearMapCache();
     }
 
+    if (UI::RedButton(Icons::TrashO + " Clear session PBs")) {
+        Cache::ClearSessionPBs();
+    }
+
     UI::EndChild();
 }

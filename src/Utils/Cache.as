@@ -175,4 +175,10 @@ namespace Cache {
 
         Maps.DeleteAll();
     }
+
+    void ClearSessionPBs() {
+        _Logging::Trace("[ClearSessionPBs] Clearing session PBs cache with " + SessionPbs.GetSize() + " PBs.");
+
+        SessionPbs.DeleteAll();
+    }
 }
