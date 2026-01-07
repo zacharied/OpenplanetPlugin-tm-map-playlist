@@ -32,8 +32,9 @@ class PlaylistsManager {
     void Edit(const string &in name, MapPlaylist@ list) {
         for (uint i = 0; i < this.Playlists.Length; i++) {
             if (this.Playlists[i].Name == name) {
-                this.Playlists[i].Maps = list.Maps;
                 this.Playlists[i].Name = list.Name;
+                this.Playlists[i].Maps = list.Maps;
+                this.Playlists[i].Tags = list.Tags;
                 break;
             }
         }

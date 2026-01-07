@@ -2,6 +2,7 @@ class EditPlaylist: ModalDialog {
     MapPlaylist oldList;
     string oldName;
     string m_playlistName;
+    string m_tagSearch;
 
     EditPlaylist(MapPlaylist@ list) {
         super("Edit Playlist###EditPlaylist");
@@ -40,6 +41,44 @@ class EditPlaylist: ModalDialog {
 
         if (tooLong) {
             Controls::FrameWarning(Icons::ExclamationTriangle + " Playlist name is too long! (Max. 50 characters)");
+        }
+
+        UI::AlignTextToFramePadding();
+        UI::Text("Tags: ");
+
+        UI::SameLine();
+
+        UI::SetNextItemWidth(225);
+        if (UI::BeginCombo("##Tags", tostring(this.oldList.Tags.Length) + " selected")) {
+            if (UI::IsWindowAppearing()) {
+                this.m_tagSearch = "";
+            }
+
+            UI::SetNextItemWidth(180);
+            this.m_tagSearch = UI::InputText("##OldListSearch", this.m_tagSearch);
+
+            UI::Separator();
+
+            foreach (TMX::Tag@ tag : TMX::AllTags) {
+                if (!tag.Name.ToLower().Contains(this.m_tagSearch.ToLower())) {
+                    continue;
+                }
+
+                bool HasTag = this.oldList.HasTag(tag);
+
+                if (UI::Checkbox("##" + tag.Name, HasTag)) {
+                    if (!HasTag) {
+                        this.oldList.AddTag(tag);
+                    }
+                } else if (HasTag) {
+                    this.oldList.RemoveTag(tag);
+                }
+
+                UI::SameLine();
+                tag.Render();
+            }
+
+            UI::EndCombo();
         }
 
         vec2 region = UI::GetContentRegionAvail();
