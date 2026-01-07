@@ -308,7 +308,7 @@ void RenderDevSettings() {
     UI::PopFontSize();
 
     S_SkipLoad = UI::Checkbox("Skip loading data", S_SkipLoad);
-    UI::SettingDescription("Skip loading seasonal campaigns, weekly shorts, favorites, and TOTDs.\n\nPBs will still be loaded");
+    UI::SettingDescription("Skip loading seasonal campaigns, weekly shorts, favorites, and TOTDs.");
 
     if (UI::OrangeButton(Icons::Refresh + " Reload Seasonal Campaigns")) {
         SEASONAL_CAMPAIGNS.RemoveRange(0, SEASONAL_CAMPAIGNS.Length);
