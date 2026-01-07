@@ -93,9 +93,17 @@ UI::InputBlocking OnKeyPress(bool down, VirtualKey key) {
         return UI::InputBlocking::Block;
     }
 
-    if (playlist.IsEmpty() || TM::IsLoadingMap()) return UI::InputBlocking::DoNothing;
+    if (key == S_WindowKey) {
+        showMainWindow = !showMainWindow;
+        return UI::InputBlocking::Block;
+    }
 
-    if (key == S_SwitchKey) {
+    if (key == S_TimerKey) {
+        showTimer = !showTimer;
+        return UI::InputBlocking::Block;
+    }
+
+    if (key == S_SwitchKey && !playlist.IsEmpty() && !TM::IsLoadingMap()) {
         playlist.NextMap();
         return UI::InputBlocking::Block;
     }

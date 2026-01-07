@@ -9,9 +9,6 @@ bool S_HideWithGameUI = true;
 // --- Playlist ---
 
 [Setting hidden]
-VirtualKey S_SwitchKey = VirtualKey(0);
-
-[Setting hidden]
 bool S_Editor = false;
 
 [Setting hidden]
@@ -94,6 +91,17 @@ bool S_PlaylistDate = true;
 [Setting hidden]
 bool S_PlaylistButtons = true;
 
+// --- Hotkeys ---
+
+[Setting hidden]
+VirtualKey S_SwitchKey = VirtualKey(0);
+
+[Setting hidden]
+VirtualKey S_WindowKey = VirtualKey(0);
+
+[Setting hidden]
+VirtualKey S_TimerKey = VirtualKey(0);
+
 // --- Dev ---
 
 [Setting hidden]
@@ -127,23 +135,10 @@ void RenderPlaylistSettings() {
     if (UI::Button("Reset to default")) {
         S_Editor = false;
         S_Loop = false;
-        S_SwitchKey = VirtualKey(0);
         S_Timer = false;
         S_TimeLimit = 300;
         S_SwitchOnMedal = false;
         S_GoalMedal = Medals::Author;
-        _Hotkeys::StopListeningForKey();
-    }
-
-    _Hotkeys::RenderHotkeyCombo("Switch Map Hotkey", S_SwitchKey);
-    UI::SettingDescription("Hotkey to switch to the next map.");
-
-    UI::SameLine();
-
-    if (_Hotkeys::ListeningForSwitchKey) {
-        UI::Text("Press a key");
-    } else if (UI::GreyButton("Detect##Switch")) {
-        _Hotkeys::ListeningForSwitchKey = true;
     }
 
     S_Editor = UI::Checkbox("Load in editor", S_Editor);
@@ -284,7 +279,52 @@ void RenderDisplaySettings() {
     UI::EndChild();
 }
 
-[SettingsTab name="Dev" order="4" icon="Code"]
+[SettingsTab name="Hotkeys" order="4" icon="KeyboardO"]
+void RenderHotkeySettings() {
+    UI::BeginChild("HotkeySettings");
+
+    if (UI::Button("Reset to default")) {
+        _Hotkeys::StopListeningForKey();
+        S_SwitchKey = VirtualKey(0);
+        S_WindowKey = VirtualKey(0);
+        S_TimerKey = VirtualKey(0);
+    }
+
+    _Hotkeys::RenderHotkeyCombo("Switch map", S_SwitchKey);
+    UI::SettingDescription("Hotkey to switch to the next map in the playlist.");
+
+    UI::SameLine();
+
+    if (_Hotkeys::ListeningForSwitchKey) {
+        UI::Text("Press a key");
+    } else if (UI::GreyButton("Detect##Switch")) {
+        _Hotkeys::ListeningForSwitchKey = true;
+    }
+
+    _Hotkeys::RenderHotkeyCombo("Show/Hide main window", S_WindowKey);
+
+    UI::SameLine();
+
+    if (_Hotkeys::ListeningForWindowKey) {
+        UI::Text("Press a key");
+    } else if (UI::GreyButton("Detect##Window")) {
+        _Hotkeys::ListeningForWindowKey = true;
+    }
+
+    _Hotkeys::RenderHotkeyCombo("Show/Hide timer", S_TimerKey);
+
+    UI::SameLine();
+
+    if (_Hotkeys::ListeningForTimerKey) {
+        UI::Text("Press a key");
+    } else if (UI::GreyButton("Detect##Timer")) {
+        _Hotkeys::ListeningForTimerKey = true;
+    }
+
+    UI::EndChild();
+}
+
+[SettingsTab name="Dev" order="5" icon="Code"]
 void RenderDevSettings() {
     UI::BeginChild("DevSettings");
 

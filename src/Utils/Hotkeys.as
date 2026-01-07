@@ -1,7 +1,9 @@
 namespace _Hotkeys {
     enum HotkeySetting {
         None,
-        Switch
+        Switch,
+        MainWindow,
+        Timer
     }
 
     HotkeySetting DetectingSetting = HotkeySetting::None;
@@ -16,6 +18,12 @@ namespace _Hotkeys {
 
     bool get_ListeningForSwitchKey() { return DetectingSetting == HotkeySetting::Switch; }
     void set_ListeningForSwitchKey(bool detect) { DetectingSetting = detect ? HotkeySetting::Switch : HotkeySetting::None; }
+
+    bool get_ListeningForWindowKey() { return DetectingSetting == HotkeySetting::MainWindow; }
+    void set_ListeningForWindowKey(bool detect) { DetectingSetting = detect ? HotkeySetting::MainWindow : HotkeySetting::None; }
+
+    bool get_ListeningForTimerKey() { return DetectingSetting == HotkeySetting::Timer; }
+    void set_ListeningForTimerKey(bool detect) { DetectingSetting = detect ? HotkeySetting::Timer : HotkeySetting::None; }
 
     string GetKeyName(VirtualKey key) {
         if (key == VirtualKey(0)) {
@@ -37,7 +45,9 @@ namespace _Hotkeys {
         }
 
         array<VirtualKey> usedKeys = {
-            S_SwitchKey
+            S_SwitchKey,
+            S_WindowKey,
+            S_TimerKey
         };
 
         return usedKeys.Find(key) > -1;
@@ -52,6 +62,10 @@ namespace _Hotkeys {
 
         if (S_SwitchKey == key) {
             S_SwitchKey = VirtualKey(0);
+        } else if (S_WindowKey == key) {
+            S_WindowKey = VirtualKey(0);
+        } else if (S_TimerKey == key) {
+            S_TimerKey = VirtualKey(0);
         }
     }
 
@@ -67,6 +81,12 @@ namespace _Hotkeys {
         switch (DetectingSetting) {
             case HotkeySetting::Switch:
                 S_SwitchKey = key;
+                break;
+            case HotkeySetting::MainWindow:
+                S_WindowKey = key;
+                break;
+            case HotkeySetting::Timer:
+                S_TimerKey = key;
                 break;
             default:
                 break;

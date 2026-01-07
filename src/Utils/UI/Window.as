@@ -175,6 +175,11 @@ namespace UI {
                 UI::EndTabItem();
             }
 
+            if (UI::BeginTabItem(Icons::KeyboardO + " Hotkeys")) {
+                RenderHotkeySettings();
+                UI::EndTabItem();
+            }
+
             if (UI::BeginTabItem(Icons::Code + " Dev")) {
                 RenderDevSettings();
                 UI::EndTabItem();
