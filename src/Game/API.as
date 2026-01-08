@@ -379,27 +379,13 @@ namespace TM {
     }
 
     void QueueMapPbs(array<Map@> maps) {
-        array<Map@> validMaps;
-
-        for (uint i = 0; i < maps.Length; i++) {
-            if (maps[i].Uid == "" || maps[i].GameMode == GameMode::Royal || maps[i].HasPb) {
-                continue;
-            }
-
-            validMaps.InsertLast(maps[i]);
-        }
-
-        if (validMaps.IsEmpty()) {
-            return;
-        }
-
-        GetMapIds(validMaps);
+        GetMapIds(maps);
 
         array<string> raceIds;
         array<string> stuntIds;
         array<string> platformIds;
 
-        foreach (Map@ map : validMaps) {
+        foreach (Map@ map : maps) {
             string mapId = Cache::GetMapId(map.Uid);
 
             if (mapId == "") {
