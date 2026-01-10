@@ -282,6 +282,56 @@ namespace TM {
         return Campaign(data);
     }
 
+    array<TM::ClubActivity@> SearchClubCampaigns(const string &in query = "", int offset = 0) {
+        if (!Permissions::PlayPublicClubCampaign()) {
+            _Logging::Error("Missing permission to play club campaigns!", true);
+            return {};
+        }
+
+        while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+            yield();
+        }
+
+        _Logging::Trace("[SearchClubCampaigns] Searching club campaigns.");
+        _Logging::Debug("[SearchClubCampaigns] Query: " + query + ". Offset: " + offset);
+
+        string searchUrl = NadeoServices::BaseURLLive() + "/api/token/club/campaign?length=200&offset=" + offset;
+
+        if (query != "") {
+            searchUrl += "&name=" + query;
+        }
+
+        Net::HttpRequest@ req = NadeoServices::Get("NadeoLiveServices", searchUrl);
+
+        req.Start();
+
+        while (!req.Finished()) {
+            yield();
+        }
+
+        int resCode = req.ResponseCode();
+        Json::Value@ json = req.Json();
+
+        _Logging::Debug("[SearchClubCampaigns] Response code: " + resCode);
+
+        if (resCode >= 400 || json.GetType() == Json::Type::Null || !json.HasKey("clubCampaignList")) {
+            _Logging::Error("[SearchClubCampaigns] Something went wrong while searching for club campaigns.", true);
+            return {};
+        }
+
+        Json::Value@ list = json["clubCampaignList"];
+
+        _Logging::Debug("[SearchClubCampaigns] Found " + list.Length + " club campaigns.");
+
+        array<TM::ClubActivity@> campaigns;
+
+        for (uint i = 0; i < list.Length; i++) {
+            campaigns.InsertLast(TM::ClubActivity(list[i]));
+        }
+
+        return campaigns;
+    }
+
     uint MAX_ATTEMPTS = 5;
     uint LENGTH = 250;
 

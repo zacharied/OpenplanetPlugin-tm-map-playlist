@@ -179,6 +179,16 @@ namespace UI {
         }
 
         UI::EndDisabled();
+
+        UI::SameLine();
+
+        UI::Separator(UI::SeparatorFlags::Vertical);
+
+        UI::SameLine();
+
+        if (UI::Button(Icons::Search + " Search")) {
+            Renderables::Add(SearchCampaigns());
+        }
     }
 
     void RenderFavoritesButtons() {
