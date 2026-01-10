@@ -21,17 +21,17 @@ namespace UI
         SetItemText(text, width);
     }
 
-    void BottomRightButton(float textWidth, int buttonCount = 1) {
+    void RightAlignButton(float buttonWidth, int buttonCount = 1) {
         vec2 region = UI::GetContentRegionAvail();
         vec2 pos = UI::GetCursorPos();
         float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
-        int spacingCount = buttonCount == 1 ? 1 : buttonCount + 1;
-        float newPos = Math::Max(region.x - textWidth - (itemSpacing * spacingCount), 0.0);
+        int spacingCount = buttonCount - 1;
+        float newPos = Math::Max(region.x - buttonWidth - (itemSpacing * spacingCount), 0.0);
         UI::SetCursorPosX(pos.x + newPos);
     }
 
-    void BottomRightButtons(float textWidth, int buttonCount) {
-        BottomRightButton(textWidth, buttonCount);
+    void RightAlignButtons(float buttonsWidth, int buttonCount) {
+        RightAlignButton(buttonsWidth, buttonCount);
     }
 
     // Padding

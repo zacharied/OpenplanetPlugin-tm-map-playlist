@@ -4,20 +4,20 @@ class DeletePlaylist: ModalDialog {
     DeletePlaylist(MapPlaylist@ list) {
         @this.m_playlist = list;
         super(Icons::TrashO + " Delete Playlist###DeletePlaylist");
-        this.m_size = vec2(400, 150);
+        this.m_size = vec2(400, 160);
     }
 
     void RenderDialog() override {
         UI::AlignTextToFramePadding();
 
-        UI::TextWrapped("Are you sure you want to delete the playlist \"" + this.m_playlist.Name + "\"?");
+        UI::Text("Are you sure you want to delete this playlist?");
 
-        vec2 region = UI::GetContentRegionAvail();
-        UI::VPadding(region.y - 40 * UI::GetScale());
+        UI::Text("Name: " + m_playlist.Name);
+        UI::Text("Map count: " + m_playlist.Length);
 
         float width = UI::MeasureButton(Icons::TrashO + " Delete").x;
         float width2 = UI::MeasureButton("Cancel").x;
-        UI::BottomRightButtons(width + width2, 2);
+        UI::RightAlignButtons(width + width2, 2);
 
         if (UI::RedButton(Icons::TrashO + " Delete")) {
             Saves::DeletePlaylist(this.m_playlist.Name);

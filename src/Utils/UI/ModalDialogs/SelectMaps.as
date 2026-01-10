@@ -65,7 +65,6 @@ class SelectMaps: ModalDialog {
 
     void RenderDialog() override {
         vec2 region = UI::GetContentRegionAvail();
-        float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
 
         if (UI::BeginChild("MapsChild", vec2(0, region.y - (40 * UI::GetScale())))) {
             UI::BeginDisabled(this.SelectedCount == this.m_maps.Length);
@@ -143,11 +142,7 @@ class SelectMaps: ModalDialog {
 
         string buttonStr = "Add " + this.SelectedCount + Pluralize(" map", this.SelectedCount);
 
-        region = UI::GetContentRegionAvail();
-        vec2 pos = UI::GetCursorPos();
-        vec2 dimensions = UI::MeasureButton(buttonStr);
-        float newPos = Math::Max(region.x - dimensions.x - itemSpacing, 0.0);
-        UI::SetCursorPosX(pos.x + newPos);
+        UI::RightAlignButton(UI::MeasureButton(buttonStr).x);
 
         UI::BeginDisabled(this.SelectedCount == 0);
 

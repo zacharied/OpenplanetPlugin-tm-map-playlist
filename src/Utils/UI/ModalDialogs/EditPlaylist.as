@@ -141,7 +141,7 @@ class EditPlaylist: ModalDialog {
 
         UI::BeginDisabled(this.m_playlistName == "" || nameExists || tooLong || this.oldList.IsEmpty());
 
-        UI::BottomRightButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
+        UI::RightAlignButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
         if (UI::GreenButton(Icons::FloppyO + " Save")) {
             this.oldList.Name = this.m_playlistName;

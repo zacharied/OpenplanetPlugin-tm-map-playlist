@@ -24,7 +24,7 @@ namespace UI {
             UI::SameLine();
 
             vec2 dimensions = UI::MeasureButton(Icons::Random);
-            UI::BottomRightButtons(dimensions.x * 2, 2);
+            UI::RightAlignButtons(dimensions.x * 2, 2);
 
             UI::BeginDisabled(playlist.IsEmpty());
 

@@ -96,7 +96,7 @@ class AddPlaylist: ModalDialog {
 
         UI::BeginDisabled(this.m_playlistName == "" || nameExists || tooLong);
 
-        UI::BottomRightButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
+        UI::RightAlignButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
         if (UI::GreenButton(Icons::FloppyO + " Save")) {
             MapPlaylist new = playlist;
