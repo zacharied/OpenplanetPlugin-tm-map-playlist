@@ -153,6 +153,10 @@ void RenderPlaylistSettings() {
     if (S_Timer) {
         UI::SetNextItemWidth(150);
         S_TimeLimit = UI::InputInt("Time limit per map (in seconds)", S_TimeLimit, 0);
+
+        if (UI::IsItemActive() && !Timer::Paused) {
+            Timer::Pause();
+        }
     }
 
     S_SwitchOnMedal = UI::Checkbox("Auto switch on medal", S_SwitchOnMedal);

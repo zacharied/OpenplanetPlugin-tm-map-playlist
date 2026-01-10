@@ -1,8 +1,8 @@
 namespace Timer {
-    uint timer = 0;
+    string currentUid = "";
     uint lastUpdate = 0;
-    bool paused = false;
-    string lastMap = "";
+    uint _timer = 0;
+    bool _paused = false;
 
     void Render() {
         if (!showTimer) {
@@ -10,20 +10,28 @@ namespace Timer {
         }
 
         if (UI::Begin("##Timer", UI::WindowFlags::NoTitleBar | UI::WindowFlags::NoResize | UI::WindowFlags::AlwaysAutoResize)) {
-            UI::PushFontSize(21);
+            UI::PushFontSize(24);
+
+            UI::BeginDisabled(Paused);
 
             UI::AlignTextToFramePadding();
             UI::Text(Time::Format(TimeLeft, false));
+
+            UI::EndDisabled();
     
+            UI::SameLine();
+
+            UI::Separator(UI::SeparatorFlags::Vertical);
+
             UI::SameLine();
 
             UI::BeginDisabled(playlist.currentMap is null || TM::IsLoadingMap() || TM::InEditor() || !TM::InMap());
     
-            if (UI::Button(paused ? Icons::Play : Icons::Pause)) {
-                paused = !paused;
+            if (UI::Button(Paused ? Icons::Play : Icons::Pause)) {
+                Toggle();
             }
 
-            UI::SetItemTooltip(paused ? "Resume" : "Pause");
+            UI::SetItemTooltip(Paused ? "Resume" : "Pause");
 
             UI::EndDisabled();
 
@@ -42,7 +50,7 @@ namespace Timer {
     }
 
     void Reset() {
-        timer = 0;
+        TimeSpent = 0;
         lastUpdate = Time::Now;
     }
 
@@ -51,8 +59,24 @@ namespace Timer {
     }
 
     uint get_TimeLeft() {
-        return Math::Max(TimeLimit - timer, 0);
+        return Math::Max(TimeLimit - TimeSpent, 0);
     }
+
+    uint get_TimeSpent() {
+        return _timer;
+    }
+
+    void set_TimeSpent(uint n) {
+        _timer = Math::Clamp(n, 0, TimeLimit);
+    }
+
+    bool get_Paused() { 
+        return _paused;
+    }
+
+    void Pause()  { _paused = true; }
+    void Resume() { _paused = false; }
+    void Toggle() { _paused = !_paused; }
     
     void Update() {
         if (!S_Timer || TM::IsLoadingMap() || TM::InEditor() || !TM::InCurrentMap() || TM::IsPauseMenuDisplayed()) {
@@ -62,16 +86,16 @@ namespace Timer {
 
         CTrackMania@ app = cast<CTrackMania>(GetApp());
 
-        if (app.RootMap.IdName != lastMap) {
-            lastMap = app.RootMap.IdName;
+        if (app.RootMap.IdName != currentUid) {
+            currentUid = app.RootMap.IdName;
             Reset();
-            paused = false;
-        } else if (!paused && TM::InCurrentMap()) {
+            Resume();
+        } else if (!Paused && TM::InCurrentMap()) {
             uint delta = Time::Now - lastUpdate;
-            timer += delta;
+            TimeSpent += delta;
 
-            if (timer >= TimeLimit) {
-                paused = true;
+            if (TimeSpent >= TimeLimit) {
+                Pause();
 
                 if (playlist.Length == 1) {
                     TM::ClosePauseMenu();
