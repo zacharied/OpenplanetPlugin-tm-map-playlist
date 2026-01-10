@@ -106,7 +106,7 @@ namespace TMX {
                 }
             } catch {
                 _Logging::Error("[GetMappackMaps] An error occurred while fetching the maps from mappack ID #" + mappackId + ": " + getExceptionInfo(), true);
-                return array<TMX::MapInfo@>();
+                return {};
             }
         }
 

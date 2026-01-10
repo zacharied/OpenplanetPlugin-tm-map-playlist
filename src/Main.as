@@ -31,8 +31,8 @@ void Main() {
 
         TM::GetWeeklyShorts();
         TM::GetSeasonalCampaigns();
-        TM::GetFavorites();
         TM::GetTOTDMonths();
+        TM::GetFavorites();
     }
 }
 

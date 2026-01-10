@@ -4,7 +4,7 @@ class SelectMaps: ModalDialog {
 
     SelectMaps(TM::Campaign@ campaign) {
         super(campaign.Name + "###SelectMaps");
-        this.m_size = vec2(700, 500);
+        this.m_size = vec2(750, 500);
 
         @this.m_maps = campaign.MapList;
         campaign.LoadMapData();
@@ -13,7 +13,7 @@ class SelectMaps: ModalDialog {
 
     SelectMaps(array<Map@> maps) {
         super("Maps###SelectMaps");
-        this.m_size = vec2(700, 500);
+        this.m_size = vec2(750, 500);
 
         @this.m_maps = maps;
         this.m_selectedMaps = this.m_maps;
@@ -21,7 +21,7 @@ class SelectMaps: ModalDialog {
 
     SelectMaps(TMX::MappackInfo@ mappack) {
         super(mappack.Name + " Mappack###SelectMaps");
-        this.m_size = vec2(700, 500);
+        this.m_size = vec2(750, 500);
 
         @this.m_maps = mappack.Maps;
         this.m_selectedMaps = this.m_maps;
@@ -91,8 +91,8 @@ class SelectMaps: ModalDialog {
                 UI::TableSetupScrollFreeze(0, 1);
                 UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed, 30);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI::GetScale());
+                UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, 150 * UI::GetScale());
+                UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 110 * UI::GetScale());
                 UI::TableHeadersRow();
 
                 UI::ListClipper clipper(this.m_maps.Length);

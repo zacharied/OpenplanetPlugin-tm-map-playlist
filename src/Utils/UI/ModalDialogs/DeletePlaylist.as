@@ -12,8 +12,8 @@ class DeletePlaylist: ModalDialog {
 
         UI::Text("Are you sure you want to delete this playlist?");
 
-        UI::Text("Name: " + m_playlist.Name);
-        UI::Text("Map count: " + m_playlist.Length);
+        UI::Text("Name: " + this.m_playlist.Name);
+        UI::Text("Map count: " + this.m_playlist.Length);
 
         float width = UI::MeasureButton(Icons::TrashO + " Delete").x;
         float width2 = UI::MeasureButton("Cancel").x;
