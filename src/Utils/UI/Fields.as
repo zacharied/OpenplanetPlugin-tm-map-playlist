@@ -5,6 +5,7 @@ namespace UI {
     TM::Campaign@ m_campaign;
     int m_clubId;
     int m_campaignId;
+    string m_dropdownSearch;
 
     void RenderSources() {
         UI::SetNextItemWidth(180);
@@ -107,15 +108,29 @@ namespace UI {
 
         UI::BeginDisabled(campaigns.IsEmpty());
 
-        UI::SetNextItemWidth(130);
+        UI::SetNextItemWidth(150);
         if (UI::BeginCombo("##Campaigns", m_campaign is null ? "None" : m_campaign.Name)) {
+            if (UI::IsWindowAppearing()) {
+                m_dropdownSearch = "";
+            }
+
+            UI::SetNextItemWidth(120);
+            m_dropdownSearch = UI::InputText("##CampaignSearch", m_dropdownSearch);
+
+            UI::Separator();
+
             if (UI::Selectable("None", m_campaign is null)) {
                 @m_campaign = null;
             }
 
             for (uint i = 0; i < campaigns.Length; i++) {
-                UI::PushID("CampaignsBtn" + i);
                 TM::Campaign@ campaign = campaigns[i];
+
+                if (!campaign.Name.ToLower().Contains(m_dropdownSearch.ToLower())) {
+                    continue;
+                }
+
+                UI::PushID("CampaignsBtn" + i);
 
                 if (UI::Selectable(campaign.Name, m_campaign !is null && m_campaign.Name == campaign.Name)) {
                     @m_campaign = campaign;
