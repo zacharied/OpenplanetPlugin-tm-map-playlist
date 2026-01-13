@@ -111,6 +111,14 @@ class EditPlaylist: ModalDialog {
                             UI::AlignTextToFramePadding();
                             UI::Text(map.Name);
 
+                            if (S_MapThumbnail) {
+                                if (map.ThumbnailUrl == "") {
+                                    UI::SetItemTooltip("\\$f00" + Icons::Times + "\\$z No thumbnail available.");
+                                } else {
+                                    UI::ThumbnailTooltip(map.ThumbnailUrl);
+                                }
+                            }
+
                             UI::TableNextColumn();
                             UI::Text(map.Author);
 

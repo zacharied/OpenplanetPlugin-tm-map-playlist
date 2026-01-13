@@ -1,6 +1,6 @@
 namespace UI {
     void ThumbnailTooltip(const string &in url, float resize = 0.25) {
-        if (UI::IsItemHovered(UI::HoveredFlags::DelayShort | UI::HoveredFlags::NoSharedDelay)) {
+        if (UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled | UI::HoveredFlags::DelayShort | UI::HoveredFlags::NoSharedDelay)) {
             CachedImage@ img = Images::CachedFromURL(url);
 
             if (UI::BeginItemTooltip()) {
