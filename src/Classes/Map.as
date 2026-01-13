@@ -119,6 +119,10 @@ class Map {
                 this.Tags.InsertLast(TMX::Tag(tag));
             }
 
+            if (json.HasKey("ThumbnailUrl")) {
+                Cache::SetThumbnailUrl(this.Uid, json["ThumbnailUrl"]);
+            }
+
             Cache::SetMap(this);
         } catch {
             _Logging::Error("An error occurred while parsing the map info from JSON: " + getExceptionInfo(), true);
@@ -288,6 +292,7 @@ class Map {
             json["BronzeScore"] = this.BronzeScore;
             json["Pb"] = this.Pb; // not used but in case it's needed in the future
             json["Index"] = this.Index;
+            json["ThumbnailUrl"] = this.ThumbnailUrl;
 
             Json::Value tagsArray = Json::Array();
 
