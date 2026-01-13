@@ -1,5 +1,5 @@
 namespace TM {
-    bool loadingMap;
+    bool g_loadingMap;
 
     const uint COOLDOWN = 2500;
 
@@ -19,7 +19,7 @@ namespace TM {
                 return;
             }
 
-            loadingMap = true;
+            g_loadingMap = true;
 
             ClosePauseMenu();
 
@@ -48,11 +48,11 @@ namespace TM {
                 yield();
             }
 
-            loadingMap = false;
+            g_loadingMap = false;
             @playlist.currentMap = map;
         } catch {
             _Logging::Error("[LoadMap] An error occurred while loading the map", true);
-            loadingMap = false;
+            g_loadingMap = false;
         }
     }
 
@@ -115,7 +115,7 @@ namespace TM {
     }
 
     bool IsLoadingMap() {
-        return loadingMap;
+        return g_loadingMap;
     }
 
     array<uint> royalTimes = { 0, 0, 0, 0 };

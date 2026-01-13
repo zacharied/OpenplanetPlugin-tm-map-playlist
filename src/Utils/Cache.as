@@ -1,40 +1,40 @@
 namespace Cache {
-    dictionary AuthorNames = {
+    dictionary g_authorNames = {
         { "d2372a08-a8a1-46cb-97fb-23a161d85ad0", "Nadeo" } // Maps uploaded by the old Nadeo account return an empty string for the Author
     };
 
-    dictionary Maps;
-    dictionary MapIds;
-    dictionary MapUids;
-    dictionary Pbs;
-    dictionary SessionPbs;
-    dictionary ThumbnailUrls;
-    Json::Value@ idsJson = Json::FromFile(IDS_LOCATION);
+    dictionary g_maps;
+    dictionary g_mapIds;
+    dictionary g_mapUids;
+    dictionary g_pbs;
+    dictionary g_sessionPbs;
+    dictionary g_thumbnailUrls;
+    const Json::Value@ g_idsJson = Json::FromFile(IDS_LOCATION);
 
     string GetName(const string &in authorId) {
         string name;
 
-        if (AuthorNames.Get(authorId, name)) {
+        if (g_authorNames.Get(authorId, name)) {
             return name;
         }
 
 #if DEPENDENCY_NADEOSERVICES
         name = NadeoServices::GetDisplayNameAsync(authorId);
-        AuthorNames.Set(authorId, name);
+        g_authorNames.Set(authorId, name);
 #endif
 
         return name;
     }
 
     void SetName(const string &in name, const string &in authorId) {
-        if (!AuthorNames.Exists(authorId) || string(AuthorNames[authorId]) == "") {
-            AuthorNames.Set(authorId, name);
+        if (!g_authorNames.Exists(authorId) || string(g_authorNames[authorId]) == "") {
+            g_authorNames.Set(authorId, name);
         }
     }
 
     string GetThumbnailUrl(const string &in mapUid) {
         string thumbUrl = "";
-        ThumbnailUrls.Get(mapUid, thumbUrl);
+        g_thumbnailUrls.Get(mapUid, thumbUrl);
 
         return thumbUrl;
     }
@@ -45,14 +45,14 @@ namespace Cache {
         }
 
         // Prioritize TMX thumbnails
-        if (!ThumbnailUrls.Exists(mapUid) || url.Contains("exchange")) {
-            ThumbnailUrls.Set(mapUid, url);
+        if (!g_thumbnailUrls.Exists(mapUid) || url.Contains("exchange")) {
+            g_thumbnailUrls.Set(mapUid, url);
         }
     }
 
     int GetPb(const string &in mapUid) {
         int64 pb = -1;
-        Pbs.Get(mapUid, pb);
+        g_pbs.Get(mapUid, pb);
 
         return pb;
     }
@@ -74,12 +74,12 @@ namespace Cache {
             }
         }
 
-        Pbs.Set(mapUid, pb);
+        g_pbs.Set(mapUid, pb);
     }
 
     int GetSessionPb(const string &in mapUid) {
         int64 pb = -1;
-        SessionPbs.Get(mapUid, pb);
+        g_sessionPbs.Get(mapUid, pb);
 
         return pb;
     }
@@ -101,44 +101,44 @@ namespace Cache {
             }
         }
 
-        SessionPbs.Set(mapUid, pb);
+        g_sessionPbs.Set(mapUid, pb);
     }
 
     void LoadIdCache() {
-        if (idsJson.GetType() == Json::Type::Null) {
+        if (g_idsJson.GetType() == Json::Type::Null) {
             return;
         }
 
         _Logging::Trace("[LoadIdCache] Loading map UIDs and IDs caches from JSON.");
 
-        MapIds = JsonToDict(idsJson);
+        g_mapIds = JsonToDict(g_idsJson);
 
-        array<string> keys = MapIds.GetKeys();
+        array<string> keys = g_mapIds.GetKeys();
 
         foreach (string key : keys) {
-            MapUids.Set(string(MapIds[key]), key);
+            g_mapUids.Set(string(g_mapIds[key]), key);
         }
     }
 
     void StoreMapIds() {
-        if (MapIds.IsEmpty()) {
+        if (g_mapIds.IsEmpty()) {
             return;
         }
 
         _Logging::Trace("[StoreMapIds] Storing map UIDs and IDs caches in JSON.");
-        Json::ToFile(IDS_LOCATION, MapIds.ToJson(), true);
+        Json::ToFile(IDS_LOCATION, g_mapIds.ToJson(), true);
     }
 
     string GetMapId(const string &in mapUid) {
         string mapId;
-        MapIds.Get(mapUid, mapId);
+        g_mapIds.Get(mapUid, mapId);
 
         return mapId;
     }
 
     string GetMapUid(const string &in mapId) {
         string mapUid;
-        MapUids.Get(mapId, mapUid);
+        g_mapUids.Get(mapId, mapUid);
 
         return mapUid;
     }
@@ -148,37 +148,37 @@ namespace Cache {
             return;
         }
         
-        if (!MapIds.Exists(mapUid)) {
-            MapIds.Set(mapUid, mapId);
-            MapUids.Set(mapId, mapUid);
+        if (!g_mapIds.Exists(mapUid)) {
+            g_mapIds.Set(mapUid, mapId);
+            g_mapUids.Set(mapId, mapUid);
         }
     }
 
     Map@ GetMap(const string &in mapUid) {
-        if (!Maps.Exists(mapUid)) {
+        if (!g_maps.Exists(mapUid)) {
             return null;
         }
 
-        Map@ map = cast<Map>(Maps[mapUid]);
+        Map@ map = cast<Map>(g_maps[mapUid]);
 
         return map;
     }
 
     void SetMap(Map map) {
-        if (!Maps.Exists(map.Uid)) {
-            Maps.Set(map.Uid, map);
+        if (!g_maps.Exists(map.Uid)) {
+            g_maps.Set(map.Uid, map);
         }
     }
 
     void ClearMapCache() {
-        _Logging::Trace("[ClearMapCache] Clearing map cache with " + Maps.GetSize() + " maps.");
+        _Logging::Trace("[ClearMapCache] Clearing map cache with " + g_maps.GetSize() + " maps.");
 
-        Maps.DeleteAll();
+        g_maps.DeleteAll();
     }
 
     void ClearSessionPBs() {
-        _Logging::Trace("[ClearSessionPBs] Clearing session PBs cache with " + SessionPbs.GetSize() + " PBs.");
+        _Logging::Trace("[ClearSessionPBs] Clearing session PBs cache with " + g_sessionPbs.GetSize() + " PBs.");
 
-        SessionPbs.DeleteAll();
+        g_sessionPbs.DeleteAll();
     }
 }

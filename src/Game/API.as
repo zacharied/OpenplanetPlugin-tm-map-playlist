@@ -401,30 +401,30 @@ namespace TM {
         return -1;
     }
 
-    uint lastRequest = 0;
-    array<Map@> queue;
-    uint PB_COOLDOWN = 3000;
+    uint g_lastRequest = 0;
+    array<Map@> g_queue;
+    const uint PB_COOLDOWN = 3000;
 
     void GetPb(ref@ mapRef) {
         Map@ map = cast<Map>(mapRef);
 
-        if (map is null || map.Uid == "" || queue.Find(map) > -1 || map.GameMode == GameMode::Royal || map.HasPb) {
+        if (map is null || map.Uid == "" || g_queue.Find(map) > -1 || map.GameMode == GameMode::Royal || map.HasPb) {
             return;
         }
 
         uint now = Time::Now;
-        lastRequest = now;
-        queue.InsertLast(map);
+        g_lastRequest = now;
+        g_queue.InsertLast(map);
 
         sleep(PB_COOLDOWN);
 
-        if (lastRequest > now) {
+        if (g_lastRequest > now) {
             // Another request
             return;
         }
 
-        array<Map@> mapList = queue;
-        queue.RemoveRange(0, queue.Length);
+        array<Map@> mapList = g_queue;
+        g_queue.RemoveRange(0, g_queue.Length);
         QueueMapPbs(mapList);
     }
 

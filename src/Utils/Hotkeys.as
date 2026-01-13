@@ -6,24 +6,24 @@ namespace _Hotkeys {
         Timer
     }
 
-    HotkeySetting DetectingSetting = HotkeySetting::None;
+    HotkeySetting g_detectingSetting = HotkeySetting::None;
 
     bool get_ListeningForKey() {
-        return DetectingSetting != HotkeySetting::None;
+        return g_detectingSetting != HotkeySetting::None;
     }
 
     void StopListeningForKey() {
-        DetectingSetting = HotkeySetting::None;
+        g_detectingSetting = HotkeySetting::None;
     }
 
-    bool get_ListeningForSwitchKey() { return DetectingSetting == HotkeySetting::Switch; }
-    void set_ListeningForSwitchKey(bool detect) { DetectingSetting = detect ? HotkeySetting::Switch : HotkeySetting::None; }
+    bool get_ListeningForSwitchKey() { return g_detectingSetting == HotkeySetting::Switch; }
+    void set_ListeningForSwitchKey(bool detect) { g_detectingSetting = detect ? HotkeySetting::Switch : HotkeySetting::None; }
 
-    bool get_ListeningForWindowKey() { return DetectingSetting == HotkeySetting::MainWindow; }
-    void set_ListeningForWindowKey(bool detect) { DetectingSetting = detect ? HotkeySetting::MainWindow : HotkeySetting::None; }
+    bool get_ListeningForWindowKey() { return g_detectingSetting == HotkeySetting::MainWindow; }
+    void set_ListeningForWindowKey(bool detect) { g_detectingSetting = detect ? HotkeySetting::MainWindow : HotkeySetting::None; }
 
-    bool get_ListeningForTimerKey() { return DetectingSetting == HotkeySetting::Timer; }
-    void set_ListeningForTimerKey(bool detect) { DetectingSetting = detect ? HotkeySetting::Timer : HotkeySetting::None; }
+    bool get_ListeningForTimerKey() { return g_detectingSetting == HotkeySetting::Timer; }
+    void set_ListeningForTimerKey(bool detect) { g_detectingSetting = detect ? HotkeySetting::Timer : HotkeySetting::None; }
 
     string GetKeyName(VirtualKey key) {
         if (key == VirtualKey(0)) {
@@ -78,7 +78,7 @@ namespace _Hotkeys {
 
         RemoveHotkey(key);
 
-        switch (DetectingSetting) {
+        switch (g_detectingSetting) {
             case HotkeySetting::Switch:
                 S_SwitchKey = key;
                 break;

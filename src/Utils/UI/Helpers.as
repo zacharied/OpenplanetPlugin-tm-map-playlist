@@ -1,5 +1,4 @@
-namespace UI
-{
+namespace UI {
     // Alignment
 
     void CenterAlign() {

@@ -1,5 +1,5 @@
 namespace UI {
-    string tagSearch;
+    string g_tagSearch;
 
     void RenderMapRow(Map@ map, uint position) {
         UI::TableNextRow();
@@ -74,16 +74,16 @@ namespace UI {
         UI::SetNextWindowSize(200, 400, UI::Cond::Always);
         if (UI::BeginPopup("TagsPopup" + map.Index)) {
             if (UI::IsWindowAppearing()) {
-                tagSearch = "";
+                g_tagSearch = "";
             }
 
             UI::SetNextItemWidth(160);
-            tagSearch = UI::InputText("##MapTagSearch", tagSearch);
+            g_tagSearch = UI::InputText("##MapTagSearch", g_tagSearch);
 
             UI::Separator();
 
             foreach (TMX::Tag@ tag : TMX::AllTags) {
-                if (!tag.Name.ToLower().Contains(tagSearch.ToLower())) {
+                if (!tag.Name.ToLower().Contains(g_tagSearch.ToLower())) {
                     continue;
                 }
 
@@ -217,16 +217,16 @@ namespace UI {
         UI::SetNextWindowSize(200, 400, UI::Cond::Always);
         if (UI::BeginPopup("PlaylistTagsPopup" + position)) {
             if (UI::IsWindowAppearing()) {
-                tagSearch = "";
+                g_tagSearch = "";
             }
 
             UI::SetNextItemWidth(160);
-            tagSearch = UI::InputText("##PlaylistTagSearch", tagSearch);
+            g_tagSearch = UI::InputText("##PlaylistTagSearch", g_tagSearch);
 
             UI::Separator();
 
             foreach (TMX::Tag@ tag : TMX::AllTags) {
-                if (!tag.Name.ToLower().Contains(tagSearch.ToLower())) {
+                if (!tag.Name.ToLower().Contains(g_tagSearch.ToLower())) {
                     continue;
                 }
 

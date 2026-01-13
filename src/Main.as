@@ -25,7 +25,7 @@ void Main() {
     startnew(TMX::GetTags);
 
     if (!S_SkipLoad) {
-        while (!showMainWindow) {
+        while (!g_showMainWindow) {
             yield();
         }
 
@@ -36,7 +36,7 @@ void Main() {
     }
 }
 
-void OnDisabled()  { 
+void OnDisabled() { 
     Cache::StoreMapIds();
     Saves::UpdateFile(); 
 }
@@ -47,10 +47,10 @@ void OnDestroyed() {
 }
 
 [Setting hidden]
-bool showMainWindow = true;
+bool g_showMainWindow = true;
 
 [Setting hidden]
-bool showTimer = false;
+bool g_showTimer = false;
 
 void RenderMenu() {
     if (!HAS_PERMISSIONS) {
@@ -58,12 +58,12 @@ void RenderMenu() {
     }
 
     if (UI::BeginMenu(FULL_NAME)) {
-        if (UI::MenuItem(Icons::WindowMaximize + " Main Window", "", showMainWindow)) {
-            showMainWindow = !showMainWindow;
+        if (UI::MenuItem(Icons::WindowMaximize + " Main Window", "", g_showMainWindow)) {
+            g_showMainWindow = !g_showMainWindow;
         }
 
-        if (UI::MenuItem(Icons::ClockO + " Display timer", "", showTimer)) {
-            showTimer = !showTimer;
+        if (UI::MenuItem(Icons::ClockO + " Display timer", "", g_showTimer)) {
+            g_showTimer = !g_showTimer;
         }
 
         UI::EndMenu();
@@ -94,12 +94,12 @@ UI::InputBlocking OnKeyPress(bool down, VirtualKey key) {
     }
 
     if (key == S_WindowKey) {
-        showMainWindow = !showMainWindow;
+        g_showMainWindow = !g_showMainWindow;
         return UI::InputBlocking::Block;
     }
 
     if (key == S_TimerKey) {
-        showTimer = !showTimer;
+        g_showTimer = !g_showTimer;
         return UI::InputBlocking::Block;
     }
 

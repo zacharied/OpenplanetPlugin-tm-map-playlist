@@ -1,6 +1,6 @@
 class EditPlaylist: ModalDialog {
-    MapPlaylist oldList;
-    string oldName;
+    MapPlaylist m_oldList;
+    string m_oldName;
     string m_playlistName;
     string m_tagSearch;
 
@@ -8,9 +8,9 @@ class EditPlaylist: ModalDialog {
         super("Edit Playlist###EditPlaylist");
         this.m_size = vec2(700, 500);
 
-        this.oldName = list.Name;
-        this.m_playlistName = oldName;
-        this.oldList = list;
+        this.m_oldName = list.Name;
+        this.m_playlistName = list.Name;
+        this.m_oldList = list;
     }
 
     void RenderDialog() override {
@@ -26,7 +26,7 @@ class EditPlaylist: ModalDialog {
         bool nameExists = false;
         bool tooLong = this.m_playlistName.Length > 50;
 
-        if (this.m_playlistName != "" && this.m_playlistName != this.oldName) {
+        if (this.m_playlistName != "" && this.m_playlistName != this.m_oldName) {
             for (uint i = 0; i < savedPlaylists.Length; i++) {
                 if (savedPlaylists[i].Name == this.m_playlistName) {
                     nameExists = true;
@@ -49,7 +49,7 @@ class EditPlaylist: ModalDialog {
         UI::SameLine();
 
         UI::SetNextItemWidth(225);
-        if (UI::BeginCombo("##Tags", tostring(this.oldList.Tags.Length) + " selected")) {
+        if (UI::BeginCombo("##Tags", tostring(this.m_oldList.Tags.Length) + " selected")) {
             if (UI::IsWindowAppearing()) {
                 this.m_tagSearch = "";
             }
@@ -64,14 +64,14 @@ class EditPlaylist: ModalDialog {
                     continue;
                 }
 
-                bool HasTag = this.oldList.HasTag(tag);
+                bool HasTag = this.m_oldList.HasTag(tag);
 
                 if (UI::Checkbox("##" + tag.Name, HasTag)) {
                     if (!HasTag) {
-                        this.oldList.AddTag(tag);
+                        this.m_oldList.AddTag(tag);
                     }
                 } else if (HasTag) {
-                    this.oldList.RemoveTag(tag);
+                    this.m_oldList.RemoveTag(tag);
                 }
 
                 UI::SameLine();
@@ -87,26 +87,26 @@ class EditPlaylist: ModalDialog {
             UI::PushStyleVar(UI::StyleVar::IndentSpacing, 5);
             UI::PushStyleColor(UI::Col::HeaderHovered, vec4(0.3f, 0.3f, 0.3f, 0.8f));
 
-            if (UI::TreeNode("Maps (" + this.oldList.Length + ")###Maps", UI::TreeNodeFlags::FramePadding | UI::TreeNodeFlags::SpanAvailWidth | UI::TreeNodeFlags::DefaultOpen)) {
+            if (UI::TreeNode("Maps (" + this.m_oldList.Length + ")###Maps", UI::TreeNodeFlags::FramePadding | UI::TreeNodeFlags::SpanAvailWidth | UI::TreeNodeFlags::DefaultOpen)) {
                 UI::PushTableVars();
 
                 if (UI::BeginTable("EditPlaylistMaps", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
                     UI::TableSetupScrollFreeze(0, 1);
                     UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
-                    UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, this.oldList.columnWidths.Author);
+                    UI::TableSetupColumn("Author", UI::TableColumnFlags::WidthFixed, this.m_oldList.columnWidths.Author);
                     UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, 120 * UI::GetScale());
                     UI::TableSetupColumn("", UI::TableColumnFlags::WidthFixed);
                     UI::TableHeadersRow();
 
-                    UI::ListClipper clipper(this.oldList.Length);
+                    UI::ListClipper clipper(this.m_oldList.Length);
                     while (clipper.Step()) {
-                        for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, this.oldList.Length); i++) {
+                        for (int i = clipper.DisplayStart; i < Math::Min(clipper.DisplayEnd, this.m_oldList.Length); i++) {
                             UI::PushID("EditMap" + i);
 
                             UI::TableNextRow();
                             UI::TableNextColumn();
 
-                            Map@ map = this.oldList[i];
+                            Map@ map = this.m_oldList[i];
 
                             UI::AlignTextToFramePadding();
                             UI::Text(map.Name);
@@ -128,7 +128,7 @@ class EditPlaylist: ModalDialog {
 
                             UI::TableNextColumn();
                             if (UI::RedButton(Icons::TrashO)) {
-                                this.oldList.DeleteMap(map);
+                                this.m_oldList.DeleteMap(map);
                             }
 
                             UI::SetItemTooltip("Remove map");
@@ -147,13 +147,13 @@ class EditPlaylist: ModalDialog {
         }
         UI::EndChild();
 
-        UI::BeginDisabled(this.m_playlistName == "" || nameExists || tooLong || this.oldList.IsEmpty());
+        UI::BeginDisabled(this.m_playlistName == "" || nameExists || tooLong || this.m_oldList.IsEmpty());
 
         UI::RightAlignButton(UI::MeasureButton(Icons::FloppyO + " Save").x);
 
         if (UI::GreenButton(Icons::FloppyO + " Save")) {
-            this.oldList.Name = this.m_playlistName;
-            Saves::EditPlaylist(this.oldName, this.oldList);
+            this.m_oldList.Name = this.m_playlistName;
+            Saves::EditPlaylist(this.m_oldName, this.m_oldList);
 
             this.Close();
         }

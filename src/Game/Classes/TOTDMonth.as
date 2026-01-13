@@ -1,5 +1,5 @@
 namespace TM {
-    array<string> monthStrings = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+    const array<string> monthStrings = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 
     class TOTDMonth : Campaign {
         int LastDay;

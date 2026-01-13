@@ -1,11 +1,11 @@
 namespace Timer {
-    string currentUid = "";
-    uint lastUpdate = 0;
-    uint _timer = 0;
-    bool _paused = false;
+    string g_currentUid = "";
+    uint g_lastUpdate = 0;
+    uint g_timer = 0;
+    bool g_paused = false;
 
     void Render() {
-        if (!showTimer) {
+        if (!g_showTimer) {
             return;
         }
 
@@ -51,7 +51,7 @@ namespace Timer {
 
     void Reset() {
         TimeSpent = 0;
-        lastUpdate = Time::Now;
+        g_lastUpdate = Time::Now;
     }
 
     uint get_TimeLimit() {
@@ -63,35 +63,35 @@ namespace Timer {
     }
 
     uint get_TimeSpent() {
-        return _timer;
+        return g_timer;
     }
 
     void set_TimeSpent(uint n) {
-        _timer = Math::Clamp(n, 0, TimeLimit);
+        g_timer = Math::Clamp(n, 0, TimeLimit);
     }
 
     bool get_Paused() { 
-        return _paused;
+        return g_paused;
     }
 
-    void Pause()  { _paused = true; }
-    void Resume() { _paused = false; }
-    void Toggle() { _paused = !_paused; }
+    void Pause()  { g_paused = true; }
+    void Resume() { g_paused = false; }
+    void Toggle() { g_paused = !g_paused; }
     
     void Update() {
         if (!S_Timer || TM::IsLoadingMap() || TM::InEditor() || !TM::InCurrentMap() || TM::IsPauseMenuDisplayed()) {
-            lastUpdate = Time::Now;
+            g_lastUpdate = Time::Now;
             return;
         }
 
         CTrackMania@ app = cast<CTrackMania>(GetApp());
 
-        if (app.RootMap.IdName != currentUid) {
-            currentUid = app.RootMap.IdName;
+        if (app.RootMap.IdName != g_currentUid) {
+            g_currentUid = app.RootMap.IdName;
             Reset();
             Resume();
         } else if (!Paused && TM::InCurrentMap()) {
-            uint delta = Time::Now - lastUpdate;
+            uint delta = Time::Now - g_lastUpdate;
             TimeSpent += delta;
 
             if (TimeSpent >= TimeLimit) {
@@ -108,6 +108,6 @@ namespace Timer {
             }
         }
 
-        lastUpdate = Time::Now;
+        g_lastUpdate = Time::Now;
     }
 }

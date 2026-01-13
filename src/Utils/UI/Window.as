@@ -1,6 +1,6 @@
 namespace UI {
     void RenderMainWindow() {
-        if (!showMainWindow) {
+        if (!g_showMainWindow) {
             return;
         }
 
@@ -14,7 +14,7 @@ namespace UI {
 
         UI::SetNextWindowSize(600, 400, UI::Cond::FirstUseEver);
 
-        UI::Begin(FULL_NAME, showMainWindow, UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking);
+        UI::Begin(FULL_NAME, g_showMainWindow, UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking);
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
         if (UI::BeginTabItem("Maps")) {
