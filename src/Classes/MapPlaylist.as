@@ -89,7 +89,7 @@ class MapPlaylist {
     }
 
     void PlayMap(Map@ map) {
-        startnew(CoroutineFuncUserdata(TM::LoadMap), map);
+        startnew(TM::LoadMap, map);
     }
 
     void NextMap() {
@@ -97,7 +97,7 @@ class MapPlaylist {
 
         try {
             if (this.currentMap is null) {
-                startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
+                startnew(TM::LoadMap, this.Maps[0]);
                 return;
             }
             
@@ -111,10 +111,10 @@ class MapPlaylist {
             if (index == int(this.Maps.Length - 1)) {
                 // reached last item
                 if (S_Loop) {
-                    startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[0]);
+                    startnew(TM::LoadMap, this.Maps[0]);
                 }
             } else {
-                startnew(CoroutineFuncUserdata(TM::LoadMap), this.Maps[index + 1]);
+                startnew(TM::LoadMap, this.Maps[index + 1]);
             }
         } catch {
             _Logging::Error("An error occurred while switching maps: " + getExceptionInfo(), true);

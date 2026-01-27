@@ -11,7 +11,7 @@ namespace UI {
         UI::AlignTextToFramePadding();
         UI::Text(text);
         UI::SameLine();
-        UI::SetNextItemWidth(width - Draw::MeasureString(text).x);
+        UI::SetNextItemWidth(width - UI::MeasureString(text).x);
     }
 
     void SetCenteredItemText(const string &in text, int width = 300) {
@@ -65,7 +65,7 @@ namespace UI {
     }
 
     vec2 MeasureButton(const string &in label) {
-        vec2 text = Draw::MeasureString(label);
+        vec2 text = UI::MeasureString(label);
         vec2 padding = UI::GetStyleVarVec2(UI::StyleVar::FramePadding);
 
         return text + padding * 2;

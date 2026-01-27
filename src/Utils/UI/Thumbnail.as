@@ -4,7 +4,7 @@ namespace UI {
             CachedImage@ img = Images::CachedFromURL(url);
 
             if (UI::BeginItemTooltip()) {
-                float width = Draw::GetWidth() * resize;
+                float width = Display::GetWidth() * resize;
 
                 if (img.m_texture !is null) {
                     vec2 thumbSize = img.m_texture.GetSize();

@@ -54,7 +54,7 @@ namespace UI {
 
         if (g_source == Source::TMX_Map_ID || g_source == Source::TMX_Mappack_ID) {
             inputFlags |= UI::InputTextFlags::CharsDecimal | UI::InputTextFlags::CallbackCharFilter | UI::InputTextFlags::CallbackAlways;
-            @callback = UI::InputTextCallback(UI::IdCallback);
+            @callback = UI::IdCallback;
         }
 
         UI::SetNextItemWidth(225);

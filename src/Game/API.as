@@ -314,7 +314,7 @@ namespace TM {
 
         _Logging::Debug("[SearchClubCampaigns] Response code: " + resCode);
 
-        if (resCode >= 400 || json.GetType() == Json::Type::Null || !json.HasKey("clubCampaignList")) {
+        if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("clubCampaignList")) {
             _Logging::Error("[SearchClubCampaigns] Something went wrong while searching for club campaigns.", true);
             return {};
         }
@@ -377,10 +377,11 @@ namespace TM {
             for (uint a = 0; a < activities.Length; a++) {
                 Json::Value@ activity = activities[a];
 
-                int id = activity["id"];
-                string type = activity["activityType"];
+                if (activity["activityType"] != "campaign") {
+                    continue;
+                }
 
-                if (id == activityId && type == "campaign") {
+                if (activity["id"] == activityId) {
                     return activity["campaignId"];
                 }
             }
