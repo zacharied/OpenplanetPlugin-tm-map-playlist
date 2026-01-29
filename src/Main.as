@@ -30,6 +30,7 @@ void Main() {
         }
 
         TM::GetWeeklyShorts();
+        TM::GetWeeklyGrands();
         TM::GetSeasonalCampaigns();
         TM::GetTOTDMonths();
         TM::GetFavorites();
@@ -187,12 +188,15 @@ void PbLoop() {
 
         bool isStunt = map.MapType == "TrackMania\\TM_Stunt";
         bool isPlatform = map.MapType == "TrackMania\\TM_Platform";
+        bool isClones = map.MapInfo !is null && map.MapInfo.TMObjective_NbClones > 0;
 
         string mode = "TimeAttack";
         if (isStunt) {
             mode = "Stunt";
         } else if (isPlatform) {
             mode = "Platform";
+        } else if (isClones) {
+            mode = "TimeAttackClone";
         }
 
         auto scoreMgr = app.Network.ClientManiaAppPlayground.ScoreMgr;

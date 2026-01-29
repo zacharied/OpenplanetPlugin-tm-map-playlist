@@ -402,8 +402,10 @@ class MapPlaylist {
             if (!matches.IsEmpty() && Text::TryParseInt(matches[2], campaignId)) {
                 if (matches[1] == "seasonal") {
                     this.AddSeasonalCampaign(campaignId);
-                } else if (matches[1] == "weekly") {
-                    this.AddWeeklyCampaign(campaignId);
+                } else if (matches[1] == "weeklyshorts") {
+                    this.AddWeeklyShortCampaign(campaignId);
+                } else if (matches[1] == "weeklygrands") {
+                    this.AddWeeklyGrandCampaign(campaignId);
                 } else if (Text::TryParseInt(matches[1], clubId)) {
                     this.AddClubCampaign(clubId, campaignId);
                 } else {
@@ -506,7 +508,7 @@ class MapPlaylist {
         _Logging::Error("Failed to find a seasonal campaign with that name", true);
     }
 
-    void AddWeeklyCampaign(int campaignId) {
+    void AddWeeklyShortCampaign(int campaignId) {
         foreach (TM::Campaign@ week : WEEKLY_SHORTS) {
             if (campaignId == week.Id) {
                 startnew(CoroutineFuncUserdata(this.AddCampaign), week);
@@ -515,6 +517,17 @@ class MapPlaylist {
         }
 
         _Logging::Error("Failed to find a weekly shorts week with that ID", true);
+    }
+
+    void AddWeeklyGrandCampaign(int campaignId) {
+        foreach (TM::Campaign@ week : WEEKLY_GRANDS) {
+            if (campaignId == week.Id) {
+                startnew(CoroutineFuncUserdata(this.AddCampaign), week);
+                return;
+            }
+        }
+
+        _Logging::Error("Failed to find a weekly grands week with that ID", true);
     }
 
     void AddClubCampaign(int clubId, int campaignId, bool selectMaps = false) {

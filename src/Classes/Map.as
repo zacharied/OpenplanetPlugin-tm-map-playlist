@@ -11,6 +11,7 @@ class Map {
     int BronzeScore = -1;
     array<TMX::Tag@> Tags;
     int Index = -1;
+    bool HasClones;
 
     // Used in campaigns
     int Position = -1;
@@ -31,6 +32,7 @@ class Map {
             this.GoldScore = map.GoldScore;
             this.SilverScore = map.SilverScore;
             this.BronzeScore = map.BronzeScore;
+            this.HasClones = map.HasClones;
 
             string displayName = Cache::GetName(map.AuthorAccountId);
 
@@ -64,6 +66,10 @@ class Map {
             this.GoldScore = map.TMObjective_GoldTime;
             this.SilverScore = map.TMObjective_SilverTime;
             this.BronzeScore = map.TMObjective_BronzeTime;
+
+            if (map.MapInfo !is null) {
+                this.HasClones = map.MapInfo.TMObjective_NbClones > 0;
+            }
 
             Cache::SetMap(this);
         } catch {
@@ -121,6 +127,10 @@ class Map {
 
             if (json.HasKey("ThumbnailUrl")) {
                 Cache::SetThumbnailUrl(this.Uid, json["ThumbnailUrl"]);
+            }
+
+            if (json.HasKey("HasClones")) {
+                this.HasClones = json["HasClones"];
             }
 
             Cache::SetMap(this);
@@ -293,6 +303,7 @@ class Map {
             json["Pb"] = this.Pb; // not used but in case it's needed in the future
             json["Index"] = this.Index;
             json["ThumbnailUrl"] = this.ThumbnailUrl;
+            json["HasClones"] = this.HasClones;
 
             Json::Value tagsArray = Json::Array();
 

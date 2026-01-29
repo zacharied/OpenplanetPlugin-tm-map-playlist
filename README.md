@@ -32,6 +32,7 @@ You can use the following sources:
 * Club campaign
 * Seasonal campaign
 * Weekly shorts
+* Weekly grands
 * TOTD month
 * URLs
 
@@ -42,7 +43,7 @@ For URLs, the plugin supports the following links:
 * TMX map
 * TMX mappack
 * Trackmania.io map leaderboard
-* Trackmania.io campaign (seasonal, weekly shorts, and club)
+* Trackmania.io campaign (seasonal, weekly shorts / grands, and club)
 * Trackmania.com track
 * Trackmania.com club campaign
 * Trackmania.com seasonal campaign

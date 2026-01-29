@@ -352,11 +352,16 @@ void RenderDevSettings() {
     UI::PopFontSize();
 
     S_SkipLoad = UI::Checkbox("Skip loading data", S_SkipLoad);
-    UI::SettingDescription("Skip loading seasonal campaigns, weekly shorts, favorites, and TOTDs.");
+    UI::SettingDescription("Skip loading seasonal campaigns, weekly shorts / grands, favorites, and TOTDs.");
 
     if (UI::OrangeButton(Icons::Refresh + " Reload Seasonal Campaigns")) {
         SEASONAL_CAMPAIGNS.RemoveRange(0, SEASONAL_CAMPAIGNS.Length);
         startnew(TM::GetSeasonalCampaigns);
+    }
+
+    if (UI::OrangeButton(Icons::Refresh + " Reload Weekly Grands")) {
+        WEEKLY_GRANDS.RemoveRange(0, WEEKLY_GRANDS.Length);
+        startnew(TM::GetWeeklyGrands);
     }
 
     if (UI::OrangeButton(Icons::Refresh + " Reload Weekly Shorts")) {

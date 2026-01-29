@@ -11,6 +11,7 @@ PlaylistsManager savedPlaylists     = PlaylistsManager();
 MapPlaylist playlist                = MapPlaylist();
 
 array<TM::Campaign@> WEEKLY_SHORTS;
+array<TM::Campaign@> WEEKLY_GRANDS;
 array<TM::Campaign@> SEASONAL_CAMPAIGNS;
 array<Map@> FAVORITES;
 array<TM::TOTDMonth@> TOTD_MONTHS;
@@ -66,6 +67,7 @@ enum Source {
     TMX_Mappack_ID,
     URL,
     Weekly_Shorts,
+    Weekly_Grands,
     Seasonal_Campaign,
     Club_Campaign,
     TOTD_Month,

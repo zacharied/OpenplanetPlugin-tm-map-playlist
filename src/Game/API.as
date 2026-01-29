@@ -86,7 +86,7 @@ namespace TM {
         }
 		
 		if (json["campaignList"].Length == 0) {
-            _Logging::Error("[GetWeeklyShorts] Weekly shorts endpoint returned 0 weeks");
+            _Logging::Error("[GetWeeklyShorts] Weekly shorts endpoint returned 0 weeks.");
             return;
         }
 
@@ -98,6 +98,52 @@ namespace TM {
         }
 
         _Logging::Debug("[GetWeeklyShorts] Loaded " + weeks.Length + " weekly shorts weeks.");
+    }
+
+    void GetWeeklyGrands() {
+        if (!WEEKLY_GRANDS.IsEmpty()) {
+            return;
+        }
+
+        while (!NadeoServices::IsAuthenticated("NadeoLiveServices")) {
+            yield();
+        }
+
+        _Logging::Trace("[GetWeeklyGrands] Fetching weekly grands.");
+
+        string url = NadeoServices::BaseURLLive() + "/api/campaign/weekly-grands?length=500&offset=0";
+
+        auto req = NadeoServices::Get("NadeoLiveServices", url);
+        req.Start();
+
+        while (!req.Finished()) {
+            yield();
+        }
+
+        int resCode = req.ResponseCode();
+        Json::Value@ json = req.Json();
+
+        _Logging::Debug("[GetWeeklyGrands] Response code: " + resCode);
+        _Logging::Debug("[GetWeeklyGrands] JSON: " + Json::Write(json, true));
+
+        if (resCode >= 400 || json.GetType() != Json::Type::Object || !json.HasKey("campaignList")) {
+            _Logging::Error("[GetWeeklyGrands] Failed to get weekly grands from Nadeo Services");
+            return;
+        }
+		
+		if (json["campaignList"].Length == 0) {
+            _Logging::Error("[GetWeeklyGrands] Weekly grands endpoint returned 0 weeks.");
+            return;
+        }
+
+        Json::Value@ weeks = json["campaignList"];
+
+        for (uint i = 0; i < weeks.Length; i++) {
+            TM::Campaign@ week = TM::Campaign(weeks[i]);
+            WEEKLY_GRANDS.InsertLast(week);
+        }
+
+        _Logging::Debug("[GetWeeklyGrands] Loaded " + weeks.Length + " weekly grands weeks.");
     }
 
     void GetSeasonalCampaigns() {
@@ -433,6 +479,7 @@ namespace TM {
         GetMapIds(maps);
 
         array<string> raceIds;
+        array<string> cloneIds;
         array<string> stuntIds;
         array<string> platformIds;
 
@@ -445,7 +492,12 @@ namespace TM {
 
             switch (map.GameMode) {
                 case GameMode::Race:
-                    raceIds.InsertLast(mapId);
+                    if (map.HasClones) {
+                        cloneIds.InsertLast(mapId);
+                    } else {
+                        raceIds.InsertLast(mapId);
+                    }
+
                     break;
                 case GameMode::Stunt:
                     stuntIds.InsertLast(mapId);
@@ -459,11 +511,12 @@ namespace TM {
         }
 
         if (!raceIds.IsEmpty()) GetPbs(raceIds, GameMode::Race);
+        if (!cloneIds.IsEmpty()) GetPbs(cloneIds, GameMode::Race, true);
         if (!stuntIds.IsEmpty()) GetPbs(stuntIds, GameMode::Stunt);
         if (!platformIds.IsEmpty()) GetPbs(platformIds, GameMode::Platform);
     }
 
-    void GetPbs(array<string> ids, GameMode mode) {
+    void GetPbs(array<string> ids, GameMode mode, bool clones = false) {
         while (!NadeoServices::IsAuthenticated("NadeoServices")) {
             yield();
         }
@@ -475,6 +528,8 @@ namespace TM {
 
         if (mode == GameMode::Stunt || mode == GameMode::Platform) {
             modeName = tostring(mode);
+        } else if (clones) {
+            modeName = "TimeAttackClone";
         }
 
         _Logging::Trace("[GetPbs] Getting PBs for " + ids.Length + " " + modeName + " maps.");

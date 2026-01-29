@@ -30,6 +30,7 @@ namespace UI {
 
         switch (g_source) {
             case Source::Weekly_Shorts:
+            case Source::Weekly_Grands:
             case Source::Seasonal_Campaign:
             case Source::TOTD_Month:
                 RenderDropdown();
@@ -89,6 +90,11 @@ namespace UI {
             case Source::Weekly_Shorts:
                 for (uint i = 0; i < WEEKLY_SHORTS.Length; i++) {
                     campaigns.InsertLast(WEEKLY_SHORTS[i]);
+                }
+                break;
+            case Source::Weekly_Grands:
+                for (uint i = 0; i < WEEKLY_GRANDS.Length; i++) {
+                    campaigns.InsertLast(WEEKLY_GRANDS[i]);
                 }
                 break;
             case Source::Seasonal_Campaign:
