@@ -51,15 +51,13 @@ namespace UI {
 
         UI::TableNextColumn();
 
-        vec2 cursorPos = UI::GetCursorScreenPos();
-        vec2 cellSize = UI::GetCurrentCellSize();
-
         foreach (TMX::Tag@ tag : map.Tags) {
             tag.Render();
             UI::SameLine();
         }
 
-        if (UI::IsMouseBetween(cursorPos, cursorPos + cellSize)) {
+        // Hovering tags cell
+        if (UI::TableGetHoveredRow() == UI::TableGetRowIndex() && UI::TableGetHoveredColumn() == UI::TableGetColumnIndex()) {
             UI::Text(Icons::Plus);
 
             if (UI::IsItemHovered()) {
@@ -194,15 +192,14 @@ namespace UI {
         UI::Text(tostring(list.Length));
 
         UI::TableNextColumn();
-        vec2 cursorPos = UI::GetCursorScreenPos();
-        vec2 cellSize = UI::GetCurrentCellSize();
 
         foreach (TMX::Tag@ tag : list.Tags) {
             tag.Render();
             UI::SameLine();
         }
 
-        if (UI::IsMouseBetween(cursorPos, cursorPos + cellSize)) {
+        // Hovering tags cell
+        if (UI::TableGetHoveredRow() == UI::TableGetRowIndex() && UI::TableGetHoveredColumn() == UI::TableGetColumnIndex()) {
             UI::Text(Icons::Plus);
 
             if (UI::IsItemHovered()) {

@@ -82,24 +82,4 @@ namespace UI {
             UI::EndTooltip();
         }
     }
-
-    // Other
-
-    bool IsMouseBetween(vec2 min, vec2 max) {
-        vec2 mousePos = UI::GetMousePos();
-
-        return mousePos.x >= min.x
-            && mousePos.x <= max.x
-            && mousePos.y >= min.y
-            && mousePos.y <= max.y;        
-    }
-
-    // TODO this is very hacky
-    vec2 GetCurrentCellSize() {
-        vec2 padding = UI::GetStyleVarVec2(UI::StyleVar::CellPadding);
-        float rowWidth = UI::GetContentRegionAvail().x;
-        float rowHeight = MeasureButton("Placeholder").y + padding.y * 2;
-
-        return vec2(rowWidth, rowHeight);
-    }
 }
