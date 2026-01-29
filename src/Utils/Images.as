@@ -4,7 +4,6 @@ class CachedImage {
     int m_responseCode;
     bool m_error = false;
     bool m_notFound = false;
-    bool m_unsupportedFormat = false;
 
     void DownloadFromURLAsync() {
         _Logging::Debug("[DownloadFromURLAsync] Loading texture: " + m_url);
@@ -22,26 +21,8 @@ class CachedImage {
             return;
         }
 
-        if (req.Buffer().ReadString(4) == "RIFF") {
-            // WEBP is not supported by Openplanet
-            auto webpReq = Net::HttpPost("https://map-monitor.xk.io/tmx/convert_webp", m_url);
-
-            while (!webpReq.Finished()) {
-                yield();
-            }
-
-            if (webpReq.ResponseCode() != 200) {
-                _Logging::Error("[DownloadFromURLAsync] WEBP conversion failed. Error " + webpReq.ResponseCode());
-                m_unsupportedFormat = true;
-                m_error = true;
-                return;
-            }
-
-            @m_texture = UI::LoadTexture(webpReq.Buffer());
-        } else {
-            req.Buffer().Seek(0);
-            @m_texture = UI::LoadTexture(req.Buffer());
-        }
+        req.Buffer().Seek(0);
+        @m_texture = UI::LoadTexture(req.Buffer());
 
         if (m_texture.GetSize().x == 0) {
             @m_texture = null;
