@@ -263,8 +263,8 @@ namespace UI {
         UI::SameLine();
 
         if (UI::Button(Icons::Upload)) {
-            // TODO probably want to set the current tab
             playlist = list;
+            g_focusMapList = true;
             playlist.GetPlaylistPbs();
             UI::ShowNotification(PLUGIN_NAME, "Loaded playlist \"" + list.Name + "\"!");
         }

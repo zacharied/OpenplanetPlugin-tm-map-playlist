@@ -1,4 +1,6 @@
 namespace UI {
+    bool g_focusMapList;
+
     void RenderMainWindow() {
         if (!g_showMainWindow) {
             return;
@@ -17,7 +19,13 @@ namespace UI {
         UI::Begin(FULL_NAME, g_showMainWindow, UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking);
         UI::BeginTabBar("WindowTabs", UI::TabBarFlags::FittingPolicyResizeDown);
 
-        if (UI::BeginTabItem("Maps")) {
+        int mapTabFlags = UI::TabItemFlags::None;
+
+        if (g_focusMapList) {
+            mapTabFlags |= UI::TabItemFlags::SetSelected;
+        }
+
+        if (UI::BeginTabItem("Maps", mapTabFlags)) {
             UI::BeginChild("MapsChild");
             UI::RenderSources();
 
@@ -47,6 +55,11 @@ namespace UI {
             UI::PushTableVars();
             if (UI::BeginTable("Maps", 13, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable | UI::TableFlags::Sortable)) {
                 UI::TableSetupScrollFreeze(0, 1);
+
+                if (g_focusMapList) {
+                    UI::SetScrollY(0);
+                    g_focusMapList = false;
+                }
 
                 UI::TableSetupColumn("Nº", UI::TableColumnFlags::WidthFixed, 30);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
