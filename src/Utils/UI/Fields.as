@@ -149,7 +149,7 @@ namespace UI {
 
         UI::EndDisabled();
 
-        if (campaigns.IsEmpty()) UI::SetItemTooltip("Couldn't find any " + tostring(g_source).Replace("_", " ") + "\n\nPlugin might need to be reloaded.");
+        if (campaigns.IsEmpty()) UI::SetItemTooltip("Couldn't find any " + tostring(g_source).Replace("_", " ") + "\n\nTry reloading them in the Dev settings.");
 
         UI::SameLine();
 
