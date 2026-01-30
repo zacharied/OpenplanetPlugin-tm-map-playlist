@@ -50,6 +50,9 @@ namespace UI {
         else UI::Text(tostring(map.GameMode));
 
         UI::TableNextColumn();
+        UI::Text(map.VistaName);
+
+        UI::TableNextColumn();
 
         foreach (TMX::Tag@ tag : map.Tags) {
             tag.Render();

@@ -8,6 +8,7 @@ namespace Sort {
         SortUrl,
         SortUid,
         SortGamemode,
+        SortVista,
         SortTags,
         SortMedals,
         SortPb,
@@ -46,6 +47,10 @@ namespace Sort {
 
     int SortGamemode(Map@ a, Map@ b) {
         return SortString(tostring(a.GameMode), tostring(b.GameMode));
+    }
+
+    int SortVista(Map@ a, Map@ b) {
+        return SortString(a.VistaName, b.VistaName);
     }
 
     int SortTags(Map@ a, Map@ b) {
@@ -147,7 +152,7 @@ namespace Sort {
             }
 
             switch (spec.ColumnIndex) {
-                case 10:
+                case 13:
                     // Can't sort buttons
                     continue;
                 default:

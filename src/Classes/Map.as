@@ -10,6 +10,8 @@ class Map {
     int SilverScore = -1;
     int BronzeScore = -1;
     array<TMX::Tag@> Tags;
+    Vistas Vista = Vistas::Stadium;
+    string VistaName = "Stadium";
     int Index = -1;
     bool HasClones;
 
@@ -33,6 +35,8 @@ class Map {
             this.SilverScore = map.SilverScore;
             this.BronzeScore = map.BronzeScore;
             this.HasClones = map.HasClones;
+            this.Vista = GetVistaFromName(map.CollectionName);
+            this.VistaName = tostring(this.Vista).Replace("_", " ");
 
             string displayName = Cache::GetName(map.AuthorAccountId);
 
@@ -66,6 +70,8 @@ class Map {
             this.GoldScore = map.TMObjective_GoldTime;
             this.SilverScore = map.TMObjective_SilverTime;
             this.BronzeScore = map.TMObjective_BronzeTime;
+            this.Vista = GetVistaFromName(map.CollectionName);
+            this.VistaName = tostring(this.Vista).Replace("_", " ");
 
             if (map.MapInfo !is null) {
                 this.HasClones = map.MapInfo.TMObjective_NbClones > 0;
@@ -93,6 +99,8 @@ class Map {
             this.SilverScore = mapInfo.SilverScore;
             this.BronzeScore = mapInfo.BronzeScore;
             this.Tags = mapInfo.Tags;
+            this.Vista = Vistas(mapInfo.EnvironmentId);
+            this.VistaName = tostring(this.Vista).Replace("_", " ");
 
             Cache::SetMapId(mapInfo.MapUid, mapInfo.OnlineMapId);
             Cache::SetThumbnailUrl(mapInfo.MapUid, mapInfo.ThumbnailUrl);
@@ -119,6 +127,8 @@ class Map {
             this.SilverScore = json["SilverScore"];
             this.BronzeScore = json["BronzeScore"];
             this.Index = json["Index"];
+            this.Vista = Vistas(int(json["Vista"]));
+            this.VistaName = tostring(this.Vista).Replace("_", " ");
 
             for (uint i = 0; i < json["Tags"].Length; i++) {
                 Json::Value@ tag = json["Tags"][i];
@@ -304,6 +314,7 @@ class Map {
             json["Index"] = this.Index;
             json["ThumbnailUrl"] = this.ThumbnailUrl;
             json["HasClones"] = this.HasClones;
+            json["Vista"] = this.Vista;
 
             Json::Value tagsArray = Json::Array();
 

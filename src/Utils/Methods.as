@@ -6,6 +6,18 @@ string CleanMapType(const string &in mapType) {
     return mapType.SubStr(slashIndex + 1);
 }
 
+Vistas GetVistaFromName(const string &in name) {
+    for (uint i = 0; i < Vistas::Last; i++) {
+        string vistaName = tostring(Vistas(i)).Replace("_", "").ToLower();
+
+        if (vistaName == name.ToLower()) {
+            return Vistas(i);
+        }
+    }
+
+    return Vistas::Stadium;
+}
+
 string Pluralize(const string &in word, int count, const string &in suffix = "s") {
     if (count == 1) return word;
 

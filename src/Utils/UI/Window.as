@@ -53,7 +53,7 @@ namespace UI {
             UI::EndDisabled();
 
             UI::PushTableVars();
-            if (UI::BeginTable("Maps", 13, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable | UI::TableFlags::Sortable)) {
+            if (UI::BeginTable("Maps", 14, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX | UI::TableFlags::SizingStretchSame | UI::TableFlags::Hideable | UI::TableFlags::Sortable)) {
                 UI::TableSetupScrollFreeze(0, 1);
 
                 if (g_focusMapList) {
@@ -67,6 +67,7 @@ namespace UI {
                 UI::TableSetupColumn("URL", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Url);
                 UI::TableSetupColumn("UID", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Uid);
                 UI::TableSetupColumn("Mode", UI::TableColumnFlags::WidthFixed, 60 * UI::GetScale());
+                UI::TableSetupColumn("Vista", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Vistas);
                 UI::TableSetupColumn("Tags", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Tags);
                 UI::TableSetupColumn("Medals", UI::TableColumnFlags::WidthFixed, playlist.columnWidths.Medals);
                 UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 110 * UI::GetScale());
@@ -81,13 +82,14 @@ namespace UI {
                 UI::TableSetColumnEnabled(3, S_MapUrl);
                 UI::TableSetColumnEnabled(4, S_MapUid);
                 UI::TableSetColumnEnabled(5, S_MapGamemode);
-                UI::TableSetColumnEnabled(6, S_MapTags);
-                UI::TableSetColumnEnabled(7, S_MapMedals);
-                UI::TableSetColumnEnabled(8, S_MapPb);
-                UI::TableSetColumnEnabled(9, S_MapDelta);
-                UI::TableSetColumnEnabled(10, S_MapSessionPb);
-                UI::TableSetColumnEnabled(11, S_MapSessionDelta);
-                UI::TableSetColumnEnabled(12, S_MapButtons);
+                UI::TableSetColumnEnabled(6, S_MapVista);
+                UI::TableSetColumnEnabled(7, S_MapTags);
+                UI::TableSetColumnEnabled(8, S_MapMedals);
+                UI::TableSetColumnEnabled(9, S_MapPb);
+                UI::TableSetColumnEnabled(10, S_MapDelta);
+                UI::TableSetColumnEnabled(11, S_MapSessionPb);
+                UI::TableSetColumnEnabled(12, S_MapSessionDelta);
+                UI::TableSetColumnEnabled(13, S_MapButtons);
 
                 auto specs = UI::TableGetSortSpecs();
 

@@ -8,6 +8,7 @@ class MapColumns {
     float Author = MIN_AUTHOR;
     float Url;
     float Uid;
+    float Vistas;
     float Tags = MIN_TAGS;
     float Medals = MIN_MEDALS;
 
@@ -26,6 +27,7 @@ class MapColumns {
             Author = Math::Max(Author, UI::MeasureString(map.Author).x);
             Url = Math::Max(Url, UI::MeasureString(map.Url).x);
             Uid = Math::Max(Uid, UI::MeasureString(map.Uid).x);
+            Vistas = Math::Max(Vistas, UI::MeasureString(map.VistaName).x);
             Medals = Math::Max(Medals, UI::MeasureString(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author)).x + 8);
 
             float itemSpacing = UI::GetStyleVarVec2(UI::StyleVar::ItemSpacing).x;
@@ -48,6 +50,7 @@ class MapColumns {
         Author = MIN_AUTHOR;
         Url = 0.0f;
         Uid = 0.0f;
+        Vistas = 0.0f;
         Tags = MIN_TAGS;
         Medals = MIN_MEDALS;
     }

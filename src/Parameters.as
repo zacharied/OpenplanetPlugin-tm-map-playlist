@@ -22,6 +22,7 @@ const array<string> MAP_FIELDS_ARRAY = {
     "OnlineMapId",
     "Uploader.Name",
     "MapType",
+    "Environment",
     "Name",
     "GbxMapName",
     "Medals.Author",
@@ -49,6 +50,15 @@ enum GameMode {
     Platform,
     Stunt,
     Royal
+}
+
+enum Vistas {
+    Stadium,
+    Blue_Bay,
+    Red_Island,
+    Green_Coast,
+    White_Shore,
+    Last
 }
 
 enum Medals {

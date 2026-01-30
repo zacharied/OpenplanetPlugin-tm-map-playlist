@@ -56,6 +56,9 @@ bool S_MapUid = false;
 bool S_MapGamemode = false;
 
 [Setting hidden]
+bool S_MapVista = false;
+
+[Setting hidden]
 bool S_MapTags = true;
 
 [Setting hidden]
@@ -200,6 +203,7 @@ void RenderDisplaySettings() {
         S_MapUrl = false;
         S_MapUid = false;
         S_MapGamemode = false;
+        S_MapVista = false;
         S_MapTags = true;
         S_MapMedals = true;
         S_MapPb = true;
@@ -225,7 +229,7 @@ void RenderDisplaySettings() {
     S_ColoredNames = UI::Checkbox("Display colored map names", S_ColoredNames);
     S_MapThumbnail = UI::Checkbox("Display thumbnail when hovering a map name", S_MapThumbnail);
 
-    array<bool> mapValues = { S_MapName, S_MapAuthor, S_MapUrl, S_MapUid, S_MapTags, S_MapGamemode, S_MapMedals, S_MapPb, S_MapDelta, S_MapSessionPb, S_MapSessionDelta, S_MapButtons };
+    array<bool> mapValues = { S_MapName, S_MapAuthor, S_MapUrl, S_MapUid, S_MapGamemode, S_MapVista, S_MapTags, S_MapMedals, S_MapPb, S_MapDelta, S_MapSessionPb, S_MapSessionDelta, S_MapButtons };
     string mapComboText = GetComboText(mapValues);
 
     UI::SetNextItemWidth(145);
@@ -234,8 +238,9 @@ void RenderDisplaySettings() {
         S_MapAuthor = UI::Checkbox("Author##Map", S_MapAuthor);
         S_MapUrl = UI::Checkbox("URL##Map", S_MapUrl);
         S_MapUid = UI::Checkbox("UID##Map", S_MapUid);
-        S_MapTags = UI::Checkbox("TMX Tags##Map", S_MapTags);
         S_MapGamemode = UI::Checkbox("Mode##Map", S_MapGamemode);
+        S_MapVista = UI::Checkbox("Vista##Map", S_MapVista);
+        S_MapTags = UI::Checkbox("TMX Tags##Map", S_MapTags);
         S_MapMedals = UI::Checkbox("Medals##Map", S_MapMedals);
         S_MapPb = UI::Checkbox("PB##Map", S_MapPb);
         S_MapDelta = UI::Checkbox("Delta##Map", S_MapDelta);

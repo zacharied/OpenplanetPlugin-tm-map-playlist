@@ -6,6 +6,7 @@ namespace TMX {
         string OnlineMapId;
         string MapType;
         string Author = "Unknown";
+        int EnvironmentId = Vistas::Stadium;
         int MapId;
         int AuthorScore;
         int GoldScore;
@@ -20,6 +21,7 @@ namespace TMX {
                 this.Name = json["Name"];
                 this.MapUid = json["MapUid"];
                 this.MapId = json["MapId"];
+                this.EnvironmentId = json["Environment"];
 
                 if (json["OnlineMapId"].GetType() != Json::Type::Null) {
                     this.OnlineMapId = json["OnlineMapId"];
