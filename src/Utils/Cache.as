@@ -18,10 +18,8 @@ namespace Cache {
             return name;
         }
 
-#if DEPENDENCY_NADEOSERVICES
         name = NadeoServices::GetDisplayNameAsync(authorId);
         g_authorNames.Set(authorId, name);
-#endif
 
         return name;
     }
