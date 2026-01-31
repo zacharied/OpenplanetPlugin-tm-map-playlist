@@ -26,8 +26,8 @@ class Map {
 
         try {
             this.Url = map.FileUrl;
-            this.GbxName = Text::OpenplanetFormatCodes(map.Name);
-            this.Name = Text::StripFormatCodes(map.Name);
+            this.GbxName = Text::OpenplanetFormatCodes(CleanGbxText(map.Name));
+            this.Name = Text::StripFormatCodes(CleanGbxText(map.Name));
             this.Uid = map.Uid;
             this.MapType = CleanMapType(map.Type);
             this.AuthorScore = map.AuthorScore;
@@ -61,8 +61,8 @@ class Map {
 
         try {
             this.Url = path;
-            this.GbxName = Text::OpenplanetFormatCodes(map.MapName);
-            this.Name = Text::StripFormatCodes(map.MapName);
+            this.GbxName = Text::OpenplanetFormatCodes(CleanGbxText(map.MapName));
+            this.Name = Text::StripFormatCodes(CleanGbxText(map.MapName));
             this.Uid = map.IdName;
             this.MapType = CleanMapType(map.MapType);
             this.Author = map.AuthorNickName;
@@ -89,8 +89,8 @@ class Map {
 
         try {
             this.Url = mapInfo.DownloadURL;
-            this.Name = mapInfo.Name;
-            this.GbxName = Text::OpenplanetFormatCodes(mapInfo.GbxMapName);
+            this.Name = CleanGbxText(mapInfo.Name);
+            this.GbxName = Text::OpenplanetFormatCodes(CleanGbxText(mapInfo.GbxMapName));
             this.Uid = mapInfo.MapUid;
             this.MapType = CleanMapType(mapInfo.MapType);
             this.Author = mapInfo.Author;
