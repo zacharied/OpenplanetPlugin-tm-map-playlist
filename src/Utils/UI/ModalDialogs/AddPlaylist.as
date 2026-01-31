@@ -2,7 +2,7 @@ class AddPlaylist: ModalDialog {
     string m_playlistName;
 
     AddPlaylist() {
-        super("Add Playlist###AddPlaylist");
+        super("Add Playlist##AddPlaylist");
         this.m_size = vec2(700, 500);
     }
 

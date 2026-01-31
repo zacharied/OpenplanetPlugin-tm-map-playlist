@@ -5,7 +5,7 @@ class EditPlaylist: ModalDialog {
     string m_tagSearch;
 
     EditPlaylist(MapPlaylist@ list) {
-        super("Edit Playlist###EditPlaylist");
+        super("Edit Playlist##EditPlaylist");
         this.m_size = vec2(700, 500);
 
         this.m_oldName = list.Name;

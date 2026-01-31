@@ -75,7 +75,7 @@ namespace UI {
 
         UI::SameLine();
 
-        if ((UI::Button("Add##AddButton") || pressedEnter) && g_field.Length > 0) {
+        if ((UI::GreenButton("Add##AddButton") || pressedEnter) && g_field.Length > 0) {
             playlist.Add(g_source, g_field);
             g_field = "";
         }
@@ -161,7 +161,7 @@ namespace UI {
 
         UI::SameLine();
 
-        if (UI::Button("Add##CampaignButton") && g_campaign !is null) {
+        if (UI::GreenButton("Add##CampaignButton") && g_campaign !is null) {
             startnew(CoroutineFuncUserdata(playlist.AddCampaign), g_campaign);
             @g_campaign = null;
         }
@@ -192,7 +192,7 @@ namespace UI {
 
         UI::SameLine();
 
-        if (UI::Button("Add##ClubCampaignButton")) {
+        if (UI::GreenButton("Add##ClubCampaignButton")) {
             startnew(CoroutineFuncUserdata(playlist.AddCampaignAsync), ids);
             g_clubId = 0;
             g_campaignId = 0;
@@ -224,7 +224,7 @@ namespace UI {
 
         UI::SameLine();
 
-        if (UI::Button("Add##AddFavorites")) {
+        if (UI::GreenButton("Add##AddFavorites")) {
             playlist.AddFavorites();
         }
 
