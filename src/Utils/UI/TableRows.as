@@ -108,12 +108,17 @@ namespace UI {
         }
 
         UI::TableNextColumn();
+
+        Medals iconMedal = S_MainMedal;
+        int mainScore = map.GetMedalScore(S_MainMedal);
+
+#if DEPENDENCY_WARRIORMEDALS
         if (S_MainMedal == Medals::Warrior && !map.HasWarrior) {
-            UI::Text(UI::FormatMedal(map.AuthorScore, map.GameMode, Medals::Author));
-        } else {
-            int medalScore = map.GetMedalScore(S_MainMedal);
-            UI::Text(UI::FormatMedal(medalScore, map.GameMode, S_MainMedal));
+            iconMedal = Medals::Author;
         }
+#endif
+
+        UI::Text(UI::FormatMedal(mainScore, map.GameMode, iconMedal));
         UI::MedalsToolTip(map);
 
         UI::TableNextColumn();
