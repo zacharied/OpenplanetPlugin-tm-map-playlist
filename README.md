@@ -2,7 +2,7 @@
 
 Create a playlist of maps to play in solo. Switch to the next map on demand, when you obtain a specific medal, or after the timer is up.
 
-You can save multiple playlist to use later, reorder the maps, randomize them, and more!
+You can save multiple playlist to use later, reorder the maps, randomize them, among many other features.
 
 ## Features
 
@@ -27,8 +27,8 @@ You can use the following sources:
 * TMX mappack ID
 * Map UID
 * Favorites
-* File path
-* Folder path
+* File files
+* Folders
 * Club campaign
 * Seasonal campaign
 * Weekly shorts
