@@ -6,11 +6,11 @@ string CleanMapType(const string &in mapType) {
     return mapType.SubStr(slashIndex + 1);
 }
 
-string CleanGbxText(const string &in text) {
+string CleanGbxText(const string &in rawText) {
     // remove BOMs and newlines
-    string text = Regex::Replace(name, "[\u200B-\u200F\uFEFF\\n]", "");
+    string text = Regex::Replace(rawText, "[\u200B-\u200F\uFEFF\\n]", "");
 
-    array<string> formatCodes = Regex::Search(text, "^(\\$([0-9a-f]{1,3}|[gimnostuwz<>]|[hlp](\\[[^\\]]+\\])?) *)+", regexFlags);
+    array<string> formatCodes = Regex::Search(text, "^(\\$([0-9a-f]{1,3}|[gimnostuwz<>]|[hlp](\\[[^\\]]+\\])?) *)+", Regex::Flags::ECMAScript | Regex::Flags::CaseInsensitive);
 
     if (!formatCodes.IsEmpty()) {
         text = text.Replace(formatCodes[0], formatCodes[0].Replace(" ", ""));
