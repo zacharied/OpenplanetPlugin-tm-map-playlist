@@ -108,6 +108,11 @@ UI::InputBlocking OnKeyPress(bool down, VirtualKey key) {
         playlist.NextMap();
         return UI::InputBlocking::Block;
     }
+    
+    if (key == VirtualKey::F4) {
+        Renderables::Add(AddToPlaylist());
+        return UI::InputBlocking::Block;
+    }
 
     return UI::InputBlocking::DoNothing;
 }
