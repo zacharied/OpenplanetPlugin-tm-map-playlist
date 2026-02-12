@@ -152,7 +152,7 @@ class AddToPlaylist: ModalDialog {
             return;
 
         m_selectedPlaylist.AddMap(map);
-        UI::ShowNotification("Map Added", Text::OpenplanetFormatCodes(CleanGbxText(map.Name)) + " has been added to playlist " + m_selectedPlaylist.Name + ".");
+        UI::ShowNotification("Map Added", Text::OpenplanetFormatCodes(CleanGbxText(map.Name)) + " has been added to playlist \"" + m_selectedPlaylist.Name + "\".");
     }
     
     private string GetSourceLabelText(AddToPlaylistSource source) {
