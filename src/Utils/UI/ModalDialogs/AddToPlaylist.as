@@ -57,7 +57,7 @@ class AddToPlaylist: ModalDialog {
         
         UI::Text(Text::OpenplanetFormatCodes(CleanGbxText(m_currentChallenge.MapName)));
         UI::SameLine(0, 0);
-        UI::Text(" will be added to the selected playlist.");
+        UI::Text(" will be added to the selected playlists.");
 
         vec2 region = UI::GetContentRegionAvail();
 
@@ -143,7 +143,7 @@ class AddToPlaylist: ModalDialog {
         UI::BeginDisabled(checkedPlaylistCount == 0);
         
         if (UI::GreenButton(addButtonText)) {
-            startnew(CoroutineFunc(this.AddMapToPlaylist));
+            startnew(CoroutineFunc(this.AddMapToSelectedPlaylists));
             Close();
         }
         UI::SetItemTooltip("Add current map to the selected playlist");
@@ -151,7 +151,7 @@ class AddToPlaylist: ModalDialog {
         UI::EndDisabled();
     }
     
-    private void AddMapToPlaylist() {
+    private void AddMapToSelectedPlaylists() {
         Map@ map;
 
         switch (m_source) {
@@ -192,9 +192,8 @@ class AddToPlaylist: ModalDialog {
             case AddToPlaylistSource::File:
                 return "Local file";
             default:
-                return string();
+                return "";
         }
-
     }
 }
 
