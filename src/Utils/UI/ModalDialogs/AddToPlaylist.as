@@ -5,7 +5,7 @@ class AddToPlaylist: ModalDialog {
     bool[] m_playlistSelection;
     bool[] m_alreadyPresentPlaylists;
     
-    AddToPlaylistSource m_source = AddToPlaylistSource::NadeoServices;
+    AddToPlaylistSource m_source = AddToPlaylistSource::TMX;
     
     AddToPlaylist() {
         super("Add to Playlist##AddToPlaylist");
@@ -171,8 +171,8 @@ class AddToPlaylist: ModalDialog {
 }
 
 enum AddToPlaylistSource {
-    NadeoServices,
     TMX,
+    NadeoServices,
     File,
     Last
 }
