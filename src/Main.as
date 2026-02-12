@@ -67,7 +67,7 @@ void RenderMenu() {
             g_showTimer = !g_showTimer;
         }
         
-        if (UI::MenuItem(Icons::Plus + " Add current map to...")) {
+        if (UI::MenuItem(Icons::Plus + " Add current map to...", tostring(S_AddCurrentMapKey), false, TM::InMap() && !TM::InEditor())) {
             Renderables::Add(AddToPlaylist()); 
         }
 
