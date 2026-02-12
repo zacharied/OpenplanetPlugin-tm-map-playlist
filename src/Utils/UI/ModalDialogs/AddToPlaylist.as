@@ -62,10 +62,11 @@ class AddToPlaylist: ModalDialog {
             UI::PushStyleColor(UI::Col::HeaderHovered, vec4(0.3f, 0.3f, 0.3f, 0.8f));
 
             UI::PushTableVars();
-            if (UI::BeginTable("PlaylistsTable", 2, UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerH | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
-        
+            if (UI::BeginTable("PlaylistsTable", 3, UI::TableFlags::ScrollY | UI::TableFlags::BordersInnerH | UI::TableFlags::BordersInnerV | UI::TableFlags::PadOuterX)) {
+                UI::TableSetupScrollFreeze(0, 1);
                 UI::TableSetupColumn("Name", UI::TableColumnFlags::WidthStretch);
-                UI::TableSetupColumn("Map Count", UI::TableColumnFlags::WidthFixed, 120 * UI::GetScale());
+                UI::TableSetupColumn("Tags", UI::TableColumnFlags::WidthFixed, 180 * UI::GetScale());
+                UI::TableSetupColumn("Map Count", UI::TableColumnFlags::WidthFixed, 80 * UI::GetScale());
                 
                 UI::TableHeadersRow();
 
@@ -73,7 +74,9 @@ class AddToPlaylist: ModalDialog {
                     const MapPlaylist@ list = savedPlaylists[i];
                     
                     UI::TableNextRow();
+
                     UI::TableNextColumn();
+                    
 
                     UI::BeginDisabled(m_alreadyPresentPlaylists[i]);
                     if (UI::RadioButton(list.Name, m_playlistSelection[i])) {
@@ -89,6 +92,13 @@ class AddToPlaylist: ModalDialog {
                         UI::SetItemTooltip("The current map is already present in this playlist.");
                     }
                     UI::EndDisabled();
+                
+                    UI::TableNextColumn();
+
+                    foreach (TMX::Tag@ tag : list.Tags) {
+                        tag.Render(); 
+                        UI::SameLine();
+                    }
                     
                     UI::TableNextColumn();
 
@@ -131,7 +141,7 @@ class AddToPlaylist: ModalDialog {
         UI::EndDisabled();
     }
     
-    void AddMapToPlaylist() {
+    private void AddMapToPlaylist() {
         Map@ map;
 
         switch (m_source) {
@@ -149,13 +159,13 @@ class AddToPlaylist: ModalDialog {
         }
 
         if (map is null)
-            return;
+            return; 
 
         m_selectedPlaylist.AddMap(map);
         UI::ShowNotification("Map Added", Text::OpenplanetFormatCodes(CleanGbxText(map.Name)) + " has been added to playlist \"" + m_selectedPlaylist.Name + "\".");
     }
     
-    private string GetSourceLabelText(AddToPlaylistSource source) {
+    private const string GetSourceLabelText(AddToPlaylistSource source) {
         switch (source) {
             case AddToPlaylistSource::NadeoServices:
                 return "Nadeo services"; 
