@@ -4,7 +4,7 @@ class AddToPlaylist: ModalDialog {
     bool[] m_checkedPlaylists;
     bool[] m_alreadyPresentPlaylists;
     
-    AddToPlaylistSource m_source = AddToPlaylistSource::TMX;
+    AddUidToPlaylistSource m_source = AddUidToPlaylistSource::TMX;
     
     AddToPlaylist() {
         super("Add to Playlist##AddToPlaylist");
@@ -115,9 +115,9 @@ class AddToPlaylist: ModalDialog {
         
         UI::SetNextItemWidth(150);
         if (UI::BeginCombo("Source##AddToPlaylistSource", GetSourceLabelText(m_source))) {
-            for (int i = 0; i < AddToPlaylistSource::Last; i++) {
-                if (UI::Selectable(GetSourceLabelText(AddToPlaylistSource(i)) + "##" + tostring(AddToPlaylistSource(i)), m_source == AddToPlaylistSource(i))) {
-                    m_source = AddToPlaylistSource(i);
+            for (int i = 0; i < AddUidToPlaylistSource::Last; i++) {
+                if (UI::Selectable(GetSourceLabelText(AddUidToPlaylistSource(i)) + "##" + tostring(AddUidToPlaylistSource(i)), m_source == AddUidToPlaylistSource(i))) {
+                    m_source = AddUidToPlaylistSource(i);
                 }
             }
             UI::EndCombo();
@@ -155,13 +155,13 @@ class AddToPlaylist: ModalDialog {
         Map@ map;
 
         switch (m_source) {
-            case AddToPlaylistSource::TMX:
+            case AddUidToPlaylistSource::TMX:
                 @map = TMX::GetMapFromUid(m_currentChallenge.MapInfo.MapUid);
                 break; 
-            case AddToPlaylistSource::NadeoServices:
+            case AddUidToPlaylistSource::NadeoServices:
                 @map = TM::GetMapFromUid(m_currentChallenge.MapInfo.MapUid);
                 break;
-            case AddToPlaylistSource::File:
+            case AddUidToPlaylistSource::File:
                 @map = Map(m_currentChallenge, m_currentChallenge.MapInfo.FileName);
                 break;
         }
@@ -183,13 +183,13 @@ class AddToPlaylist: ModalDialog {
         }
     }
     
-    private const string GetSourceLabelText(AddToPlaylistSource source) {
+    private const string GetSourceLabelText(AddUidToPlaylistSource source) {
         switch (source) {
-            case AddToPlaylistSource::TMX:
+            case AddUidToPlaylistSource::TMX:
                 return "TMX";
-            case AddToPlaylistSource::NadeoServices:
+            case AddUidToPlaylistSource::NadeoServices:
                 return "Nadeo services"; 
-            case AddToPlaylistSource::File:
+            case AddUidToPlaylistSource::File:
                 return "Local file";
             default:
                 return "";
@@ -197,7 +197,7 @@ class AddToPlaylist: ModalDialog {
     }
 }
 
-enum AddToPlaylistSource {
+enum AddUidToPlaylistSource {
     TMX,
     NadeoServices,
     File,
