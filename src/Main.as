@@ -66,6 +66,10 @@ void RenderMenu() {
         if (UI::MenuItem(Icons::ClockO + " Display timer", "", g_showTimer)) {
             g_showTimer = !g_showTimer;
         }
+        
+        if (UI::MenuItem(Icons::Plus + " Add current map to...")) {
+            Renderables::Add(AddToPlaylist()); 
+        }
 
         UI::EndMenu();
     }
@@ -110,7 +114,8 @@ UI::InputBlocking OnKeyPress(bool down, VirtualKey key) {
     }
     
     if (key == VirtualKey::F4) {
-        Renderables::Add(AddToPlaylist());
+        if ((!S_HideWithOP || UI::IsOverlayShown()) && (!S_HideWithGameUI || UI::IsGameUIVisible()) && !TM::IsLoadingMap() && !TM::InEditor())
+            Renderables::Add(AddToPlaylist());
         return UI::InputBlocking::Block;
     }
 
