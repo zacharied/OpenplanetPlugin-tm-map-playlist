@@ -1,8 +1,7 @@
 class AddToPlaylist: ModalDialog {
     CGameCtnChallenge@ m_currentChallenge;
-    MapPlaylist@ m_selectedPlaylist;
 
-    bool[] m_playlistSelection;
+    bool[] m_checkedPlaylists;
     bool[] m_alreadyPresentPlaylists;
     
     AddToPlaylistSource m_source = AddToPlaylistSource::TMX;
@@ -19,19 +18,21 @@ class AddToPlaylist: ModalDialog {
         this.Init(currentMap);
     }
     
-    AddToPlaylist(CGameCtnChallenge@ &in map) {
+    AddToPlaylist(CGameCtnChallenge@ &in challenge) {
         super("Add to Playlist##AddToPlaylist");
         
-        if (map is null) {
+        if (challenge is null) {
             Close();
             return;
         }
         
-        this.Init(map);
+        this.Init(challenge);
     }
     
-    private void Init(CGameCtnChallenge@ &in map) {
-        @this.m_currentChallenge = map;
+    private void Init(CGameCtnChallenge@ &in challenge) {
+        @m_currentChallenge = challenge;
+
+        m_checkedPlaylists = array<bool>(savedPlaylists.Length);
 
         m_alreadyPresentPlaylists = array<bool>(savedPlaylists.Length);
         for (uint i = 0; i < savedPlaylists.Length; i++) {
@@ -42,10 +43,8 @@ class AddToPlaylist: ModalDialog {
                 }
             }
         }
-        
-        m_playlistSelection = array<bool>(savedPlaylists.Length);
 
-        this.m_size = vec2(700, 500);
+        m_size = vec2(700, 500);
     }
 
     void RenderDialog() override {
@@ -84,12 +83,7 @@ class AddToPlaylist: ModalDialog {
                     
 
                     UI::BeginDisabled(m_alreadyPresentPlaylists[i]);
-                    if (UI::RadioButton(list.Name, m_playlistSelection[i])) {
-                        for (uint j = 0; j < m_playlistSelection.Length; j++) {
-                            m_playlistSelection[j] = false;
-                        }
-                        m_playlistSelection[i] = true; 
-                    }
+                    m_checkedPlaylists[i] = UI::Checkbox(list.Name, m_checkedPlaylists[i]);
                     
                     if (m_alreadyPresentPlaylists[i]) {
                         UI::SameLine(0, 4 * UI::GetScale());
@@ -100,7 +94,7 @@ class AddToPlaylist: ModalDialog {
                 
                     UI::TableNextColumn();
 
-                    foreach (TMX::Tag@ tag : list.Tags) {
+                    foreach (auto tag : list.Tags) {
                         tag.Render(); 
                         UI::SameLine();
                     }
@@ -119,9 +113,6 @@ class AddToPlaylist: ModalDialog {
         }
         UI::EndChild();
         
-        int selectedIndex = m_playlistSelection.Find(true); 
-        @m_selectedPlaylist = selectedIndex < 0 ? null : savedPlaylists[selectedIndex];
-        
         UI::SetNextItemWidth(150);
         if (UI::BeginCombo("Source##AddToPlaylistSource", GetSourceLabelText(m_source))) {
             for (int i = 0; i < AddToPlaylistSource::Last; i++) {
@@ -132,12 +123,26 @@ class AddToPlaylist: ModalDialog {
             UI::EndCombo();
         }
 
+        uint checkedPlaylistCount = 0;
+        foreach (bool checked : m_checkedPlaylists) {
+            if (checked) {
+                checkedPlaylistCount++;
+            }
+        }
+
+        auto selectedCountText = tostring(checkedPlaylistCount) + " playlist(s) selected";
+        auto addButtonText = Icons::Plus + " Add";
+        auto nextX = UI::GetContentRegionAvail().x - UI::MeasureButton(addButtonText).x - UI::MeasureString(selectedCountText).x;
+
+        UI::SameLine(nextX, 0);
+
+        UI::Text(selectedCountText);
+
         UI::SameLine();
 
-        UI::BeginDisabled(m_selectedPlaylist is null);
-
-        UI::RightAlignButton(UI::MeasureButton(Icons::Plus + " Add").x);
-        if (UI::GreenButton(Icons::Plus + " Add")) {
+        UI::BeginDisabled(checkedPlaylistCount == 0);
+        
+        if (UI::GreenButton(addButtonText)) {
             startnew(CoroutineFunc(this.AddMapToPlaylist));
             Close();
         }
@@ -150,32 +155,40 @@ class AddToPlaylist: ModalDialog {
         Map@ map;
 
         switch (m_source) {
-            case AddToPlaylistSource::NadeoServices:
-                @map = TM::GetMapFromUid(m_currentChallenge.MapInfo.MapUid);
-                break;
             case AddToPlaylistSource::TMX:
                 @map = TMX::GetMapFromUid(m_currentChallenge.MapInfo.MapUid);
                 break; 
+            case AddToPlaylistSource::NadeoServices:
+                @map = TM::GetMapFromUid(m_currentChallenge.MapInfo.MapUid);
+                break;
             case AddToPlaylistSource::File:
                 @map = Map(m_currentChallenge, m_currentChallenge.MapInfo.FileName);
                 break;
-            default:
-                return;
         }
 
         if (map is null)
             return; 
+        
+        MwFastBuffer<MapPlaylist@> selectedPlaylists;
+        for (uint i = 0; i < m_checkedPlaylists.Length; i++) {
+            if (m_checkedPlaylists[i]) {
+                selectedPlaylists.Add(savedPlaylists[i]);
+            }
+        }
 
-        m_selectedPlaylist.AddMap(map);
-        UI::ShowNotification("Map Added", Text::OpenplanetFormatCodes(CleanGbxText(map.Name)) + " has been added to playlist \"" + m_selectedPlaylist.Name + "\".");
+        for (uint i = 0; i < selectedPlaylists.Length; i++) {
+            auto playlist = selectedPlaylists[i];
+            UI::ShowNotification("Map Added", Text::OpenplanetFormatCodes(CleanGbxText(map.Name)) + " has been added to playlist \"" + playlist.Name + "\".");
+            playlist.AddMap(map);
+        }
     }
     
     private const string GetSourceLabelText(AddToPlaylistSource source) {
         switch (source) {
-            case AddToPlaylistSource::NadeoServices:
-                return "Nadeo services"; 
             case AddToPlaylistSource::TMX:
                 return "TMX";
+            case AddToPlaylistSource::NadeoServices:
+                return "Nadeo services"; 
             case AddToPlaylistSource::File:
                 return "Local file";
             default:
