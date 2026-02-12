@@ -31,7 +31,7 @@ namespace TMX {
     TMX::MapInfo@ GetMapFromUid(const string &in mapUid) {
         string reqUrl = "https://trackmania.exchange/api/maps?count=1000&fields=" + MAP_FIELDS + "&uid=" + mapUid;
 
-        _Logging::Trace("[GetMapFromUid] Fetching TMX map with UID #" + mapUid);
+        _Logging::Trace("[GetMapFromUid] Fetching TMX map with UID " + mapUid);
 
         try {
             Json::Value json = API::GetAsync(reqUrl);
@@ -39,18 +39,18 @@ namespace TMX {
             _Logging::Debug("[GetMapFromUid] JSON:" + Json::Write(json));
 
             if (json.GetType() == Json::Type::Null || !json.HasKey("Results")) {
-                _Logging::Error("[GetMapFromUid] Something went wrong while fetching map with UID #" + mapUid, true);
+                _Logging::Error("[GetMapFromUid] Something went wrong while fetching map with UID " + mapUid, true);
                 return null;
             }
             
             if (json["Results"].Length == 0) {
-                _Logging::Error("[GetMapFromUid] Failed to find a map with UID #" + mapUid + ". Map might be private or deleted.", true);
+                _Logging::Error("[GetMapFromUid] Failed to find a map with UID " + mapUid + ". Map might be private or deleted.", true);
                 return null;
             }
 
             return TMX::MapInfo(json["Results"][0]);
         } catch {
-            _Logging::Error("[GetMapFromUid] An error occurred while fetching map with UID #" + mapUid + " from TMX: " + getExceptionInfo(), true);
+            _Logging::Error("[GetMapFromUid] An error occurred while fetching map with UID " + mapUid + " from TMX: " + getExceptionInfo(), true);
             return null;
         }
     }
