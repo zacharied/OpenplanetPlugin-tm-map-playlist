@@ -10,19 +10,24 @@ class AddToPlaylist: ModalDialog {
     AddToPlaylist() {
         super("Add to Playlist##AddToPlaylist");
 
-        auto currentMap = GetApp().RootMap;
-        if (TM::IsLoadingMap() || TM::InEditor() || currentMap is null || currentMap.MapInfo is null) {
+        auto currentMap = cast<CTrackMania>(GetApp()).RootMap;
+        if (TM::InEditor() || currentMap is null || currentMap.MapInfo is null) {
             Close();
             return;
         }
         
-        Init(currentMap);
+        this.Init(currentMap);
     }
     
     AddToPlaylist(CGameCtnChallenge@ &in map) {
         super("Add to Playlist##AddToPlaylist");
         
-        Init(map);
+        if (map is null) {
+            Close();
+            return;
+        }
+        
+        this.Init(map);
     }
     
     private void Init(CGameCtnChallenge@ &in map) {
