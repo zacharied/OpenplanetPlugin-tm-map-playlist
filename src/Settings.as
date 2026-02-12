@@ -105,6 +105,9 @@ VirtualKey S_WindowKey = VirtualKey(0);
 [Setting hidden]
 VirtualKey S_TimerKey = VirtualKey(0);
 
+[Setting hidden]
+VirtualKey S_AddCurrentMapKey = VirtualKey(0);
+
 // --- Dev ---
 
 [Setting hidden]
@@ -297,6 +300,7 @@ void RenderHotkeySettings() {
         S_SwitchKey = VirtualKey(0);
         S_WindowKey = VirtualKey(0);
         S_TimerKey = VirtualKey(0);
+        S_AddCurrentMapKey = VirtualKey(0);
     }
 
     _Hotkeys::RenderHotkeyCombo("Switch map", S_SwitchKey);
@@ -328,6 +332,16 @@ void RenderHotkeySettings() {
         UI::Text("Press a key");
     } else if (UI::GreyButton("Detect##Timer")) {
         _Hotkeys::ListeningForTimerKey = true;
+    }
+
+    _Hotkeys::RenderHotkeyCombo("Add current map to playlist", S_AddCurrentMapKey);
+
+    UI::SameLine();
+
+    if (_Hotkeys::ListeningForAddCurrentMapKey) {
+        UI::Text("Press a key");
+    } else if (UI::GreyButton("Detect##AddCurrentMap")) {
+        _Hotkeys::ListeningForAddCurrentMapKey = true;
     }
 
     UI::EndChild();

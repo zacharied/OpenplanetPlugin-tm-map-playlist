@@ -113,9 +113,10 @@ UI::InputBlocking OnKeyPress(bool down, VirtualKey key) {
         return UI::InputBlocking::Block;
     }
     
-    if (key == VirtualKey::F4) {
-        if ((!S_HideWithOP || UI::IsOverlayShown()) && (!S_HideWithGameUI || UI::IsGameUIVisible()) && !TM::IsLoadingMap() && !TM::InEditor())
+    if (key == S_AddCurrentMapKey) {
+        if ((!S_HideWithOP || UI::IsOverlayShown()) && (!S_HideWithGameUI || UI::IsGameUIVisible())) {
             Renderables::Add(AddToPlaylist());
+        }
         return UI::InputBlocking::Block;
     }
 
